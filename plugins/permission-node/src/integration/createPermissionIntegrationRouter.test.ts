@@ -250,7 +250,7 @@ describe('createPermissionIntegrationRouter', () => {
                 conditions: {
                   rule: 'test-rule-1',
                   resourceType: 'test-resource',
-                  params: [],
+                  params: ['a', 1],
                 },
               },
               {
@@ -260,7 +260,7 @@ describe('createPermissionIntegrationRouter', () => {
                 conditions: {
                   rule: 'test-rule-2',
                   resourceType: 'test-resource',
-                  params: [],
+                  params: [{}],
                 },
               },
               {
@@ -271,7 +271,7 @@ describe('createPermissionIntegrationRouter', () => {
                   not: {
                     rule: 'test-rule-1',
                     resourceType: 'test-resource',
-                    params: [],
+                    params: ['a', 1],
                   },
                 },
               },
@@ -283,7 +283,7 @@ describe('createPermissionIntegrationRouter', () => {
                   not: {
                     rule: 'test-rule-2',
                     resourceType: 'test-resource',
-                    params: [],
+                    params: [{}],
                   },
                 },
               },
@@ -296,12 +296,12 @@ describe('createPermissionIntegrationRouter', () => {
                     {
                       rule: 'test-rule-1',
                       resourceType: 'test-resource',
-                      params: [],
+                      params: ['a', 1],
                     },
                     {
                       rule: 'test-rule-2',
                       resourceType: 'test-resource',
-                      params: [],
+                      params: [{}],
                     },
                   ],
                 },
@@ -430,7 +430,7 @@ describe('createPermissionIntegrationRouter', () => {
               conditions: {
                 rule: 'test-rule-1',
                 resourceType: 'test-resource',
-                params: [],
+                params: ['a', 1],
               },
             },
             {
@@ -440,7 +440,7 @@ describe('createPermissionIntegrationRouter', () => {
               conditions: {
                 rule: 'test-rule-1',
                 resourceType: 'test-resource',
-                params: [],
+                params: ['a', 1],
               },
             },
             {
@@ -450,7 +450,7 @@ describe('createPermissionIntegrationRouter', () => {
               conditions: {
                 rule: 'test-rule-1',
                 resourceType: 'test-resource',
-                params: [],
+                params: ['a', 1],
               },
             },
           ],
