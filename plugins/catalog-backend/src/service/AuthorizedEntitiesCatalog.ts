@@ -21,7 +21,10 @@ import {
 } from '@backstage/plugin-catalog-common';
 import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
+  AuthorizePermissionRequest,
   AuthorizeResult,
+  EvaluatePermissionRequest,
+  EvaluatePermissionResponse,
   PermissionEvaluator,
 } from '@backstage/plugin-permission-common';
 import { ConditionTransformer } from '@backstage/plugin-permission-node';
@@ -35,6 +38,9 @@ import {
   EntityFilter,
 } from '../catalog/types';
 import { basicEntityFilter } from './request/basicEntityFilter';
+import { compact } from 'lodash';
+import DataLoader from 'dataloader';
+import QueryString from 'qs';
 
 export class AuthorizedEntitiesCatalog implements EntitiesCatalog {
   constructor(
@@ -44,10 +50,11 @@ export class AuthorizedEntitiesCatalog implements EntitiesCatalog {
   ) {}
 
   async entities(request?: EntitiesRequest): Promise<EntitiesResponse> {
+    const authorizationOptions = { token: request?.authorizationToken };
     const authorizeDecision = (
       await this.permissionApi.authorizeConditional(
         [{ permission: catalogEntityReadPermission }],
-        { token: request?.authorizationToken },
+        authorizationOptions,
       )
     )[0];
 
@@ -58,19 +65,37 @@ export class AuthorizedEntitiesCatalog implements EntitiesCatalog {
       };
     }
 
+    const authorizer = new DataLoader(
+      (requests: readonly AuthorizePermissionRequest[]) =>
+        this.permissionApi.authorize(requests.slice(), authorizationOptions),
+      {
+        // Serialize the permission name and resourceRef as
+        // a query string to avoid collisions from overlapping
+        // permission names and resourceRefs.
+        cacheKeyFn: ({ permission: { name }, resourceRef }) =>
+          QueryString.stringify({ name, resourceRef }),
+      },
+    );
+
     if (authorizeDecision.result === AuthorizeResult.CONDITIONAL) {
       const permissionFilter: EntityFilter = this.transformConditions(
         authorizeDecision.conditions,
       );
-      return this.entitiesCatalog.entities({
-        ...request,
-        filter: request?.filter
-          ? { allOf: [permissionFilter, request.filter] }
-          : permissionFilter,
-      });
+      return this.filterResults(
+        await this.entitiesCatalog.entities({
+          ...request,
+          filter: request?.filter
+            ? { allOf: [permissionFilter, request.filter] }
+            : permissionFilter,
+        }),
+        authorizer,
+      );
     }
 
-    return this.entitiesCatalog.entities(request);
+    return this.filterResults(
+      await this.entitiesCatalog.entities(request),
+      authorizer,
+    );
   }
 
   async removeEntityByUid(
@@ -205,5 +230,39 @@ export class AuthorizedEntitiesCatalog implements EntitiesCatalog {
           : this.findParents(parentRef, allAncestryItems, newSeenEntityRefs),
       ),
     ];
+  }
+
+  /**
+   * Filter the returned database results to just those that match the authorizer's
+   *  rules.
+   * @param results Database query results.
+   * @param authorizer DataLoader for the authorization.
+   * @returns Results with invalid results parsed out.
+   */
+  private async filterResults(
+    results: EntitiesResponse,
+    authorizer: DataLoader<
+      EvaluatePermissionRequest,
+      EvaluatePermissionResponse
+    >,
+  ) {
+    const entities = compact(
+      await Promise.all(
+        results.entities.map(entity => {
+          return authorizer
+            .load({
+              resourceRef: stringifyEntityRef(entity),
+              permission: catalogEntityReadPermission,
+            })
+            .then(decision =>
+              decision.result === AuthorizeResult.ALLOW ? entity : undefined,
+            );
+        }),
+      ),
+    );
+    return {
+      entities,
+      pageInfo: results.pageInfo,
+    };
   }
 }
