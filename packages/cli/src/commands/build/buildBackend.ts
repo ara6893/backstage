@@ -21,6 +21,7 @@ import tar, { CreateOptions } from 'tar';
 import { createDistWorkspace } from '../../lib/packager';
 import { getEnvironmentParallelism } from '../../lib/parallel';
 import { buildPackage, Output } from '../../lib/builder';
+import getRouteMappings from '../openapi/route-mapping';
 
 const BUNDLE_FILE = 'bundle.tar.gz';
 const SKELETON_FILE = 'skeleton.tar.gz';
@@ -33,6 +34,14 @@ interface BuildBackendOptions {
 export async function buildBackend(options: BuildBackendOptions) {
   const { targetDir, skipBuildDependencies } = options;
   const pkg = await fs.readJson(resolvePath(targetDir, 'package.json'));
+
+  console.log(
+    getRouteMappings({
+      tsConfigFilePath: '../../tsconfig.json',
+      backendDirectory: targetDir,
+    }),
+  );
+  return;
 
   // We build the target package without generating type declarations.
   await buildPackage({

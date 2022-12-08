@@ -3438,6 +3438,7 @@ __metadata:
     mysql2: ^2.2.5
     node-fetch: ^2.6.7
     node-forge: ^1.3.1
+    openapi-merge: ^1.3.2
     raw-body: ^2.4.1
     recursive-readdir: ^2.2.2
     request: ^2.88.2
@@ -3625,6 +3626,7 @@ __metadata:
     "@swc/core": ^1.3.9
     "@swc/helpers": ^0.4.7
     "@swc/jest": ^0.2.22
+    "@ts-morph/bootstrap": ^0.18.0
     "@types/diff": ^5.0.0
     "@types/express": ^4.17.6
     "@types/fs-extra": ^9.0.1
@@ -3709,6 +3711,7 @@ __metadata:
     swc-loader: ^0.2.3
     tar: ^6.1.12
     terser-webpack-plugin: ^5.1.3
+    ts-morph: ^17.0.1
     ts-node: ^10.0.0
     type-fest: ^2.0.0
     util: ^0.12.3
@@ -13473,6 +13476,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ts-morph/bootstrap@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "@ts-morph/bootstrap@npm:0.18.0"
+  dependencies:
+    "@ts-morph/common": ~0.18.0
+  checksum: fe56d3bcd5544ff051de7410de981c223d8be3a6c7a1fa87f0ea32f1f733ef1cb97194d7ce7d44331b81edc0b66c6451d6ed5cc437dd1e5907ff1ecb74ca74ee
+  languageName: node
+  linkType: hard
+
 "@ts-morph/common@npm:~0.16.0":
   version: 0.16.0
   resolution: "@ts-morph/common@npm:0.16.0"
@@ -13482,6 +13494,18 @@ __metadata:
     mkdirp: ^1.0.4
     path-browserify: ^1.0.1
   checksum: 0ef97330a164a42b81b0499b042e91db8e39d705bb983ef83cbc80cc32ab36123e26baefb78203953d1a0c6e3b92cad9bc7a5e0ea409623a5e7db90cb3742112
+  languageName: node
+  linkType: hard
+
+"@ts-morph/common@npm:~0.18.0":
+  version: 0.18.0
+  resolution: "@ts-morph/common@npm:0.18.0"
+  dependencies:
+    fast-glob: ^3.2.12
+    minimatch: ^5.1.0
+    mkdirp: ^1.0.4
+    path-browserify: ^1.0.1
+  checksum: 0a799181302f40e075760e94fde9e7f152b94526b8fb1d28c9535400a97def57608c149a2f507773b01c2e383491be8d709b5f4a4817320e2794b7dc6a15f14c
   languageName: node
   linkType: hard
 
@@ -16713,6 +16737,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"atlassian-openapi@npm:^1.0.8":
+  version: 1.0.17
+  resolution: "atlassian-openapi@npm:1.0.17"
+  dependencies:
+    jsonpointer: ^5.0.0
+    urijs: ^1.19.10
+  checksum: 372a454e8f5e000e016e261b2151019f0b3dabfad908593c71aae23ebd5b9998c374ae3c0bf0d85dd55dbcca94d5d93e38edf02346d0bd2cb34d3fd20968ddaf
+  languageName: node
+  linkType: hard
+
 "atomic-sleep@npm:^1.0.0":
   version: 1.0.0
   resolution: "atomic-sleep@npm:1.0.0"
@@ -18415,12 +18449,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"code-block-writer@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "code-block-writer@npm:11.0.0"
-  dependencies:
-    tslib: 2.3.1
-  checksum: d3d92a06f762d5926ecdb2033e4f30eb4c51aca365ea69ef424afbce7cc2b1518a50deff2645cc17b6fa53f234d664631f2268a4caf91af6a1fd696aa0b2fefb
+"code-block-writer@npm:^11.0.0, code-block-writer@npm:^11.0.3":
+  version: 11.0.3
+  resolution: "code-block-writer@npm:11.0.3"
+  checksum: f0a2605f19963d7087267c9b0fd0b05a6638a50e7b29b70f97aa01a514f59475b0626f8aa092188df853ee6d96745426dfa132d6a677795df462c6ce32c21639
   languageName: node
   linkType: hard
 
@@ -22320,16 +22352,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9":
-  version: 3.2.11
-  resolution: "fast-glob@npm:3.2.11"
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.12, fast-glob@npm:^3.2.9":
+  version: 3.2.12
+  resolution: "fast-glob@npm:3.2.12"
   dependencies:
     "@nodelib/fs.stat": ^2.0.2
     "@nodelib/fs.walk": ^1.2.3
     glob-parent: ^5.1.2
     merge2: ^1.3.0
     micromatch: ^4.0.4
-  checksum: f473105324a7780a20c06de842e15ddbb41d3cb7e71d1e4fe6e8373204f22245d54f5ab9e2061e6a1c613047345954d29b022e0e76f5c28b1df9858179a0e6d7
+  checksum: 0b1990f6ce831c7e28c4d505edcdaad8e27e88ab9fa65eedadb730438cfc7cde4910d6c975d6b7b8dc8a73da4773702ebcfcd6e3518e73938bb1383badfe01c2
   languageName: node
   linkType: hard
 
@@ -30094,6 +30126,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"openapi-merge@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "openapi-merge@npm:1.3.2"
+  dependencies:
+    atlassian-openapi: ^1.0.8
+    lodash: ^4.17.15
+    ts-is-present: ^1.1.1
+  checksum: 53284a563270177422db8c7536544913c133dfc5cc7058a1043f3092b5aa997b8224a83c59569d18620f94ccf0a014fcb735e22941a9259b2c60861002f01638
+  languageName: node
+  linkType: hard
+
 "openapi-sampler@npm:^1.2.1":
   version: 1.2.1
   resolution: "openapi-sampler@npm:1.2.1"
@@ -36589,6 +36632,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-is-present@npm:^1.1.1":
+  version: 1.2.2
+  resolution: "ts-is-present@npm:1.2.2"
+  checksum: 3620ecf48219d0dd108e493260a207f4733d8e39a18dffec23c7ed2b1ef2aba7158d0dfafe36f3f27d0092472535a5e474ce04ade54e972e64b2b6329d20ab0b
+  languageName: node
+  linkType: hard
+
 "ts-log@npm:^2.2.3":
   version: 2.2.3
   resolution: "ts-log@npm:2.2.3"
@@ -36603,6 +36653,16 @@ __metadata:
     "@ts-morph/common": ~0.16.0
     code-block-writer: ^11.0.0
   checksum: 95e026214282850f08d1d4de673e969cdc166cb6d9366e455e1ea0251a204f80cffcb958c8ed7b1f351e56b972c4244e0dc7be0b13df3c4a6f22abdd4d4608e4
+  languageName: node
+  linkType: hard
+
+"ts-morph@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "ts-morph@npm:17.0.1"
+  dependencies:
+    "@ts-morph/common": ~0.18.0
+    code-block-writer: ^11.0.3
+  checksum: 4748ab45d0fb0be235f69399ea217cf1c5984ad2ef3ff9eba5a417571f73098c6f1f765fc011eaadc48179471b977f1e44f72eb993932e5c74c5031ab6c60f3a
   languageName: node
   linkType: hard
 
@@ -37266,6 +37326,13 @@ __metadata:
   dependencies:
     punycode: ^2.1.0
   checksum: 5a91c55d8ae6d9a1ff9dc1b0774888a99aae7cc6e9056c57b709275c0f6753b05cd1a9f2728a1479244b93a9f57ab37c60d277a48d9f2d032d6ae65837bf9bc7
+  languageName: node
+  linkType: hard
+
+"urijs@npm:^1.19.10":
+  version: 1.19.11
+  resolution: "urijs@npm:1.19.11"
+  checksum: f9b95004560754d30fd7dbee44b47414d662dc9863f1cf5632a7c7983648df11d23c0be73b9b4f9554463b61d5b0a520b70df9e1ee963ebb4af02e6da2cc80f3
   languageName: node
   linkType: hard
 
