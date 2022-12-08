@@ -1,16 +1,38 @@
-# Catalog Client
+# backstage/pluginCatalogBackend client library for JavaScript
 
-Contains a frontend and backend compatible client for communicating with the
-Backstage Catalog.
+This package contains an isomorphic SDK (runs both in Node.js and in browsers) for backstage/pluginCatalogBackend client.
 
-Backend code may import and use this package directly.
+The Backstage backend plugin that provides the Backstage catalog
 
-However, frontend code will not want to instantiate a catalog client directly -
-use the `@backstage/plugin-catalog-react` package instead, which exports a
-`catalogApiRef` that can be leveraged like other frontend utility APIs.
+[Package (NPM)](https://www.npmjs.com/package/@backstage/catalog-client) |
+[Samples](https://github.com/Azure-Samples/azure-samples-js-management)
 
-## Links
+## Getting started
 
-- [Default frontend part of the catalog](https://github.com/spotify/backstage/tree/master/plugins/catalog)
-- [Default backend part of the catalog](https://github.com/spotify/backstage/tree/master/plugins/catalog-backend)
-- [The Backstage homepage](https://backstage.io)
+### Currently supported environments
+
+- [LTS versions of Node.js](https://github.com/nodejs/release#release-schedule)
+- Latest versions of Safari, Chrome, Edge and Firefox.
+
+See our [support policy](https://github.com/Azure/azure-sdk-for-js/blob/main/SUPPORT.md) for more details.
+
+
+### Install the `@backstage/catalog-client` package
+
+Install the backstage/pluginCatalogBackend client library for JavaScript with `npm`:
+
+```bash
+npm install @backstage/catalog-client
+```
+
+
+
+### JavaScript Bundle
+To use this client library in the browser, first you need to use a bundler. For details on how to do this, please refer to our [bundling documentation](https://aka.ms/AzureSDKBundling).
+
+## Key concepts
+
+### BackstagePluginCatalogBackend
+
+`BackstagePluginCatalogBackend` is the primary interface for developers using the backstage/pluginCatalogBackend client library. Explore the methods on this client object to understand the different features of the backstage/pluginCatalogBackend service that you can access.
+
