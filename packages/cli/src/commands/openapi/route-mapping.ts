@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Project, SyntaxKind, ts, Node } from 'ts-morph';
+import {
+  Project,
+  SyntaxKind,
+  ts,
+  Node,
+  Expression,
+  Identifier,
+} from 'ts-morph';
 
 interface RouteMappingOptions {
   tsConfigFilePath: string;
@@ -34,13 +41,52 @@ function getImportDeclaration(node?: Node<ts.Node>) {
   return undefined;
 }
 
-function getImportDeclarationFromFunctionCall(node?: Node<ts.Node>) {
-  const routerCall = node?.getChildAtIndexIfKind(1, SyntaxKind.CallExpression);
-  const routerRef = routerCall?.getChildAtIndexIfKind(0, SyntaxKind.Identifier);
-  return routerRef
+function printNode(node?: Node<ts.Node>) {
+  console.log(`${node?.getText()} ${node?.getKindName()}`);
+}
+
+function getImportReference(node?: Identifier) {
+  return node
     ?.findReferences()
     .flatMap(e => e.getReferences().map(f => getImportDeclaration(f.getNode())))
-    .filter(e => e)[0];
+    .filter(e => e);
+}
+
+function getImportDeclarationFromFunctionCall(node?: Node<ts.Node>) {
+  const routerCall = node?.getChildAtIndexIfKind(1, SyntaxKind.CallExpression);
+  console.log('routerCall');
+  printNode(routerCall);
+  const routerRef = routerCall?.getChildAtIndexIfKind(0, SyntaxKind.Identifier);
+  console.log('routerREf');
+  printNode(routerRef);
+  return getImportReference(routerRef)?.[0];
+}
+
+function getParentOfKind(node?: Node, kind?: SyntaxKind) {
+  let curr = node;
+  while (curr && !curr?.isKind(kind!)) {
+    console.log('while');
+    printNode(curr);
+    curr = curr.getParent();
+  }
+  printNode(curr);
+  return curr;
+}
+
+function getFunctionIdentifier(node?: Expression) {
+  printNode(node);
+  let retVal = node;
+  if (retVal?.isKind(SyntaxKind.AwaitExpression)) {
+    retVal = retVal.getExpression();
+  }
+  if (retVal?.isKind(SyntaxKind.CallExpression)) {
+    retVal = retVal?.getExpression();
+  }
+  if (retVal?.isKind(SyntaxKind.PropertyAccessExpression)) {
+    retVal = retVal?.getExpression();
+  }
+  printNode(retVal);
+  return retVal?.asKind(SyntaxKind.Identifier);
 }
 
 function getMappedModule(node?: Node<ts.Node>) {
@@ -55,14 +101,9 @@ function getMappedModule(node?: Node<ts.Node>) {
   const returnStatement = moduleBody?.getChildrenOfKind(
     SyntaxKind.ReturnStatement,
   )[0];
-  let returnExpression = returnStatement?.getExpression();
-  if (returnExpression?.isKind(SyntaxKind.AwaitExpression)) {
-    returnExpression = returnExpression.getExpression();
-  }
-  if (returnExpression?.isKind(SyntaxKind.CallExpression)) {
-    returnExpression = returnExpression?.getExpression();
-  }
-  const returnIdentifier = returnExpression?.asKind(SyntaxKind.Identifier);
+  let returnIdentifier = getFunctionIdentifier(
+    returnStatement?.getExpression(),
+  );
   const references = returnIdentifier?.findReferences().flatMap(e =>
     e
       .getReferences()
@@ -73,16 +114,43 @@ function getMappedModule(node?: Node<ts.Node>) {
   let reference;
 
   if (references?.length === 0) {
-    reference = getImportDeclarationFromFunctionCall(
-      returnIdentifier?.getParent()?.getParent(),
-    );
+    printNode(returnIdentifier);
+    printNode(returnIdentifier?.getParent());
+    if (!returnIdentifier?.getParent()?.isKind(SyntaxKind.CallExpression)) {
+      console.log('not a raw expression.');
+      let i = 0;
+      do {
+        const refs = returnIdentifier
+          ?.findReferences()
+          .flatMap(e =>
+            e
+              .getReferences()
+              ?.map(f =>
+                getParentOfKind(f.getNode(), SyntaxKind.VariableDeclaration),
+              ),
+          )
+          .filter(e => e);
+        returnIdentifier = refs
+          ?.map(e =>
+            getFunctionIdentifier(
+              e?.asKind(SyntaxKind.VariableDeclaration)?.getInitializer(),
+            ),
+          )
+          .find(e => e);
+        reference = getImportReference(returnIdentifier)?.[0];
+        i += 1;
+        if (i > 3) break;
+      } while (!reference);
+    } else {
+      reference = getImportDeclarationFromFunctionCall(
+        returnIdentifier?.getParent()?.getParent(),
+      );
+    }
   } else {
     reference = references?.[0];
   }
-  const moduleSpecifier = reference
-    ?.asKind(SyntaxKind.ImportDeclaration)
-    ?.getModuleSpecifierValue();
-  return moduleSpecifier;
+  const importDeclaration = reference?.asKind(SyntaxKind.ImportDeclaration);
+  return importDeclaration;
 }
 
 /**
@@ -133,21 +201,29 @@ export default function getRouteMappings({
     .flatMap(e =>
       e
         .getReferences()
-        .filter(f => f.getNode().getParent()?.getText() === 'apiRouter.use'),
+        .map(f => f.getNode())
+        .map(f => {
+          const parent = f.getParent()?.getParent();
+          console.log(`${parent?.getText()} ${parent?.getKindName()}`);
+          return f;
+        })
+        .filter(f => f.getParent()?.getText() === 'apiRouter.use'),
     )
-    .map(e =>
-      e.getNode().getParent()?.getParent()?.asKind(SyntaxKind.CallExpression),
-    )
+    .map(e => e.getParent()?.getParent()?.asKind(SyntaxKind.CallExpression))
     .filter(e => e);
 
-  const routes: { [key: string]: string } = {};
+  const routes: { [key: string]: { moduleName: string; sourceFile: string } } =
+    {};
 
-  routerUses?.map(e => {
+  routerUses?.forEach(e => {
     if (e?.getArguments().length !== 2) return;
-    const routeName = e?.getArguments()[0].getText();
-    const moduleName = getMappedModule(e.getArguments()[1]);
-    if (routeName && moduleName) {
-      routes[routeName] = moduleName;
+    const routeName = e?.getArguments()[0].getText().replace(/['"]+/g, '');
+    const module = getMappedModule(e.getArguments()[1]);
+    if (routeName && module) {
+      routes[routeName] = {
+        moduleName: module?.getModuleSpecifierValue(),
+        sourceFile: module?.getModuleSpecifierSourceFile()?.getFilePath()!,
+      };
     }
   });
 
@@ -164,7 +240,8 @@ export default function getRouteMappings({
   const mainRouteName = mainRoute
     ?.asKind(SyntaxKind.CallExpression)
     ?.getArguments()[0]
-    .getText();
+    .getText()
+    .replace(/['"]+/g, '');
 
   if (mainRouteName) {
     return { [mainRouteName]: routes };

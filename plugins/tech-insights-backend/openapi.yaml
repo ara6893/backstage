@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: Backstage
+  version: 1.0.0
+  description: >-
+    ### Badges APIs
+    Provides badges which you can add to your repositories' README.md files,
+    etc.
+    ### Catalog APIs
+    The Catalog APIs provide you access to Backstage's software catalog.
+servers:
+  - url: 'https://demo.backstage.io'
+    description: Backstage Demo
+paths:
+  '/entity/{namespace}/{kind}/{name}/badge-specs':
+    get:
+      parameters:
+        - in: path
+          name: namespace
+          required: true
+          example: default
+          schema:
+            type: string
+            pattern: ^\w+$
+        - in: path
+          name: kind
+          required: true
+          example: component
+          schema:
+            type: string
+            pattern: ^\w+$
+        - in: path
+          name: name
+          required: true
+          example: backstage
+          schema:
+            type: string
+            pattern: ^\w+$
+      responses:
+        '200':
+          description: GET Badge specs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadgeSpecs'
+  /refresh:
+    post:
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshOptions'
+      responses:
+        '200':
+          description: Refresh completed.
+        '404':
+          description: Refresh is disabled.
+components:
+  schemas:
+    BadgeSpec:
+      type: object
+    BadgeSpecs:
+      type: array
+      items:
+        $ref: '#/components/schemas/BadgeSpec'
+    RefreshOptions:
+      type: object
+      required:
+        - entityRef
+      properties:
+        entityRef:
+          $ref: '#/components/schemas/entityRef'
+        authorizationToken:
+          type: string
+          pattern: ^\S+$
+    entityRef:
+      type: string
+      pattern: '^\w+:\w+/\w+$'
+      example: 'component:default/backstage'

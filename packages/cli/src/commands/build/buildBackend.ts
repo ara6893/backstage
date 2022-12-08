@@ -22,6 +22,11 @@ import { createDistWorkspace } from '../../lib/packager';
 import { getEnvironmentParallelism } from '../../lib/parallel';
 import { buildPackage, Output } from '../../lib/builder';
 import getRouteMappings from '../openapi/route-mapping';
+import { merge, isErrorResult } from 'openapi-merge';
+import SwaggerParser from '@apidevtools/swagger-parser';
+import { findPaths } from '@backstage/cli-common';
+import yaml from 'yaml';
+import { paths } from '../../lib/paths';
 
 const BUNDLE_FILE = 'bundle.tar.gz';
 const SKELETON_FILE = 'skeleton.tar.gz';
@@ -31,16 +36,85 @@ interface BuildBackendOptions {
   skipBuildDependencies: boolean;
 }
 
+async function getOpenApiSpec(module: {
+  moduleName: string;
+  sourceFile: string;
+}) {
+  if (!module || !module.sourceFile) return undefined;
+  const paths = findPaths(module.sourceFile);
+  const openApiFile = paths.resolveOwn('openapi.yaml');
+  console.log(openApiFile);
+  try {
+    return (await SwaggerParser.validate(openApiFile)) as any;
+  } catch (err) {
+    if (!(err?.message as string)?.includes('Error opening file'))
+      console.error(err);
+    return undefined;
+  }
+}
+
 export async function buildBackend(options: BuildBackendOptions) {
   const { targetDir, skipBuildDependencies } = options;
   const pkg = await fs.readJson(resolvePath(targetDir, 'package.json'));
 
-  console.log(
-    getRouteMappings({
-      tsConfigFilePath: '../../tsconfig.json',
-      backendDirectory: targetDir,
-    }),
-  );
+  const routeMappings = getRouteMappings({
+    tsConfigFilePath: '../../tsconfig.json',
+    backendDirectory: targetDir,
+  });
+  console.log(routeMappings);
+  if (routeMappings) {
+    const routes = await Promise.all(
+      Object.keys(routeMappings).map(async topLevelRoute => {
+        const apis = merge(
+          (
+            await Promise.all(
+              Object.keys(routeMappings[topLevelRoute]).map(async route => {
+                const module = routeMappings[topLevelRoute][route];
+                return {
+                  oas: await getOpenApiSpec(module),
+                  pathModification: {
+                    prepend: route,
+                  },
+                };
+              }),
+            )
+          ).filter(e => e.oas),
+        );
+        if (isErrorResult(apis)) {
+          // Oops, something went wrong
+          console.error(`${apis.message} (${apis.type})`);
+        } else {
+          // /api
+          const routeDefinition = merge([
+            {
+              oas: apis.output,
+              pathModification: {
+                prepend: topLevelRoute,
+              },
+            },
+          ]);
+          if (isErrorResult(routeDefinition)) {
+            console.error(
+              `${routeDefinition.message} (${routeDefinition.type})`,
+            );
+          } else {
+            return routeDefinition.output;
+          }
+        }
+        return undefined;
+      }),
+    );
+    const fullSpec = merge(routes.filter(e => e).map(e => ({ oas: e! })));
+    if (isErrorResult(fullSpec)) {
+      console.error(fullSpec.message);
+    } else {
+      fs.writeFileSync(
+        paths.resolveOwnRoot('openapi.yaml'),
+        yaml.stringify(yaml.parse(JSON.stringify(fullSpec.output))),
+      );
+    }
+  }
+
   return;
 
   // We build the target package without generating type declarations.

@@ -1,0 +1,4320 @@
+openapi: 3.0.3
+info:
+  title: "@backstage/plugin-catalog-backend"
+  version: 1.6.0-next.1
+  description: The Backstage backend plugin that provides the Backstage catalog
+  license:
+    name: Apache-2.0
+  contact: {}
+servers:
+  - url: /
+paths:
+  /api/catalog/refresh:
+    post:
+      operationId: RefreshEntity
+      responses:
+        "200":
+          description: Refreshed
+      security:
+        - JWT: []
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                authorizationToken:
+                  type: string
+                entityRef:
+                  type: string
+                  description: The reference to a single entity that should be refreshed
+              required:
+                - entityRef
+              type: object
+              description: Options for requesting a refresh of entities in the catalog.
+  /api/catalog/entities:
+    get:
+      operationId: GetEntities
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                items:
+                  properties:
+                    relations:
+                      items:
+                        properties:
+                          targetRef:
+                            type: string
+                            description: The entity ref of the target of this relation.
+                          type:
+                            type: string
+                            description: The type of the relation.
+                        required:
+                          - targetRef
+                          - type
+                        type: object
+                        description: A relation of a specific type to another entity in the catalog.
+                      type: array
+                      description: The relations that this entity has with other entities.
+                    spec:
+                      description: The specification data describing the entity itself.
+                      properties: {}
+                      type: object
+                    metadata:
+                      description: Metadata related to the entity.
+                      allOf:
+                        - properties: {}
+                          type: object
+                          description: A type representing all allowed JSON object values.
+                        - properties:
+                            links:
+                              items:
+                                properties:
+                                  type:
+                                    type: string
+                                    description: An optional value to categorize links into specific groups
+                                  icon:
+                                    type: string
+                                    description: An optional semantic key that represents a visual icon.
+                                  title:
+                                    type: string
+                                    description: An optional descriptive title for the link.
+                                  url:
+                                    type: string
+                                    description: The url to the external site, document, etc.
+                                required:
+                                  - url
+                                type: object
+                                description: A link to external information that is related to the entity.
+                              type: array
+                              description: A list of external hyperlinks related to the entity.
+                            tags:
+                              items:
+                                type: string
+                              type: array
+                              description: >-
+                                A list of single-valued strings, to for example classify catalog
+                                entities in
+
+                                various ways.
+                            annotations:
+                              description: >-
+                                Key/value pairs of non-identifying auxiliary information attached
+                                to the
+
+                                entity.
+                              properties: {}
+                              type: object
+                            labels:
+                              description: Key/value pairs of identifying information attached to the entity.
+                              properties: {}
+                              type: object
+                            description:
+                              type: string
+                              description: >-
+                                A short (typically relatively few words, on one line) description
+                                of the
+
+                                entity.
+                            title:
+                              type: string
+                              description: >-
+                                A display name of the entity, to be presented in user interfaces
+                                instead
+
+                                of the `name` property above, when available.
+
+
+                                This field is sometimes useful when the `name` is cumbersome or ends up
+
+                                being perceived as overly technical. The title generally does not have
+
+                                as stringent format requirements on it, so it may contain special
+
+                                characters and be more explanatory. Do keep it very short though, and
+
+                                avoid situations where a title can be confused with the name of another
+
+                                entity, or where two entities share a title.
+
+
+                                Note that this is only for display purposes, and may be ignored by some
+
+                                parts of the code. Entity references still always make use of the `name`
+
+                                property, not the title.
+                            namespace:
+                              type: string
+                              description: The namespace that the entity belongs to.
+                            name:
+                              type: string
+                              description: >-
+                                The name of the entity.
+
+
+                                Must be unique within the catalog at any given point in time, for any
+
+                                given namespace + kind pair. This value is part of the technical
+
+                                identifier of the entity, and as such it will appear in URLs, database
+
+                                tables, entity references, and similar. It is subject to restrictions
+
+                                regarding what characters are allowed.
+
+
+                                If you want to use a different, more human readable string with fewer
+
+                                restrictions on it in user interfaces, see the `title` field below.
+                            etag:
+                              type: string
+                              description: >-
+                                An opaque string that changes for each update operation to any part
+                                of
+
+                                the entity, including metadata.
+
+
+                                This field can not be set by the user at creation time, and the server
+
+                                will reject an attempt to do so. The field will be populated in read
+
+                                operations. The field can (optionally) be specified when performing
+
+                                update or delete operations, and the server will then reject the
+
+                                operation if it does not match the current stored value.
+                            uid:
+                              type: string
+                              description: >-
+                                A globally unique ID for the entity.
+
+
+                                This field can not be set by the user at creation time, and the server
+
+                                will reject an attempt to do so. The field will be populated in read
+
+                                operations. The field can (optionally) be specified when performing
+
+                                update or delete operations, but the server is free to reject requests
+
+                                that do so in such a way that it breaks semantics.
+                          required:
+                            - name
+                          type: object
+                    kind:
+                      type: string
+                      description: The high level entity type being described.
+                    apiVersion:
+                      type: string
+                      description: >-
+                        The version of specification format for this particular entity that
+
+                        this is written against.
+                  required:
+                    - metadata
+                    - kind
+                    - apiVersion
+                  type: object
+                  description: The parts of the format that's common to all versions/kinds of
+                    entity.
+                type: array
+      security:
+        - JWT: []
+      parameters:
+        - in: query
+          name: filter
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: after
+          required: false
+          schema:
+            type: string
+  "/api/catalog/entities/by-uid/{uid}":
+    get:
+      operationId: GetEntityByUid
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  relations:
+                    items:
+                      properties:
+                        targetRef:
+                          type: string
+                          description: The entity ref of the target of this relation.
+                        type:
+                          type: string
+                          description: The type of the relation.
+                      required:
+                        - targetRef
+                        - type
+                      type: object
+                      description: A relation of a specific type to another entity in the catalog.
+                    type: array
+                    description: The relations that this entity has with other entities.
+                  spec:
+                    description: The specification data describing the entity itself.
+                    properties: {}
+                    type: object
+                  metadata:
+                    description: Metadata related to the entity.
+                    allOf:
+                      - properties: {}
+                        type: object
+                        description: A type representing all allowed JSON object values.
+                      - properties:
+                          links:
+                            items:
+                              properties:
+                                type:
+                                  type: string
+                                  description: An optional value to categorize links into specific groups
+                                icon:
+                                  type: string
+                                  description: An optional semantic key that represents a visual icon.
+                                title:
+                                  type: string
+                                  description: An optional descriptive title for the link.
+                                url:
+                                  type: string
+                                  description: The url to the external site, document, etc.
+                              required:
+                                - url
+                              type: object
+                              description: A link to external information that is related to the entity.
+                            type: array
+                            description: A list of external hyperlinks related to the entity.
+                          tags:
+                            items:
+                              type: string
+                            type: array
+                            description: >-
+                              A list of single-valued strings, to for example classify catalog
+                              entities in
+
+                              various ways.
+                          annotations:
+                            description: >-
+                              Key/value pairs of non-identifying auxiliary information attached
+                              to the
+
+                              entity.
+                            properties: {}
+                            type: object
+                          labels:
+                            description: Key/value pairs of identifying information attached to the entity.
+                            properties: {}
+                            type: object
+                          description:
+                            type: string
+                            description: >-
+                              A short (typically relatively few words, on one line) description
+                              of the
+
+                              entity.
+                          title:
+                            type: string
+                            description: >-
+                              A display name of the entity, to be presented in user interfaces
+                              instead
+
+                              of the `name` property above, when available.
+
+
+                              This field is sometimes useful when the `name` is cumbersome or ends up
+
+                              being perceived as overly technical. The title generally does not have
+
+                              as stringent format requirements on it, so it may contain special
+
+                              characters and be more explanatory. Do keep it very short though, and
+
+                              avoid situations where a title can be confused with the name of another
+
+                              entity, or where two entities share a title.
+
+
+                              Note that this is only for display purposes, and may be ignored by some
+
+                              parts of the code. Entity references still always make use of the `name`
+
+                              property, not the title.
+                          namespace:
+                            type: string
+                            description: The namespace that the entity belongs to.
+                          name:
+                            type: string
+                            description: >-
+                              The name of the entity.
+
+
+                              Must be unique within the catalog at any given point in time, for any
+
+                              given namespace + kind pair. This value is part of the technical
+
+                              identifier of the entity, and as such it will appear in URLs, database
+
+                              tables, entity references, and similar. It is subject to restrictions
+
+                              regarding what characters are allowed.
+
+
+                              If you want to use a different, more human readable string with fewer
+
+                              restrictions on it in user interfaces, see the `title` field below.
+                          etag:
+                            type: string
+                            description: >-
+                              An opaque string that changes for each update operation to any part
+                              of
+
+                              the entity, including metadata.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, and the server will then reject the
+
+                              operation if it does not match the current stored value.
+                          uid:
+                            type: string
+                            description: >-
+                              A globally unique ID for the entity.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, but the server is free to reject requests
+
+                              that do so in such a way that it breaks semantics.
+                        required:
+                          - name
+                        type: object
+                  kind:
+                    type: string
+                    description: The high level entity type being described.
+                  apiVersion:
+                    type: string
+                    description: >-
+                      The version of specification format for this particular entity that
+
+                      this is written against.
+                required:
+                  - metadata
+                  - kind
+                  - apiVersion
+                type: object
+                description: The parts of the format that's common to all versions/kinds of
+                  entity.
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+  "/api/catalog/entities/by-name/{kind}/{namespace}/{name}":
+    get:
+      operationId: GetEntityByName
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  relations:
+                    items:
+                      properties:
+                        targetRef:
+                          type: string
+                          description: The entity ref of the target of this relation.
+                        type:
+                          type: string
+                          description: The type of the relation.
+                      required:
+                        - targetRef
+                        - type
+                      type: object
+                      description: A relation of a specific type to another entity in the catalog.
+                    type: array
+                    description: The relations that this entity has with other entities.
+                  spec:
+                    description: The specification data describing the entity itself.
+                    properties: {}
+                    type: object
+                  metadata:
+                    description: Metadata related to the entity.
+                    allOf:
+                      - properties: {}
+                        type: object
+                        description: A type representing all allowed JSON object values.
+                      - properties:
+                          links:
+                            items:
+                              properties:
+                                type:
+                                  type: string
+                                  description: An optional value to categorize links into specific groups
+                                icon:
+                                  type: string
+                                  description: An optional semantic key that represents a visual icon.
+                                title:
+                                  type: string
+                                  description: An optional descriptive title for the link.
+                                url:
+                                  type: string
+                                  description: The url to the external site, document, etc.
+                              required:
+                                - url
+                              type: object
+                              description: A link to external information that is related to the entity.
+                            type: array
+                            description: A list of external hyperlinks related to the entity.
+                          tags:
+                            items:
+                              type: string
+                            type: array
+                            description: >-
+                              A list of single-valued strings, to for example classify catalog
+                              entities in
+
+                              various ways.
+                          annotations:
+                            description: >-
+                              Key/value pairs of non-identifying auxiliary information attached
+                              to the
+
+                              entity.
+                            properties: {}
+                            type: object
+                          labels:
+                            description: Key/value pairs of identifying information attached to the entity.
+                            properties: {}
+                            type: object
+                          description:
+                            type: string
+                            description: >-
+                              A short (typically relatively few words, on one line) description
+                              of the
+
+                              entity.
+                          title:
+                            type: string
+                            description: >-
+                              A display name of the entity, to be presented in user interfaces
+                              instead
+
+                              of the `name` property above, when available.
+
+
+                              This field is sometimes useful when the `name` is cumbersome or ends up
+
+                              being perceived as overly technical. The title generally does not have
+
+                              as stringent format requirements on it, so it may contain special
+
+                              characters and be more explanatory. Do keep it very short though, and
+
+                              avoid situations where a title can be confused with the name of another
+
+                              entity, or where two entities share a title.
+
+
+                              Note that this is only for display purposes, and may be ignored by some
+
+                              parts of the code. Entity references still always make use of the `name`
+
+                              property, not the title.
+                          namespace:
+                            type: string
+                            description: The namespace that the entity belongs to.
+                          name:
+                            type: string
+                            description: >-
+                              The name of the entity.
+
+
+                              Must be unique within the catalog at any given point in time, for any
+
+                              given namespace + kind pair. This value is part of the technical
+
+                              identifier of the entity, and as such it will appear in URLs, database
+
+                              tables, entity references, and similar. It is subject to restrictions
+
+                              regarding what characters are allowed.
+
+
+                              If you want to use a different, more human readable string with fewer
+
+                              restrictions on it in user interfaces, see the `title` field below.
+                          etag:
+                            type: string
+                            description: >-
+                              An opaque string that changes for each update operation to any part
+                              of
+
+                              the entity, including metadata.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, and the server will then reject the
+
+                              operation if it does not match the current stored value.
+                          uid:
+                            type: string
+                            description: >-
+                              A globally unique ID for the entity.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, but the server is free to reject requests
+
+                              that do so in such a way that it breaks semantics.
+                        required:
+                          - name
+                        type: object
+                  kind:
+                    type: string
+                    description: The high level entity type being described.
+                  apiVersion:
+                    type: string
+                    description: >-
+                      The version of specification format for this particular entity that
+
+                      this is written against.
+                required:
+                  - metadata
+                  - kind
+                  - apiVersion
+                type: object
+                description: The parts of the format that's common to all versions/kinds of
+                  entity.
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: kind
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: namespace
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+  "/api/catalog/entities/by-name/{kind}/{namespace}/{name}/ancestry":
+    get:
+      operationId: GetEntityAncestryByName
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  items:
+                    items:
+                      properties:
+                        parentEntityRefs:
+                          items:
+                            type: string
+                          type: array
+                        entity:
+                          properties:
+                            relations:
+                              items:
+                                properties:
+                                  targetRef:
+                                    type: string
+                                    description: The entity ref of the target of this relation.
+                                  type:
+                                    type: string
+                                    description: The type of the relation.
+                                required:
+                                  - targetRef
+                                  - type
+                                type: object
+                                description: A relation of a specific type to another entity in the catalog.
+                              type: array
+                              description: The relations that this entity has with other entities.
+                            spec:
+                              description: The specification data describing the entity itself.
+                              properties: {}
+                              type: object
+                            metadata:
+                              description: Metadata related to the entity.
+                              allOf:
+                                - properties: {}
+                                  type: object
+                                  description: A type representing all allowed JSON object values.
+                                - properties:
+                                    links:
+                                      items:
+                                        properties:
+                                          type:
+                                            type: string
+                                            description: An optional value to categorize links into specific groups
+                                          icon:
+                                            type: string
+                                            description: An optional semantic key that represents a visual icon.
+                                          title:
+                                            type: string
+                                            description: An optional descriptive title for the link.
+                                          url:
+                                            type: string
+                                            description: The url to the external site, document, etc.
+                                        required:
+                                          - url
+                                        type: object
+                                        description: A link to external information that is related to the entity.
+                                      type: array
+                                      description: A list of external hyperlinks related to the entity.
+                                    tags:
+                                      items:
+                                        type: string
+                                      type: array
+                                      description: >-
+                                        A list of single-valued strings, to for example classify catalog
+                                        entities in
+
+                                        various ways.
+                                    annotations:
+                                      description: >-
+                                        Key/value pairs of non-identifying auxiliary information attached
+                                        to the
+
+                                        entity.
+                                      properties: {}
+                                      type: object
+                                    labels:
+                                      description: Key/value pairs of identifying information attached to the entity.
+                                      properties: {}
+                                      type: object
+                                    description:
+                                      type: string
+                                      description: >-
+                                        A short (typically relatively few words, on one line) description
+                                        of the
+
+                                        entity.
+                                    title:
+                                      type: string
+                                      description: >-
+                                        A display name of the entity, to be presented in user interfaces
+                                        instead
+
+                                        of the `name` property above, when available.
+
+
+                                        This field is sometimes useful when the `name` is cumbersome or ends up
+
+                                        being perceived as overly technical. The title generally does not have
+
+                                        as stringent format requirements on it, so it may contain special
+
+                                        characters and be more explanatory. Do keep it very short though, and
+
+                                        avoid situations where a title can be confused with the name of another
+
+                                        entity, or where two entities share a title.
+
+
+                                        Note that this is only for display purposes, and may be ignored by some
+
+                                        parts of the code. Entity references still always make use of the `name`
+
+                                        property, not the title.
+                                    namespace:
+                                      type: string
+                                      description: The namespace that the entity belongs to.
+                                    name:
+                                      type: string
+                                      description: >-
+                                        The name of the entity.
+
+
+                                        Must be unique within the catalog at any given point in time, for any
+
+                                        given namespace + kind pair. This value is part of the technical
+
+                                        identifier of the entity, and as such it will appear in URLs, database
+
+                                        tables, entity references, and similar. It is subject to restrictions
+
+                                        regarding what characters are allowed.
+
+
+                                        If you want to use a different, more human readable string with fewer
+
+                                        restrictions on it in user interfaces, see the `title` field below.
+                                    etag:
+                                      type: string
+                                      description: >-
+                                        An opaque string that changes for each update operation to any part
+                                        of
+
+                                        the entity, including metadata.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, and the server will then reject the
+
+                                        operation if it does not match the current stored value.
+                                    uid:
+                                      type: string
+                                      description: >-
+                                        A globally unique ID for the entity.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, but the server is free to reject requests
+
+                                        that do so in such a way that it breaks semantics.
+                                  required:
+                                    - name
+                                  type: object
+                            kind:
+                              type: string
+                              description: The high level entity type being described.
+                            apiVersion:
+                              type: string
+                              description: >-
+                                The version of specification format for this particular entity that
+
+                                this is written against.
+                          required:
+                            - metadata
+                            - kind
+                            - apiVersion
+                          type: object
+                          description: The parts of the format that's common to all versions/kinds of
+                            entity.
+                      required:
+                        - parentEntityRefs
+                        - entity
+                      type: object
+                    type: array
+                  rootEntityRef:
+                    type: string
+                required:
+                  - items
+                  - rootEntityRef
+                type: object
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: kind
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: namespace
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+  /api/catalog/entities/by-refs:
+    post:
+      operationId: GetEntitiesByRefs
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  items:
+                    items:
+                      allOf:
+                        - properties:
+                            relations:
+                              items:
+                                properties:
+                                  targetRef:
+                                    type: string
+                                    description: The entity ref of the target of this relation.
+                                  type:
+                                    type: string
+                                    description: The type of the relation.
+                                required:
+                                  - targetRef
+                                  - type
+                                type: object
+                                description: A relation of a specific type to another entity in the catalog.
+                              type: array
+                              description: The relations that this entity has with other entities.
+                            spec:
+                              description: The specification data describing the entity itself.
+                              properties: {}
+                              type: object
+                            metadata:
+                              description: Metadata related to the entity.
+                              allOf:
+                                - properties: {}
+                                  type: object
+                                  description: A type representing all allowed JSON object values.
+                                - properties:
+                                    links:
+                                      items:
+                                        properties:
+                                          type:
+                                            type: string
+                                            description: An optional value to categorize links into specific groups
+                                          icon:
+                                            type: string
+                                            description: An optional semantic key that represents a visual icon.
+                                          title:
+                                            type: string
+                                            description: An optional descriptive title for the link.
+                                          url:
+                                            type: string
+                                            description: The url to the external site, document, etc.
+                                        required:
+                                          - url
+                                        type: object
+                                        description: A link to external information that is related to the entity.
+                                      type: array
+                                      description: A list of external hyperlinks related to the entity.
+                                    tags:
+                                      items:
+                                        type: string
+                                      type: array
+                                      description: >-
+                                        A list of single-valued strings, to for example classify catalog
+                                        entities in
+
+                                        various ways.
+                                    annotations:
+                                      description: >-
+                                        Key/value pairs of non-identifying auxiliary information attached
+                                        to the
+
+                                        entity.
+                                      properties: {}
+                                      type: object
+                                    labels:
+                                      description: Key/value pairs of identifying information attached to the entity.
+                                      properties: {}
+                                      type: object
+                                    description:
+                                      type: string
+                                      description: >-
+                                        A short (typically relatively few words, on one line) description
+                                        of the
+
+                                        entity.
+                                    title:
+                                      type: string
+                                      description: >-
+                                        A display name of the entity, to be presented in user interfaces
+                                        instead
+
+                                        of the `name` property above, when available.
+
+
+                                        This field is sometimes useful when the `name` is cumbersome or ends up
+
+                                        being perceived as overly technical. The title generally does not have
+
+                                        as stringent format requirements on it, so it may contain special
+
+                                        characters and be more explanatory. Do keep it very short though, and
+
+                                        avoid situations where a title can be confused with the name of another
+
+                                        entity, or where two entities share a title.
+
+
+                                        Note that this is only for display purposes, and may be ignored by some
+
+                                        parts of the code. Entity references still always make use of the `name`
+
+                                        property, not the title.
+                                    namespace:
+                                      type: string
+                                      description: The namespace that the entity belongs to.
+                                    name:
+                                      type: string
+                                      description: >-
+                                        The name of the entity.
+
+
+                                        Must be unique within the catalog at any given point in time, for any
+
+                                        given namespace + kind pair. This value is part of the technical
+
+                                        identifier of the entity, and as such it will appear in URLs, database
+
+                                        tables, entity references, and similar. It is subject to restrictions
+
+                                        regarding what characters are allowed.
+
+
+                                        If you want to use a different, more human readable string with fewer
+
+                                        restrictions on it in user interfaces, see the `title` field below.
+                                    etag:
+                                      type: string
+                                      description: >-
+                                        An opaque string that changes for each update operation to any part
+                                        of
+
+                                        the entity, including metadata.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, and the server will then reject the
+
+                                        operation if it does not match the current stored value.
+                                    uid:
+                                      type: string
+                                      description: >-
+                                        A globally unique ID for the entity.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, but the server is free to reject requests
+
+                                        that do so in such a way that it breaks semantics.
+                                  required:
+                                    - name
+                                  type: object
+                            kind:
+                              type: string
+                              description: The high level entity type being described.
+                            apiVersion:
+                              type: string
+                              description: >-
+                                The version of specification format for this particular entity that
+
+                                this is written against.
+                          required:
+                            - metadata
+                            - kind
+                            - apiVersion
+                          type: object
+                          description: The parts of the format that's common to all versions/kinds of
+                            entity.
+                      nullable: true
+                    type: array
+                    description: >-
+                      The list of entities, in the same order as the refs in the request.
+                      Entries
+
+                      that are null signify that no entity existed with that ref.
+                required:
+                  - items
+                type: object
+                additionalProperties: false
+      security:
+        - JWT: []
+      parameters:
+        - in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              items:
+                type: string
+              type: array
+  /api/catalog/entity-facets:
+    get:
+      operationId: GetEntityFacets
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                description: The response shape for {@link EntitiesCatalog.facets}.
+                properties:
+                  facets:
+                    description: The computed facets, one entry per facet in the request.
+                    properties: {}
+                    type: object
+                required:
+                  - facets
+                type: object
+                additionalProperties: false
+      security:
+        - JWT: []
+      parameters:
+        - in: query
+          name: facet
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: filter
+          required: false
+          schema:
+            type: string
+  /api/catalog/locations:
+    post:
+      operationId: CreateLocation
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  exists:
+                    type: boolean
+                  entities:
+                    items:
+                      properties:
+                        relations:
+                          items:
+                            properties:
+                              targetRef:
+                                type: string
+                                description: The entity ref of the target of this relation.
+                              type:
+                                type: string
+                                description: The type of the relation.
+                            required:
+                              - targetRef
+                              - type
+                            type: object
+                            description: A relation of a specific type to another entity in the catalog.
+                          type: array
+                          description: The relations that this entity has with other entities.
+                        spec:
+                          description: The specification data describing the entity itself.
+                          properties: {}
+                          type: object
+                        metadata:
+                          description: Metadata related to the entity.
+                          allOf:
+                            - properties: {}
+                              type: object
+                              description: A type representing all allowed JSON object values.
+                            - properties:
+                                links:
+                                  items:
+                                    properties:
+                                      type:
+                                        type: string
+                                        description: An optional value to categorize links into specific groups
+                                      icon:
+                                        type: string
+                                        description: An optional semantic key that represents a visual icon.
+                                      title:
+                                        type: string
+                                        description: An optional descriptive title for the link.
+                                      url:
+                                        type: string
+                                        description: The url to the external site, document, etc.
+                                    required:
+                                      - url
+                                    type: object
+                                    description: A link to external information that is related to the entity.
+                                  type: array
+                                  description: A list of external hyperlinks related to the entity.
+                                tags:
+                                  items:
+                                    type: string
+                                  type: array
+                                  description: >-
+                                    A list of single-valued strings, to for example classify catalog
+                                    entities in
+
+                                    various ways.
+                                annotations:
+                                  description: >-
+                                    Key/value pairs of non-identifying auxiliary information attached
+                                    to the
+
+                                    entity.
+                                  properties: {}
+                                  type: object
+                                labels:
+                                  description: Key/value pairs of identifying information attached to the entity.
+                                  properties: {}
+                                  type: object
+                                description:
+                                  type: string
+                                  description: >-
+                                    A short (typically relatively few words, on one line) description
+                                    of the
+
+                                    entity.
+                                title:
+                                  type: string
+                                  description: >-
+                                    A display name of the entity, to be presented in user interfaces
+                                    instead
+
+                                    of the `name` property above, when available.
+
+
+                                    This field is sometimes useful when the `name` is cumbersome or ends up
+
+                                    being perceived as overly technical. The title generally does not have
+
+                                    as stringent format requirements on it, so it may contain special
+
+                                    characters and be more explanatory. Do keep it very short though, and
+
+                                    avoid situations where a title can be confused with the name of another
+
+                                    entity, or where two entities share a title.
+
+
+                                    Note that this is only for display purposes, and may be ignored by some
+
+                                    parts of the code. Entity references still always make use of the `name`
+
+                                    property, not the title.
+                                namespace:
+                                  type: string
+                                  description: The namespace that the entity belongs to.
+                                name:
+                                  type: string
+                                  description: >-
+                                    The name of the entity.
+
+
+                                    Must be unique within the catalog at any given point in time, for any
+
+                                    given namespace + kind pair. This value is part of the technical
+
+                                    identifier of the entity, and as such it will appear in URLs, database
+
+                                    tables, entity references, and similar. It is subject to restrictions
+
+                                    regarding what characters are allowed.
+
+
+                                    If you want to use a different, more human readable string with fewer
+
+                                    restrictions on it in user interfaces, see the `title` field below.
+                                etag:
+                                  type: string
+                                  description: >-
+                                    An opaque string that changes for each update operation to any part
+                                    of
+
+                                    the entity, including metadata.
+
+
+                                    This field can not be set by the user at creation time, and the server
+
+                                    will reject an attempt to do so. The field will be populated in read
+
+                                    operations. The field can (optionally) be specified when performing
+
+                                    update or delete operations, and the server will then reject the
+
+                                    operation if it does not match the current stored value.
+                                uid:
+                                  type: string
+                                  description: >-
+                                    A globally unique ID for the entity.
+
+
+                                    This field can not be set by the user at creation time, and the server
+
+                                    will reject an attempt to do so. The field will be populated in read
+
+                                    operations. The field can (optionally) be specified when performing
+
+                                    update or delete operations, but the server is free to reject requests
+
+                                    that do so in such a way that it breaks semantics.
+                              required:
+                                - name
+                              type: object
+                        kind:
+                          type: string
+                          description: The high level entity type being described.
+                        apiVersion:
+                          type: string
+                          description: >-
+                            The version of specification format for this particular entity that
+
+                            this is written against.
+                      required:
+                        - metadata
+                        - kind
+                        - apiVersion
+                      type: object
+                      description: The parts of the format that's common to all versions/kinds of
+                        entity.
+                    type: array
+                  location:
+                    properties:
+                      target:
+                        type: string
+                      type:
+                        type: string
+                      id:
+                        type: string
+                    required:
+                      - target
+                      - type
+                      - id
+                    type: object
+                    description: Entity location for a specific entity.
+                required:
+                  - entities
+                  - location
+                type: object
+      security:
+        - JWT: []
+      parameters:
+        - in: query
+          name: dryRun
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                presence:
+                  type: string
+                  enum:
+                    - required
+                    - optional
+                target:
+                  type: string
+                type:
+                  type: string
+              required:
+                - presence
+                - target
+                - type
+              type: object
+    get:
+      operationId: GetLocations
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                items:
+                  properties:
+                    data:
+                      properties:
+                        target:
+                          type: string
+                        type:
+                          type: string
+                        id:
+                          type: string
+                      required:
+                        - target
+                        - type
+                        - id
+                      type: object
+                      description: Entity location for a specific entity.
+                  required:
+                    - data
+                  type: object
+                type: array
+      security:
+        - JWT: []
+      parameters: []
+  "/api/catalog/locations/{id}":
+    get:
+      operationId: GetLocation
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  target:
+                    type: string
+                  type:
+                    type: string
+                  id:
+                    type: string
+                required:
+                  - target
+                  - type
+                  - id
+                type: object
+                description: Entity location for a specific entity.
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+    delete:
+      operationId: DeleteLocation
+      responses:
+        "204":
+          description: No content
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+  /api/catalog/analyze-location:
+    post:
+      operationId: AnalyzeLocation
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                properties:
+                  generateEntities:
+                    items:
+                      properties:
+                        fields:
+                          items:
+                            properties:
+                              description:
+                                type: string
+                                description: >-
+                                  A text to show to the user to inform about the choices made. Like,
+                                  it could say
+
+                                  "Found a CODEOWNERS file that covers this target, so we suggest leaving this
+
+                                  field empty; which would currently make it owned by X" where X is taken from the
+
+                                  codeowners file.
+                              value:
+                                type: string
+                                nullable: true
+                              state:
+                                type: string
+                                enum:
+                                  - analysisSuggestedValue
+                                  - analysisSuggestedNoValue
+                                  - needsUserInput
+                                description: The outcome of the analysis for this particular field
+                              field:
+                                type: string
+                                description: >-
+                                  e.g. "spec.owner"? The frontend needs to know how to "inject" the
+                                  field into the
+
+                                  entity again if the user wants to change it
+                            required:
+                              - description
+                              - value
+                              - state
+                              - field
+                            type: object
+                          type: array
+                        entity:
+                          properties:
+                            apiVersion:
+                              type: string
+                              description: >-
+                                The version of specification format for this particular entity that
+
+                                this is written against.
+                            kind:
+                              type: string
+                              description: The high level entity type being described.
+                            metadata:
+                              description: Metadata related to the entity.
+                              allOf:
+                                - properties: {}
+                                  type: object
+                                  description: A type representing all allowed JSON object values.
+                                - properties:
+                                    links:
+                                      items:
+                                        properties:
+                                          type:
+                                            type: string
+                                            description: An optional value to categorize links into specific groups
+                                          icon:
+                                            type: string
+                                            description: An optional semantic key that represents a visual icon.
+                                          title:
+                                            type: string
+                                            description: An optional descriptive title for the link.
+                                          url:
+                                            type: string
+                                            description: The url to the external site, document, etc.
+                                        required:
+                                          - url
+                                        type: object
+                                        description: A link to external information that is related to the entity.
+                                      type: array
+                                      description: A list of external hyperlinks related to the entity.
+                                    tags:
+                                      items:
+                                        type: string
+                                      type: array
+                                      description: >-
+                                        A list of single-valued strings, to for example classify catalog
+                                        entities in
+
+                                        various ways.
+                                    annotations:
+                                      description: >-
+                                        Key/value pairs of non-identifying auxiliary information attached
+                                        to the
+
+                                        entity.
+                                      properties: {}
+                                      type: object
+                                    labels:
+                                      description: Key/value pairs of identifying information attached to the entity.
+                                      properties: {}
+                                      type: object
+                                    description:
+                                      type: string
+                                      description: >-
+                                        A short (typically relatively few words, on one line) description
+                                        of the
+
+                                        entity.
+                                    title:
+                                      type: string
+                                      description: >-
+                                        A display name of the entity, to be presented in user interfaces
+                                        instead
+
+                                        of the `name` property above, when available.
+
+
+                                        This field is sometimes useful when the `name` is cumbersome or ends up
+
+                                        being perceived as overly technical. The title generally does not have
+
+                                        as stringent format requirements on it, so it may contain special
+
+                                        characters and be more explanatory. Do keep it very short though, and
+
+                                        avoid situations where a title can be confused with the name of another
+
+                                        entity, or where two entities share a title.
+
+
+                                        Note that this is only for display purposes, and may be ignored by some
+
+                                        parts of the code. Entity references still always make use of the `name`
+
+                                        property, not the title.
+                                    namespace:
+                                      type: string
+                                      description: The namespace that the entity belongs to.
+                                    name:
+                                      type: string
+                                      description: >-
+                                        The name of the entity.
+
+
+                                        Must be unique within the catalog at any given point in time, for any
+
+                                        given namespace + kind pair. This value is part of the technical
+
+                                        identifier of the entity, and as such it will appear in URLs, database
+
+                                        tables, entity references, and similar. It is subject to restrictions
+
+                                        regarding what characters are allowed.
+
+
+                                        If you want to use a different, more human readable string with fewer
+
+                                        restrictions on it in user interfaces, see the `title` field below.
+                                    etag:
+                                      type: string
+                                      description: >-
+                                        An opaque string that changes for each update operation to any part
+                                        of
+
+                                        the entity, including metadata.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, and the server will then reject the
+
+                                        operation if it does not match the current stored value.
+                                    uid:
+                                      type: string
+                                      description: >-
+                                        A globally unique ID for the entity.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, but the server is free to reject requests
+
+                                        that do so in such a way that it breaks semantics.
+                                  required:
+                                    - name
+                                  type: object
+                            spec:
+                              description: The specification data describing the entity itself.
+                              properties: {}
+                              type: object
+                            relations:
+                              items:
+                                properties:
+                                  targetRef:
+                                    type: string
+                                    description: The entity ref of the target of this relation.
+                                  type:
+                                    type: string
+                                    description: The type of the relation.
+                                required:
+                                  - targetRef
+                                  - type
+                                type: object
+                                description: A relation of a specific type to another entity in the catalog.
+                              type: array
+                              description: The relations that this entity has with other entities.
+                          type: object
+                          description: Makes all keys of an entire hierarchy optional.
+                      required:
+                        - fields
+                        - entity
+                      type: object
+                      description: >-
+                        This is some form of representation of what the analyzer could
+                        deduce.
+
+                        We should probably have a chat about how this can best be conveyed to
+
+                        the frontend. It'll probably contain a (possibly incomplete) entity, plus
+
+                        enough info for the frontend to know what form data to show to the user
+
+                        for overriding/completing the info.
+                    type: array
+                  existingEntityFiles:
+                    items:
+                      properties:
+                        entity:
+                          properties:
+                            relations:
+                              items:
+                                properties:
+                                  targetRef:
+                                    type: string
+                                    description: The entity ref of the target of this relation.
+                                  type:
+                                    type: string
+                                    description: The type of the relation.
+                                required:
+                                  - targetRef
+                                  - type
+                                type: object
+                                description: A relation of a specific type to another entity in the catalog.
+                              type: array
+                              description: The relations that this entity has with other entities.
+                            spec:
+                              description: The specification data describing the entity itself.
+                              properties: {}
+                              type: object
+                            metadata:
+                              description: Metadata related to the entity.
+                              allOf:
+                                - properties: {}
+                                  type: object
+                                  description: A type representing all allowed JSON object values.
+                                - properties:
+                                    links:
+                                      items:
+                                        properties:
+                                          type:
+                                            type: string
+                                            description: An optional value to categorize links into specific groups
+                                          icon:
+                                            type: string
+                                            description: An optional semantic key that represents a visual icon.
+                                          title:
+                                            type: string
+                                            description: An optional descriptive title for the link.
+                                          url:
+                                            type: string
+                                            description: The url to the external site, document, etc.
+                                        required:
+                                          - url
+                                        type: object
+                                        description: A link to external information that is related to the entity.
+                                      type: array
+                                      description: A list of external hyperlinks related to the entity.
+                                    tags:
+                                      items:
+                                        type: string
+                                      type: array
+                                      description: >-
+                                        A list of single-valued strings, to for example classify catalog
+                                        entities in
+
+                                        various ways.
+                                    annotations:
+                                      description: >-
+                                        Key/value pairs of non-identifying auxiliary information attached
+                                        to the
+
+                                        entity.
+                                      properties: {}
+                                      type: object
+                                    labels:
+                                      description: Key/value pairs of identifying information attached to the entity.
+                                      properties: {}
+                                      type: object
+                                    description:
+                                      type: string
+                                      description: >-
+                                        A short (typically relatively few words, on one line) description
+                                        of the
+
+                                        entity.
+                                    title:
+                                      type: string
+                                      description: >-
+                                        A display name of the entity, to be presented in user interfaces
+                                        instead
+
+                                        of the `name` property above, when available.
+
+
+                                        This field is sometimes useful when the `name` is cumbersome or ends up
+
+                                        being perceived as overly technical. The title generally does not have
+
+                                        as stringent format requirements on it, so it may contain special
+
+                                        characters and be more explanatory. Do keep it very short though, and
+
+                                        avoid situations where a title can be confused with the name of another
+
+                                        entity, or where two entities share a title.
+
+
+                                        Note that this is only for display purposes, and may be ignored by some
+
+                                        parts of the code. Entity references still always make use of the `name`
+
+                                        property, not the title.
+                                    namespace:
+                                      type: string
+                                      description: The namespace that the entity belongs to.
+                                    name:
+                                      type: string
+                                      description: >-
+                                        The name of the entity.
+
+
+                                        Must be unique within the catalog at any given point in time, for any
+
+                                        given namespace + kind pair. This value is part of the technical
+
+                                        identifier of the entity, and as such it will appear in URLs, database
+
+                                        tables, entity references, and similar. It is subject to restrictions
+
+                                        regarding what characters are allowed.
+
+
+                                        If you want to use a different, more human readable string with fewer
+
+                                        restrictions on it in user interfaces, see the `title` field below.
+                                    etag:
+                                      type: string
+                                      description: >-
+                                        An opaque string that changes for each update operation to any part
+                                        of
+
+                                        the entity, including metadata.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, and the server will then reject the
+
+                                        operation if it does not match the current stored value.
+                                    uid:
+                                      type: string
+                                      description: >-
+                                        A globally unique ID for the entity.
+
+
+                                        This field can not be set by the user at creation time, and the server
+
+                                        will reject an attempt to do so. The field will be populated in read
+
+                                        operations. The field can (optionally) be specified when performing
+
+                                        update or delete operations, but the server is free to reject requests
+
+                                        that do so in such a way that it breaks semantics.
+                                  required:
+                                    - name
+                                  type: object
+                            kind:
+                              type: string
+                              description: The high level entity type being described.
+                            apiVersion:
+                              type: string
+                              description: >-
+                                The version of specification format for this particular entity that
+
+                                this is written against.
+                          required:
+                            - metadata
+                            - kind
+                            - apiVersion
+                          type: object
+                          description: The parts of the format that's common to all versions/kinds of
+                            entity.
+                        isRegistered:
+                          type: boolean
+                        location:
+                          properties:
+                            presence:
+                              type: string
+                              enum:
+                                - optional
+                                - required
+                            target:
+                              type: string
+                            type:
+                              type: string
+                          required:
+                            - target
+                            - type
+                          type: object
+                          description: Holds the entity location information.
+                      required:
+                        - entity
+                        - isRegistered
+                        - location
+                      type: object
+                      description: >-
+                        If the folder pointed to already contained catalog info yaml files,
+                        they are
+
+                        read and emitted like this so that the frontend can inform the user that it
+
+                        located them and can make sure to register them as well if they weren't
+
+                        already
+                    type: array
+                required:
+                  - generateEntities
+                  - existingEntityFiles
+                type: object
+      security:
+        - JWT: []
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                catalogFileName:
+                  type: string
+                location:
+                  properties:
+                    type:
+                      type: string
+                    target:
+                      type: string
+                    presence:
+                      type: string
+                      enum:
+                        - optional
+                        - required
+                  required:
+                    - type
+                    - target
+                    - presence
+                  type: object
+                  additionalProperties: false
+              required:
+                - catalogFileName
+                - location
+              type: object
+  /api/catalog/validate-entity:
+    post:
+      operationId: ValidateEntity
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - properties:
+                      errors:
+                        allOf:
+                          - properties: {}
+                            type: object
+                            description: A type representing all allowed JSON object values.
+                          - properties:
+                              code:
+                                type: string
+                                description: A custom code (not necessarily the same as an HTTP response code);
+                                  may not be present
+                              stack:
+                                type: string
+                                description: A stringified stack trace; may not be present
+                              message:
+                                type: string
+                                description: The message of the exception that was thrown
+                              name:
+                                type: string
+                                description: The name of the exception that was thrown
+                            required:
+                              - message
+                              - name
+                            type: object
+                        description: The serialized form of an Error.
+                    required:
+                      - errors
+                    type: object
+                  - properties:
+                      errors:
+                        items:
+                          allOf:
+                            - properties: {}
+                              type: object
+                              description: A type representing all allowed JSON object values.
+                            - properties:
+                                code:
+                                  type: string
+                                  description: A custom code (not necessarily the same as an HTTP response code);
+                                    may not be present
+                                stack:
+                                  type: string
+                                  description: A stringified stack trace; may not be present
+                                message:
+                                  type: string
+                                  description: The message of the exception that was thrown
+                                name:
+                                  type: string
+                                  description: The name of the exception that was thrown
+                              required:
+                                - message
+                                - name
+                              type: object
+                          description: The serialized form of an Error.
+                        type: array
+                    required:
+                      - errors
+                    type: object
+      security:
+        - JWT: []
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                location:
+                  type: string
+                entity:
+                  properties:
+                    relations:
+                      items:
+                        properties:
+                          targetRef:
+                            type: string
+                            description: The entity ref of the target of this relation.
+                          type:
+                            type: string
+                            description: The type of the relation.
+                        required:
+                          - targetRef
+                          - type
+                        type: object
+                        description: A relation of a specific type to another entity in the catalog.
+                      type: array
+                      description: The relations that this entity has with other entities.
+                    spec:
+                      description: The specification data describing the entity itself.
+                      properties: {}
+                      type: object
+                    metadata:
+                      description: Metadata related to the entity.
+                      allOf:
+                        - properties: {}
+                          type: object
+                          description: A type representing all allowed JSON object values.
+                        - properties:
+                            links:
+                              items:
+                                properties:
+                                  type:
+                                    type: string
+                                    description: An optional value to categorize links into specific groups
+                                  icon:
+                                    type: string
+                                    description: An optional semantic key that represents a visual icon.
+                                  title:
+                                    type: string
+                                    description: An optional descriptive title for the link.
+                                  url:
+                                    type: string
+                                    description: The url to the external site, document, etc.
+                                required:
+                                  - url
+                                type: object
+                                description: A link to external information that is related to the entity.
+                              type: array
+                              description: A list of external hyperlinks related to the entity.
+                            tags:
+                              items:
+                                type: string
+                              type: array
+                              description: >-
+                                A list of single-valued strings, to for example classify catalog
+                                entities in
+
+                                various ways.
+                            annotations:
+                              description: >-
+                                Key/value pairs of non-identifying auxiliary information attached
+                                to the
+
+                                entity.
+                              properties: {}
+                              type: object
+                            labels:
+                              description: Key/value pairs of identifying information attached to the entity.
+                              properties: {}
+                              type: object
+                            description:
+                              type: string
+                              description: >-
+                                A short (typically relatively few words, on one line) description
+                                of the
+
+                                entity.
+                            title:
+                              type: string
+                              description: >-
+                                A display name of the entity, to be presented in user interfaces
+                                instead
+
+                                of the `name` property above, when available.
+
+
+                                This field is sometimes useful when the `name` is cumbersome or ends up
+
+                                being perceived as overly technical. The title generally does not have
+
+                                as stringent format requirements on it, so it may contain special
+
+                                characters and be more explanatory. Do keep it very short though, and
+
+                                avoid situations where a title can be confused with the name of another
+
+                                entity, or where two entities share a title.
+
+
+                                Note that this is only for display purposes, and may be ignored by some
+
+                                parts of the code. Entity references still always make use of the `name`
+
+                                property, not the title.
+                            namespace:
+                              type: string
+                              description: The namespace that the entity belongs to.
+                            name:
+                              type: string
+                              description: >-
+                                The name of the entity.
+
+
+                                Must be unique within the catalog at any given point in time, for any
+
+                                given namespace + kind pair. This value is part of the technical
+
+                                identifier of the entity, and as such it will appear in URLs, database
+
+                                tables, entity references, and similar. It is subject to restrictions
+
+                                regarding what characters are allowed.
+
+
+                                If you want to use a different, more human readable string with fewer
+
+                                restrictions on it in user interfaces, see the `title` field below.
+                            etag:
+                              type: string
+                              description: >-
+                                An opaque string that changes for each update operation to any part
+                                of
+
+                                the entity, including metadata.
+
+
+                                This field can not be set by the user at creation time, and the server
+
+                                will reject an attempt to do so. The field will be populated in read
+
+                                operations. The field can (optionally) be specified when performing
+
+                                update or delete operations, and the server will then reject the
+
+                                operation if it does not match the current stored value.
+                            uid:
+                              type: string
+                              description: >-
+                                A globally unique ID for the entity.
+
+
+                                This field can not be set by the user at creation time, and the server
+
+                                will reject an attempt to do so. The field will be populated in read
+
+                                operations. The field can (optionally) be specified when performing
+
+                                update or delete operations, but the server is free to reject requests
+
+                                that do so in such a way that it breaks semantics.
+                          required:
+                            - name
+                          type: object
+                    kind:
+                      type: string
+                      description: The high level entity type being described.
+                    apiVersion:
+                      type: string
+                      description: >-
+                        The version of specification format for this particular entity that
+
+                        this is written against.
+                  required:
+                    - metadata
+                    - kind
+                    - apiVersion
+                  type: object
+                  description: The parts of the format that's common to all versions/kinds of
+                    entity.
+              required:
+                - location
+                - entity
+              type: object
+  "/api/code-coverage/entity/{namespace}/{kind}/{name}/badge-specs":
+    get:
+      parameters:
+        - in: path
+          name: namespace
+          required: true
+          example: default
+          schema:
+            type: string
+            pattern: ^\w+$
+        - in: path
+          name: kind
+          required: true
+          example: component
+          schema:
+            type: string
+            pattern: ^\w+$
+        - in: path
+          name: name
+          required: true
+          example: backstage
+          schema:
+            type: string
+            pattern: ^\w+$
+      responses:
+        "200":
+          description: GET Badge specs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /api/code-coverage/refresh:
+    post:
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - entityRef
+              properties:
+                entityRef:
+                  type: string
+                  pattern: ^\w+:\w+/\w+$
+                  example: component:default/backstage
+                authorizationToken:
+                  type: string
+                  pattern: ^\S+$
+      responses:
+        "200":
+          description: Refresh completed.
+        "404":
+          description: Refresh is disabled.
+  "/api/tech-insights/entity/{namespace}/{kind}/{name}/badge-specs":
+    get:
+      parameters:
+        - in: path
+          name: namespace
+          required: true
+          example: default
+          schema:
+            type: string
+            pattern: ^\w+$
+        - in: path
+          name: kind
+          required: true
+          example: component
+          schema:
+            type: string
+            pattern: ^\w+$
+        - in: path
+          name: name
+          required: true
+          example: backstage
+          schema:
+            type: string
+            pattern: ^\w+$
+      responses:
+        "200":
+          description: GET Badge specs.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /api/tech-insights/refresh:
+    post:
+      operationId: refresh1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - entityRef
+              properties:
+                entityRef:
+                  type: string
+                  pattern: ^\w+:\w+/\w+$
+                  example: component:default/backstage
+                authorizationToken:
+                  type: string
+                  pattern: ^\S+$
+      responses:
+        "200":
+          description: Refresh completed.
+        "404":
+          description: Refresh is disabled.
+components:
+  schemas:
+    RefreshOptions:
+      properties:
+        authorizationToken:
+          type: string
+        entityRef:
+          type: string
+          description: The reference to a single entity that should be refreshed
+      required:
+        - entityRef
+      type: object
+      description: Options for requesting a refresh of entities in the catalog.
+    JsonObject:
+      properties: {}
+      type: object
+      description: A type representing all allowed JSON object values.
+    Record_string.string_:
+      properties: {}
+      type: object
+      description: Construct a type with a set of properties K of type T
+    EntityLink:
+      properties:
+        type:
+          type: string
+          description: An optional value to categorize links into specific groups
+        icon:
+          type: string
+          description: An optional semantic key that represents a visual icon.
+        title:
+          type: string
+          description: An optional descriptive title for the link.
+        url:
+          type: string
+          description: The url to the external site, document, etc.
+      required:
+        - url
+      type: object
+      description: A link to external information that is related to the entity.
+    EntityMeta:
+      allOf:
+        - properties: {}
+          type: object
+          description: A type representing all allowed JSON object values.
+        - properties:
+            links:
+              items:
+                properties:
+                  type:
+                    type: string
+                    description: An optional value to categorize links into specific groups
+                  icon:
+                    type: string
+                    description: An optional semantic key that represents a visual icon.
+                  title:
+                    type: string
+                    description: An optional descriptive title for the link.
+                  url:
+                    type: string
+                    description: The url to the external site, document, etc.
+                required:
+                  - url
+                type: object
+                description: A link to external information that is related to the entity.
+              type: array
+              description: A list of external hyperlinks related to the entity.
+            tags:
+              items:
+                type: string
+              type: array
+              description: >-
+                A list of single-valued strings, to for example classify catalog
+                entities in
+
+                various ways.
+            annotations:
+              description: >-
+                Key/value pairs of non-identifying auxiliary information attached
+                to the
+
+                entity.
+              properties: {}
+              type: object
+            labels:
+              description: Key/value pairs of identifying information attached to the entity.
+              properties: {}
+              type: object
+            description:
+              type: string
+              description: >-
+                A short (typically relatively few words, on one line) description
+                of the
+
+                entity.
+            title:
+              type: string
+              description: >-
+                A display name of the entity, to be presented in user interfaces
+                instead
+
+                of the `name` property above, when available.
+
+
+                This field is sometimes useful when the `name` is cumbersome or ends up
+
+                being perceived as overly technical. The title generally does not have
+
+                as stringent format requirements on it, so it may contain special
+
+                characters and be more explanatory. Do keep it very short though, and
+
+                avoid situations where a title can be confused with the name of another
+
+                entity, or where two entities share a title.
+
+
+                Note that this is only for display purposes, and may be ignored by some
+
+                parts of the code. Entity references still always make use of the `name`
+
+                property, not the title.
+            namespace:
+              type: string
+              description: The namespace that the entity belongs to.
+            name:
+              type: string
+              description: >-
+                The name of the entity.
+
+
+                Must be unique within the catalog at any given point in time, for any
+
+                given namespace + kind pair. This value is part of the technical
+
+                identifier of the entity, and as such it will appear in URLs, database
+
+                tables, entity references, and similar. It is subject to restrictions
+
+                regarding what characters are allowed.
+
+
+                If you want to use a different, more human readable string with fewer
+
+                restrictions on it in user interfaces, see the `title` field below.
+            etag:
+              type: string
+              description: >-
+                An opaque string that changes for each update operation to any part
+                of
+
+                the entity, including metadata.
+
+
+                This field can not be set by the user at creation time, and the server
+
+                will reject an attempt to do so. The field will be populated in read
+
+                operations. The field can (optionally) be specified when performing
+
+                update or delete operations, and the server will then reject the
+
+                operation if it does not match the current stored value.
+            uid:
+              type: string
+              description: >-
+                A globally unique ID for the entity.
+
+
+                This field can not be set by the user at creation time, and the server
+
+                will reject an attempt to do so. The field will be populated in read
+
+                operations. The field can (optionally) be specified when performing
+
+                update or delete operations, but the server is free to reject requests
+
+                that do so in such a way that it breaks semantics.
+          required:
+            - name
+          type: object
+      description: Metadata fields common to all versions/kinds of entity.
+    EntityRelation:
+      properties:
+        targetRef:
+          type: string
+          description: The entity ref of the target of this relation.
+        type:
+          type: string
+          description: The type of the relation.
+      required:
+        - targetRef
+        - type
+      type: object
+      description: A relation of a specific type to another entity in the catalog.
+    Entity:
+      properties:
+        relations:
+          items:
+            properties:
+              targetRef:
+                type: string
+                description: The entity ref of the target of this relation.
+              type:
+                type: string
+                description: The type of the relation.
+            required:
+              - targetRef
+              - type
+            type: object
+            description: A relation of a specific type to another entity in the catalog.
+          type: array
+          description: The relations that this entity has with other entities.
+        spec:
+          description: The specification data describing the entity itself.
+          properties: {}
+          type: object
+        metadata:
+          description: Metadata related to the entity.
+          allOf:
+            - properties: {}
+              type: object
+              description: A type representing all allowed JSON object values.
+            - properties:
+                links:
+                  items:
+                    properties:
+                      type:
+                        type: string
+                        description: An optional value to categorize links into specific groups
+                      icon:
+                        type: string
+                        description: An optional semantic key that represents a visual icon.
+                      title:
+                        type: string
+                        description: An optional descriptive title for the link.
+                      url:
+                        type: string
+                        description: The url to the external site, document, etc.
+                    required:
+                      - url
+                    type: object
+                    description: A link to external information that is related to the entity.
+                  type: array
+                  description: A list of external hyperlinks related to the entity.
+                tags:
+                  items:
+                    type: string
+                  type: array
+                  description: >-
+                    A list of single-valued strings, to for example classify catalog
+                    entities in
+
+                    various ways.
+                annotations:
+                  description: >-
+                    Key/value pairs of non-identifying auxiliary information attached
+                    to the
+
+                    entity.
+                  properties: {}
+                  type: object
+                labels:
+                  description: Key/value pairs of identifying information attached to the entity.
+                  properties: {}
+                  type: object
+                description:
+                  type: string
+                  description: >-
+                    A short (typically relatively few words, on one line) description
+                    of the
+
+                    entity.
+                title:
+                  type: string
+                  description: >-
+                    A display name of the entity, to be presented in user interfaces
+                    instead
+
+                    of the `name` property above, when available.
+
+
+                    This field is sometimes useful when the `name` is cumbersome or ends up
+
+                    being perceived as overly technical. The title generally does not have
+
+                    as stringent format requirements on it, so it may contain special
+
+                    characters and be more explanatory. Do keep it very short though, and
+
+                    avoid situations where a title can be confused with the name of another
+
+                    entity, or where two entities share a title.
+
+
+                    Note that this is only for display purposes, and may be ignored by some
+
+                    parts of the code. Entity references still always make use of the `name`
+
+                    property, not the title.
+                namespace:
+                  type: string
+                  description: The namespace that the entity belongs to.
+                name:
+                  type: string
+                  description: >-
+                    The name of the entity.
+
+
+                    Must be unique within the catalog at any given point in time, for any
+
+                    given namespace + kind pair. This value is part of the technical
+
+                    identifier of the entity, and as such it will appear in URLs, database
+
+                    tables, entity references, and similar. It is subject to restrictions
+
+                    regarding what characters are allowed.
+
+
+                    If you want to use a different, more human readable string with fewer
+
+                    restrictions on it in user interfaces, see the `title` field below.
+                etag:
+                  type: string
+                  description: >-
+                    An opaque string that changes for each update operation to any part
+                    of
+
+                    the entity, including metadata.
+
+
+                    This field can not be set by the user at creation time, and the server
+
+                    will reject an attempt to do so. The field will be populated in read
+
+                    operations. The field can (optionally) be specified when performing
+
+                    update or delete operations, and the server will then reject the
+
+                    operation if it does not match the current stored value.
+                uid:
+                  type: string
+                  description: >-
+                    A globally unique ID for the entity.
+
+
+                    This field can not be set by the user at creation time, and the server
+
+                    will reject an attempt to do so. The field will be populated in read
+
+                    operations. The field can (optionally) be specified when performing
+
+                    update or delete operations, but the server is free to reject requests
+
+                    that do so in such a way that it breaks semantics.
+              required:
+                - name
+              type: object
+        kind:
+          type: string
+          description: The high level entity type being described.
+        apiVersion:
+          type: string
+          description: |-
+            The version of specification format for this particular entity that
+            this is written against.
+      required:
+        - metadata
+        - kind
+        - apiVersion
+      type: object
+      description: The parts of the format that's common to all versions/kinds of entity.
+    EntityAncestryResponse:
+      properties:
+        items:
+          items:
+            properties:
+              parentEntityRefs:
+                items:
+                  type: string
+                type: array
+              entity:
+                properties:
+                  relations:
+                    items:
+                      properties:
+                        targetRef:
+                          type: string
+                          description: The entity ref of the target of this relation.
+                        type:
+                          type: string
+                          description: The type of the relation.
+                      required:
+                        - targetRef
+                        - type
+                      type: object
+                      description: A relation of a specific type to another entity in the catalog.
+                    type: array
+                    description: The relations that this entity has with other entities.
+                  spec:
+                    description: The specification data describing the entity itself.
+                    properties: {}
+                    type: object
+                  metadata:
+                    description: Metadata related to the entity.
+                    allOf:
+                      - properties: {}
+                        type: object
+                        description: A type representing all allowed JSON object values.
+                      - properties:
+                          links:
+                            items:
+                              properties:
+                                type:
+                                  type: string
+                                  description: An optional value to categorize links into specific groups
+                                icon:
+                                  type: string
+                                  description: An optional semantic key that represents a visual icon.
+                                title:
+                                  type: string
+                                  description: An optional descriptive title for the link.
+                                url:
+                                  type: string
+                                  description: The url to the external site, document, etc.
+                              required:
+                                - url
+                              type: object
+                              description: A link to external information that is related to the entity.
+                            type: array
+                            description: A list of external hyperlinks related to the entity.
+                          tags:
+                            items:
+                              type: string
+                            type: array
+                            description: >-
+                              A list of single-valued strings, to for example classify catalog
+                              entities in
+
+                              various ways.
+                          annotations:
+                            description: >-
+                              Key/value pairs of non-identifying auxiliary information attached
+                              to the
+
+                              entity.
+                            properties: {}
+                            type: object
+                          labels:
+                            description: Key/value pairs of identifying information attached to the entity.
+                            properties: {}
+                            type: object
+                          description:
+                            type: string
+                            description: >-
+                              A short (typically relatively few words, on one line) description
+                              of the
+
+                              entity.
+                          title:
+                            type: string
+                            description: >-
+                              A display name of the entity, to be presented in user interfaces
+                              instead
+
+                              of the `name` property above, when available.
+
+
+                              This field is sometimes useful when the `name` is cumbersome or ends up
+
+                              being perceived as overly technical. The title generally does not have
+
+                              as stringent format requirements on it, so it may contain special
+
+                              characters and be more explanatory. Do keep it very short though, and
+
+                              avoid situations where a title can be confused with the name of another
+
+                              entity, or where two entities share a title.
+
+
+                              Note that this is only for display purposes, and may be ignored by some
+
+                              parts of the code. Entity references still always make use of the `name`
+
+                              property, not the title.
+                          namespace:
+                            type: string
+                            description: The namespace that the entity belongs to.
+                          name:
+                            type: string
+                            description: >-
+                              The name of the entity.
+
+
+                              Must be unique within the catalog at any given point in time, for any
+
+                              given namespace + kind pair. This value is part of the technical
+
+                              identifier of the entity, and as such it will appear in URLs, database
+
+                              tables, entity references, and similar. It is subject to restrictions
+
+                              regarding what characters are allowed.
+
+
+                              If you want to use a different, more human readable string with fewer
+
+                              restrictions on it in user interfaces, see the `title` field below.
+                          etag:
+                            type: string
+                            description: >-
+                              An opaque string that changes for each update operation to any part
+                              of
+
+                              the entity, including metadata.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, and the server will then reject the
+
+                              operation if it does not match the current stored value.
+                          uid:
+                            type: string
+                            description: >-
+                              A globally unique ID for the entity.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, but the server is free to reject requests
+
+                              that do so in such a way that it breaks semantics.
+                        required:
+                          - name
+                        type: object
+                  kind:
+                    type: string
+                    description: The high level entity type being described.
+                  apiVersion:
+                    type: string
+                    description: >-
+                      The version of specification format for this particular entity that
+
+                      this is written against.
+                required:
+                  - metadata
+                  - kind
+                  - apiVersion
+                type: object
+                description: The parts of the format that's common to all versions/kinds of
+                  entity.
+            required:
+              - parentEntityRefs
+              - entity
+            type: object
+          type: array
+        rootEntityRef:
+          type: string
+      required:
+        - items
+        - rootEntityRef
+      type: object
+    EntitiesBatchResponse:
+      properties:
+        items:
+          items:
+            allOf:
+              - properties:
+                  relations:
+                    items:
+                      properties:
+                        targetRef:
+                          type: string
+                          description: The entity ref of the target of this relation.
+                        type:
+                          type: string
+                          description: The type of the relation.
+                      required:
+                        - targetRef
+                        - type
+                      type: object
+                      description: A relation of a specific type to another entity in the catalog.
+                    type: array
+                    description: The relations that this entity has with other entities.
+                  spec:
+                    description: The specification data describing the entity itself.
+                    properties: {}
+                    type: object
+                  metadata:
+                    description: Metadata related to the entity.
+                    allOf:
+                      - properties: {}
+                        type: object
+                        description: A type representing all allowed JSON object values.
+                      - properties:
+                          links:
+                            items:
+                              properties:
+                                type:
+                                  type: string
+                                  description: An optional value to categorize links into specific groups
+                                icon:
+                                  type: string
+                                  description: An optional semantic key that represents a visual icon.
+                                title:
+                                  type: string
+                                  description: An optional descriptive title for the link.
+                                url:
+                                  type: string
+                                  description: The url to the external site, document, etc.
+                              required:
+                                - url
+                              type: object
+                              description: A link to external information that is related to the entity.
+                            type: array
+                            description: A list of external hyperlinks related to the entity.
+                          tags:
+                            items:
+                              type: string
+                            type: array
+                            description: >-
+                              A list of single-valued strings, to for example classify catalog
+                              entities in
+
+                              various ways.
+                          annotations:
+                            description: >-
+                              Key/value pairs of non-identifying auxiliary information attached
+                              to the
+
+                              entity.
+                            properties: {}
+                            type: object
+                          labels:
+                            description: Key/value pairs of identifying information attached to the entity.
+                            properties: {}
+                            type: object
+                          description:
+                            type: string
+                            description: >-
+                              A short (typically relatively few words, on one line) description
+                              of the
+
+                              entity.
+                          title:
+                            type: string
+                            description: >-
+                              A display name of the entity, to be presented in user interfaces
+                              instead
+
+                              of the `name` property above, when available.
+
+
+                              This field is sometimes useful when the `name` is cumbersome or ends up
+
+                              being perceived as overly technical. The title generally does not have
+
+                              as stringent format requirements on it, so it may contain special
+
+                              characters and be more explanatory. Do keep it very short though, and
+
+                              avoid situations where a title can be confused with the name of another
+
+                              entity, or where two entities share a title.
+
+
+                              Note that this is only for display purposes, and may be ignored by some
+
+                              parts of the code. Entity references still always make use of the `name`
+
+                              property, not the title.
+                          namespace:
+                            type: string
+                            description: The namespace that the entity belongs to.
+                          name:
+                            type: string
+                            description: >-
+                              The name of the entity.
+
+
+                              Must be unique within the catalog at any given point in time, for any
+
+                              given namespace + kind pair. This value is part of the technical
+
+                              identifier of the entity, and as such it will appear in URLs, database
+
+                              tables, entity references, and similar. It is subject to restrictions
+
+                              regarding what characters are allowed.
+
+
+                              If you want to use a different, more human readable string with fewer
+
+                              restrictions on it in user interfaces, see the `title` field below.
+                          etag:
+                            type: string
+                            description: >-
+                              An opaque string that changes for each update operation to any part
+                              of
+
+                              the entity, including metadata.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, and the server will then reject the
+
+                              operation if it does not match the current stored value.
+                          uid:
+                            type: string
+                            description: >-
+                              A globally unique ID for the entity.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, but the server is free to reject requests
+
+                              that do so in such a way that it breaks semantics.
+                        required:
+                          - name
+                        type: object
+                  kind:
+                    type: string
+                    description: The high level entity type being described.
+                  apiVersion:
+                    type: string
+                    description: >-
+                      The version of specification format for this particular entity that
+
+                      this is written against.
+                required:
+                  - metadata
+                  - kind
+                  - apiVersion
+                type: object
+                description: The parts of the format that's common to all versions/kinds of
+                  entity.
+            nullable: true
+          type: array
+          description: >-
+            The list of entities, in the same order as the refs in the request.
+            Entries
+
+            that are null signify that no entity existed with that ref.
+      required:
+        - items
+      type: object
+      additionalProperties: false
+    Record_string.Array__value-string--count-number___:
+      properties: {}
+      type: object
+      description: Construct a type with a set of properties K of type T
+    EntityFacetsResponse:
+      description: The response shape for {@link EntitiesCatalog.facets}.
+      properties:
+        facets:
+          description: The computed facets, one entry per facet in the request.
+          properties: {}
+          type: object
+      required:
+        - facets
+      type: object
+      additionalProperties: false
+    Location:
+      properties:
+        target:
+          type: string
+        type:
+          type: string
+        id:
+          type: string
+      required:
+        - target
+        - type
+        - id
+      type: object
+      description: Entity location for a specific entity.
+    LocationSpec:
+      properties:
+        presence:
+          type: string
+          enum:
+            - optional
+            - required
+        target:
+          type: string
+        type:
+          type: string
+      required:
+        - target
+        - type
+      type: object
+      description: Holds the entity location information.
+    AnalyzeLocationExistingEntity:
+      properties:
+        entity:
+          properties:
+            relations:
+              items:
+                properties:
+                  targetRef:
+                    type: string
+                    description: The entity ref of the target of this relation.
+                  type:
+                    type: string
+                    description: The type of the relation.
+                required:
+                  - targetRef
+                  - type
+                type: object
+                description: A relation of a specific type to another entity in the catalog.
+              type: array
+              description: The relations that this entity has with other entities.
+            spec:
+              description: The specification data describing the entity itself.
+              properties: {}
+              type: object
+            metadata:
+              description: Metadata related to the entity.
+              allOf:
+                - properties: {}
+                  type: object
+                  description: A type representing all allowed JSON object values.
+                - properties:
+                    links:
+                      items:
+                        properties:
+                          type:
+                            type: string
+                            description: An optional value to categorize links into specific groups
+                          icon:
+                            type: string
+                            description: An optional semantic key that represents a visual icon.
+                          title:
+                            type: string
+                            description: An optional descriptive title for the link.
+                          url:
+                            type: string
+                            description: The url to the external site, document, etc.
+                        required:
+                          - url
+                        type: object
+                        description: A link to external information that is related to the entity.
+                      type: array
+                      description: A list of external hyperlinks related to the entity.
+                    tags:
+                      items:
+                        type: string
+                      type: array
+                      description: >-
+                        A list of single-valued strings, to for example classify catalog
+                        entities in
+
+                        various ways.
+                    annotations:
+                      description: >-
+                        Key/value pairs of non-identifying auxiliary information attached
+                        to the
+
+                        entity.
+                      properties: {}
+                      type: object
+                    labels:
+                      description: Key/value pairs of identifying information attached to the entity.
+                      properties: {}
+                      type: object
+                    description:
+                      type: string
+                      description: >-
+                        A short (typically relatively few words, on one line) description
+                        of the
+
+                        entity.
+                    title:
+                      type: string
+                      description: >-
+                        A display name of the entity, to be presented in user interfaces
+                        instead
+
+                        of the `name` property above, when available.
+
+
+                        This field is sometimes useful when the `name` is cumbersome or ends up
+
+                        being perceived as overly technical. The title generally does not have
+
+                        as stringent format requirements on it, so it may contain special
+
+                        characters and be more explanatory. Do keep it very short though, and
+
+                        avoid situations where a title can be confused with the name of another
+
+                        entity, or where two entities share a title.
+
+
+                        Note that this is only for display purposes, and may be ignored by some
+
+                        parts of the code. Entity references still always make use of the `name`
+
+                        property, not the title.
+                    namespace:
+                      type: string
+                      description: The namespace that the entity belongs to.
+                    name:
+                      type: string
+                      description: >-
+                        The name of the entity.
+
+
+                        Must be unique within the catalog at any given point in time, for any
+
+                        given namespace + kind pair. This value is part of the technical
+
+                        identifier of the entity, and as such it will appear in URLs, database
+
+                        tables, entity references, and similar. It is subject to restrictions
+
+                        regarding what characters are allowed.
+
+
+                        If you want to use a different, more human readable string with fewer
+
+                        restrictions on it in user interfaces, see the `title` field below.
+                    etag:
+                      type: string
+                      description: >-
+                        An opaque string that changes for each update operation to any part
+                        of
+
+                        the entity, including metadata.
+
+
+                        This field can not be set by the user at creation time, and the server
+
+                        will reject an attempt to do so. The field will be populated in read
+
+                        operations. The field can (optionally) be specified when performing
+
+                        update or delete operations, and the server will then reject the
+
+                        operation if it does not match the current stored value.
+                    uid:
+                      type: string
+                      description: >-
+                        A globally unique ID for the entity.
+
+
+                        This field can not be set by the user at creation time, and the server
+
+                        will reject an attempt to do so. The field will be populated in read
+
+                        operations. The field can (optionally) be specified when performing
+
+                        update or delete operations, but the server is free to reject requests
+
+                        that do so in such a way that it breaks semantics.
+                  required:
+                    - name
+                  type: object
+            kind:
+              type: string
+              description: The high level entity type being described.
+            apiVersion:
+              type: string
+              description: >-
+                The version of specification format for this particular entity that
+
+                this is written against.
+          required:
+            - metadata
+            - kind
+            - apiVersion
+          type: object
+          description: The parts of the format that's common to all versions/kinds of
+            entity.
+        isRegistered:
+          type: boolean
+        location:
+          properties:
+            presence:
+              type: string
+              enum:
+                - optional
+                - required
+            target:
+              type: string
+            type:
+              type: string
+          required:
+            - target
+            - type
+          type: object
+          description: Holds the entity location information.
+      required:
+        - entity
+        - isRegistered
+        - location
+      type: object
+      description: >-
+        If the folder pointed to already contained catalog info yaml files,
+        they are
+
+        read and emitted like this so that the frontend can inform the user that it
+
+        located them and can make sure to register them as well if they weren't
+
+        already
+    RecursivePartial_Entity_:
+      properties:
+        apiVersion:
+          type: string
+          description: |-
+            The version of specification format for this particular entity that
+            this is written against.
+        kind:
+          type: string
+          description: The high level entity type being described.
+        metadata:
+          description: Metadata related to the entity.
+          allOf:
+            - properties: {}
+              type: object
+              description: A type representing all allowed JSON object values.
+            - properties:
+                links:
+                  items:
+                    properties:
+                      type:
+                        type: string
+                        description: An optional value to categorize links into specific groups
+                      icon:
+                        type: string
+                        description: An optional semantic key that represents a visual icon.
+                      title:
+                        type: string
+                        description: An optional descriptive title for the link.
+                      url:
+                        type: string
+                        description: The url to the external site, document, etc.
+                    required:
+                      - url
+                    type: object
+                    description: A link to external information that is related to the entity.
+                  type: array
+                  description: A list of external hyperlinks related to the entity.
+                tags:
+                  items:
+                    type: string
+                  type: array
+                  description: >-
+                    A list of single-valued strings, to for example classify catalog
+                    entities in
+
+                    various ways.
+                annotations:
+                  description: >-
+                    Key/value pairs of non-identifying auxiliary information attached
+                    to the
+
+                    entity.
+                  properties: {}
+                  type: object
+                labels:
+                  description: Key/value pairs of identifying information attached to the entity.
+                  properties: {}
+                  type: object
+                description:
+                  type: string
+                  description: >-
+                    A short (typically relatively few words, on one line) description
+                    of the
+
+                    entity.
+                title:
+                  type: string
+                  description: >-
+                    A display name of the entity, to be presented in user interfaces
+                    instead
+
+                    of the `name` property above, when available.
+
+
+                    This field is sometimes useful when the `name` is cumbersome or ends up
+
+                    being perceived as overly technical. The title generally does not have
+
+                    as stringent format requirements on it, so it may contain special
+
+                    characters and be more explanatory. Do keep it very short though, and
+
+                    avoid situations where a title can be confused with the name of another
+
+                    entity, or where two entities share a title.
+
+
+                    Note that this is only for display purposes, and may be ignored by some
+
+                    parts of the code. Entity references still always make use of the `name`
+
+                    property, not the title.
+                namespace:
+                  type: string
+                  description: The namespace that the entity belongs to.
+                name:
+                  type: string
+                  description: >-
+                    The name of the entity.
+
+
+                    Must be unique within the catalog at any given point in time, for any
+
+                    given namespace + kind pair. This value is part of the technical
+
+                    identifier of the entity, and as such it will appear in URLs, database
+
+                    tables, entity references, and similar. It is subject to restrictions
+
+                    regarding what characters are allowed.
+
+
+                    If you want to use a different, more human readable string with fewer
+
+                    restrictions on it in user interfaces, see the `title` field below.
+                etag:
+                  type: string
+                  description: >-
+                    An opaque string that changes for each update operation to any part
+                    of
+
+                    the entity, including metadata.
+
+
+                    This field can not be set by the user at creation time, and the server
+
+                    will reject an attempt to do so. The field will be populated in read
+
+                    operations. The field can (optionally) be specified when performing
+
+                    update or delete operations, and the server will then reject the
+
+                    operation if it does not match the current stored value.
+                uid:
+                  type: string
+                  description: >-
+                    A globally unique ID for the entity.
+
+
+                    This field can not be set by the user at creation time, and the server
+
+                    will reject an attempt to do so. The field will be populated in read
+
+                    operations. The field can (optionally) be specified when performing
+
+                    update or delete operations, but the server is free to reject requests
+
+                    that do so in such a way that it breaks semantics.
+              required:
+                - name
+              type: object
+        spec:
+          description: The specification data describing the entity itself.
+          properties: {}
+          type: object
+        relations:
+          items:
+            properties:
+              targetRef:
+                type: string
+                description: The entity ref of the target of this relation.
+              type:
+                type: string
+                description: The type of the relation.
+            required:
+              - targetRef
+              - type
+            type: object
+            description: A relation of a specific type to another entity in the catalog.
+          type: array
+          description: The relations that this entity has with other entities.
+      type: object
+      description: Makes all keys of an entire hierarchy optional.
+    AnalyzeLocationEntityField:
+      properties:
+        description:
+          type: string
+          description: >-
+            A text to show to the user to inform about the choices made. Like,
+            it could say
+
+            "Found a CODEOWNERS file that covers this target, so we suggest leaving this
+
+            field empty; which would currently make it owned by X" where X is taken from the
+
+            codeowners file.
+        value:
+          type: string
+          nullable: true
+        state:
+          type: string
+          enum:
+            - analysisSuggestedValue
+            - analysisSuggestedNoValue
+            - needsUserInput
+          description: The outcome of the analysis for this particular field
+        field:
+          type: string
+          description: >-
+            e.g. "spec.owner"? The frontend needs to know how to "inject" the
+            field into the
+
+            entity again if the user wants to change it
+      required:
+        - description
+        - value
+        - state
+        - field
+      type: object
+    AnalyzeLocationGenerateEntity:
+      properties:
+        fields:
+          items:
+            properties:
+              description:
+                type: string
+                description: >-
+                  A text to show to the user to inform about the choices made. Like,
+                  it could say
+
+                  "Found a CODEOWNERS file that covers this target, so we suggest leaving this
+
+                  field empty; which would currently make it owned by X" where X is taken from the
+
+                  codeowners file.
+              value:
+                type: string
+                nullable: true
+              state:
+                type: string
+                enum:
+                  - analysisSuggestedValue
+                  - analysisSuggestedNoValue
+                  - needsUserInput
+                description: The outcome of the analysis for this particular field
+              field:
+                type: string
+                description: >-
+                  e.g. "spec.owner"? The frontend needs to know how to "inject" the
+                  field into the
+
+                  entity again if the user wants to change it
+            required:
+              - description
+              - value
+              - state
+              - field
+            type: object
+          type: array
+        entity:
+          properties:
+            apiVersion:
+              type: string
+              description: >-
+                The version of specification format for this particular entity that
+
+                this is written against.
+            kind:
+              type: string
+              description: The high level entity type being described.
+            metadata:
+              description: Metadata related to the entity.
+              allOf:
+                - properties: {}
+                  type: object
+                  description: A type representing all allowed JSON object values.
+                - properties:
+                    links:
+                      items:
+                        properties:
+                          type:
+                            type: string
+                            description: An optional value to categorize links into specific groups
+                          icon:
+                            type: string
+                            description: An optional semantic key that represents a visual icon.
+                          title:
+                            type: string
+                            description: An optional descriptive title for the link.
+                          url:
+                            type: string
+                            description: The url to the external site, document, etc.
+                        required:
+                          - url
+                        type: object
+                        description: A link to external information that is related to the entity.
+                      type: array
+                      description: A list of external hyperlinks related to the entity.
+                    tags:
+                      items:
+                        type: string
+                      type: array
+                      description: >-
+                        A list of single-valued strings, to for example classify catalog
+                        entities in
+
+                        various ways.
+                    annotations:
+                      description: >-
+                        Key/value pairs of non-identifying auxiliary information attached
+                        to the
+
+                        entity.
+                      properties: {}
+                      type: object
+                    labels:
+                      description: Key/value pairs of identifying information attached to the entity.
+                      properties: {}
+                      type: object
+                    description:
+                      type: string
+                      description: >-
+                        A short (typically relatively few words, on one line) description
+                        of the
+
+                        entity.
+                    title:
+                      type: string
+                      description: >-
+                        A display name of the entity, to be presented in user interfaces
+                        instead
+
+                        of the `name` property above, when available.
+
+
+                        This field is sometimes useful when the `name` is cumbersome or ends up
+
+                        being perceived as overly technical. The title generally does not have
+
+                        as stringent format requirements on it, so it may contain special
+
+                        characters and be more explanatory. Do keep it very short though, and
+
+                        avoid situations where a title can be confused with the name of another
+
+                        entity, or where two entities share a title.
+
+
+                        Note that this is only for display purposes, and may be ignored by some
+
+                        parts of the code. Entity references still always make use of the `name`
+
+                        property, not the title.
+                    namespace:
+                      type: string
+                      description: The namespace that the entity belongs to.
+                    name:
+                      type: string
+                      description: >-
+                        The name of the entity.
+
+
+                        Must be unique within the catalog at any given point in time, for any
+
+                        given namespace + kind pair. This value is part of the technical
+
+                        identifier of the entity, and as such it will appear in URLs, database
+
+                        tables, entity references, and similar. It is subject to restrictions
+
+                        regarding what characters are allowed.
+
+
+                        If you want to use a different, more human readable string with fewer
+
+                        restrictions on it in user interfaces, see the `title` field below.
+                    etag:
+                      type: string
+                      description: >-
+                        An opaque string that changes for each update operation to any part
+                        of
+
+                        the entity, including metadata.
+
+
+                        This field can not be set by the user at creation time, and the server
+
+                        will reject an attempt to do so. The field will be populated in read
+
+                        operations. The field can (optionally) be specified when performing
+
+                        update or delete operations, and the server will then reject the
+
+                        operation if it does not match the current stored value.
+                    uid:
+                      type: string
+                      description: >-
+                        A globally unique ID for the entity.
+
+
+                        This field can not be set by the user at creation time, and the server
+
+                        will reject an attempt to do so. The field will be populated in read
+
+                        operations. The field can (optionally) be specified when performing
+
+                        update or delete operations, but the server is free to reject requests
+
+                        that do so in such a way that it breaks semantics.
+                  required:
+                    - name
+                  type: object
+            spec:
+              description: The specification data describing the entity itself.
+              properties: {}
+              type: object
+            relations:
+              items:
+                properties:
+                  targetRef:
+                    type: string
+                    description: The entity ref of the target of this relation.
+                  type:
+                    type: string
+                    description: The type of the relation.
+                required:
+                  - targetRef
+                  - type
+                type: object
+                description: A relation of a specific type to another entity in the catalog.
+              type: array
+              description: The relations that this entity has with other entities.
+          type: object
+          description: Makes all keys of an entire hierarchy optional.
+      required:
+        - fields
+        - entity
+      type: object
+      description: >-
+        This is some form of representation of what the analyzer could
+        deduce.
+
+        We should probably have a chat about how this can best be conveyed to
+
+        the frontend. It'll probably contain a (possibly incomplete) entity, plus
+
+        enough info for the frontend to know what form data to show to the user
+
+        for overriding/completing the info.
+    AnalyzeLocationResponse:
+      properties:
+        generateEntities:
+          items:
+            properties:
+              fields:
+                items:
+                  properties:
+                    description:
+                      type: string
+                      description: >-
+                        A text to show to the user to inform about the choices made. Like,
+                        it could say
+
+                        "Found a CODEOWNERS file that covers this target, so we suggest leaving this
+
+                        field empty; which would currently make it owned by X" where X is taken from the
+
+                        codeowners file.
+                    value:
+                      type: string
+                      nullable: true
+                    state:
+                      type: string
+                      enum:
+                        - analysisSuggestedValue
+                        - analysisSuggestedNoValue
+                        - needsUserInput
+                      description: The outcome of the analysis for this particular field
+                    field:
+                      type: string
+                      description: >-
+                        e.g. "spec.owner"? The frontend needs to know how to "inject" the
+                        field into the
+
+                        entity again if the user wants to change it
+                  required:
+                    - description
+                    - value
+                    - state
+                    - field
+                  type: object
+                type: array
+              entity:
+                properties:
+                  apiVersion:
+                    type: string
+                    description: >-
+                      The version of specification format for this particular entity that
+
+                      this is written against.
+                  kind:
+                    type: string
+                    description: The high level entity type being described.
+                  metadata:
+                    description: Metadata related to the entity.
+                    allOf:
+                      - properties: {}
+                        type: object
+                        description: A type representing all allowed JSON object values.
+                      - properties:
+                          links:
+                            items:
+                              properties:
+                                type:
+                                  type: string
+                                  description: An optional value to categorize links into specific groups
+                                icon:
+                                  type: string
+                                  description: An optional semantic key that represents a visual icon.
+                                title:
+                                  type: string
+                                  description: An optional descriptive title for the link.
+                                url:
+                                  type: string
+                                  description: The url to the external site, document, etc.
+                              required:
+                                - url
+                              type: object
+                              description: A link to external information that is related to the entity.
+                            type: array
+                            description: A list of external hyperlinks related to the entity.
+                          tags:
+                            items:
+                              type: string
+                            type: array
+                            description: >-
+                              A list of single-valued strings, to for example classify catalog
+                              entities in
+
+                              various ways.
+                          annotations:
+                            description: >-
+                              Key/value pairs of non-identifying auxiliary information attached
+                              to the
+
+                              entity.
+                            properties: {}
+                            type: object
+                          labels:
+                            description: Key/value pairs of identifying information attached to the entity.
+                            properties: {}
+                            type: object
+                          description:
+                            type: string
+                            description: >-
+                              A short (typically relatively few words, on one line) description
+                              of the
+
+                              entity.
+                          title:
+                            type: string
+                            description: >-
+                              A display name of the entity, to be presented in user interfaces
+                              instead
+
+                              of the `name` property above, when available.
+
+
+                              This field is sometimes useful when the `name` is cumbersome or ends up
+
+                              being perceived as overly technical. The title generally does not have
+
+                              as stringent format requirements on it, so it may contain special
+
+                              characters and be more explanatory. Do keep it very short though, and
+
+                              avoid situations where a title can be confused with the name of another
+
+                              entity, or where two entities share a title.
+
+
+                              Note that this is only for display purposes, and may be ignored by some
+
+                              parts of the code. Entity references still always make use of the `name`
+
+                              property, not the title.
+                          namespace:
+                            type: string
+                            description: The namespace that the entity belongs to.
+                          name:
+                            type: string
+                            description: >-
+                              The name of the entity.
+
+
+                              Must be unique within the catalog at any given point in time, for any
+
+                              given namespace + kind pair. This value is part of the technical
+
+                              identifier of the entity, and as such it will appear in URLs, database
+
+                              tables, entity references, and similar. It is subject to restrictions
+
+                              regarding what characters are allowed.
+
+
+                              If you want to use a different, more human readable string with fewer
+
+                              restrictions on it in user interfaces, see the `title` field below.
+                          etag:
+                            type: string
+                            description: >-
+                              An opaque string that changes for each update operation to any part
+                              of
+
+                              the entity, including metadata.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, and the server will then reject the
+
+                              operation if it does not match the current stored value.
+                          uid:
+                            type: string
+                            description: >-
+                              A globally unique ID for the entity.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, but the server is free to reject requests
+
+                              that do so in such a way that it breaks semantics.
+                        required:
+                          - name
+                        type: object
+                  spec:
+                    description: The specification data describing the entity itself.
+                    properties: {}
+                    type: object
+                  relations:
+                    items:
+                      properties:
+                        targetRef:
+                          type: string
+                          description: The entity ref of the target of this relation.
+                        type:
+                          type: string
+                          description: The type of the relation.
+                      required:
+                        - targetRef
+                        - type
+                      type: object
+                      description: A relation of a specific type to another entity in the catalog.
+                    type: array
+                    description: The relations that this entity has with other entities.
+                type: object
+                description: Makes all keys of an entire hierarchy optional.
+            required:
+              - fields
+              - entity
+            type: object
+            description: >-
+              This is some form of representation of what the analyzer could
+              deduce.
+
+              We should probably have a chat about how this can best be conveyed to
+
+              the frontend. It'll probably contain a (possibly incomplete) entity, plus
+
+              enough info for the frontend to know what form data to show to the user
+
+              for overriding/completing the info.
+          type: array
+        existingEntityFiles:
+          items:
+            properties:
+              entity:
+                properties:
+                  relations:
+                    items:
+                      properties:
+                        targetRef:
+                          type: string
+                          description: The entity ref of the target of this relation.
+                        type:
+                          type: string
+                          description: The type of the relation.
+                      required:
+                        - targetRef
+                        - type
+                      type: object
+                      description: A relation of a specific type to another entity in the catalog.
+                    type: array
+                    description: The relations that this entity has with other entities.
+                  spec:
+                    description: The specification data describing the entity itself.
+                    properties: {}
+                    type: object
+                  metadata:
+                    description: Metadata related to the entity.
+                    allOf:
+                      - properties: {}
+                        type: object
+                        description: A type representing all allowed JSON object values.
+                      - properties:
+                          links:
+                            items:
+                              properties:
+                                type:
+                                  type: string
+                                  description: An optional value to categorize links into specific groups
+                                icon:
+                                  type: string
+                                  description: An optional semantic key that represents a visual icon.
+                                title:
+                                  type: string
+                                  description: An optional descriptive title for the link.
+                                url:
+                                  type: string
+                                  description: The url to the external site, document, etc.
+                              required:
+                                - url
+                              type: object
+                              description: A link to external information that is related to the entity.
+                            type: array
+                            description: A list of external hyperlinks related to the entity.
+                          tags:
+                            items:
+                              type: string
+                            type: array
+                            description: >-
+                              A list of single-valued strings, to for example classify catalog
+                              entities in
+
+                              various ways.
+                          annotations:
+                            description: >-
+                              Key/value pairs of non-identifying auxiliary information attached
+                              to the
+
+                              entity.
+                            properties: {}
+                            type: object
+                          labels:
+                            description: Key/value pairs of identifying information attached to the entity.
+                            properties: {}
+                            type: object
+                          description:
+                            type: string
+                            description: >-
+                              A short (typically relatively few words, on one line) description
+                              of the
+
+                              entity.
+                          title:
+                            type: string
+                            description: >-
+                              A display name of the entity, to be presented in user interfaces
+                              instead
+
+                              of the `name` property above, when available.
+
+
+                              This field is sometimes useful when the `name` is cumbersome or ends up
+
+                              being perceived as overly technical. The title generally does not have
+
+                              as stringent format requirements on it, so it may contain special
+
+                              characters and be more explanatory. Do keep it very short though, and
+
+                              avoid situations where a title can be confused with the name of another
+
+                              entity, or where two entities share a title.
+
+
+                              Note that this is only for display purposes, and may be ignored by some
+
+                              parts of the code. Entity references still always make use of the `name`
+
+                              property, not the title.
+                          namespace:
+                            type: string
+                            description: The namespace that the entity belongs to.
+                          name:
+                            type: string
+                            description: >-
+                              The name of the entity.
+
+
+                              Must be unique within the catalog at any given point in time, for any
+
+                              given namespace + kind pair. This value is part of the technical
+
+                              identifier of the entity, and as such it will appear in URLs, database
+
+                              tables, entity references, and similar. It is subject to restrictions
+
+                              regarding what characters are allowed.
+
+
+                              If you want to use a different, more human readable string with fewer
+
+                              restrictions on it in user interfaces, see the `title` field below.
+                          etag:
+                            type: string
+                            description: >-
+                              An opaque string that changes for each update operation to any part
+                              of
+
+                              the entity, including metadata.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, and the server will then reject the
+
+                              operation if it does not match the current stored value.
+                          uid:
+                            type: string
+                            description: >-
+                              A globally unique ID for the entity.
+
+
+                              This field can not be set by the user at creation time, and the server
+
+                              will reject an attempt to do so. The field will be populated in read
+
+                              operations. The field can (optionally) be specified when performing
+
+                              update or delete operations, but the server is free to reject requests
+
+                              that do so in such a way that it breaks semantics.
+                        required:
+                          - name
+                        type: object
+                  kind:
+                    type: string
+                    description: The high level entity type being described.
+                  apiVersion:
+                    type: string
+                    description: >-
+                      The version of specification format for this particular entity that
+
+                      this is written against.
+                required:
+                  - metadata
+                  - kind
+                  - apiVersion
+                type: object
+                description: The parts of the format that's common to all versions/kinds of
+                  entity.
+              isRegistered:
+                type: boolean
+              location:
+                properties:
+                  presence:
+                    type: string
+                    enum:
+                      - optional
+                      - required
+                  target:
+                    type: string
+                  type:
+                    type: string
+                required:
+                  - target
+                  - type
+                type: object
+                description: Holds the entity location information.
+            required:
+              - entity
+              - isRegistered
+              - location
+            type: object
+            description: >-
+              If the folder pointed to already contained catalog info yaml files,
+              they are
+
+              read and emitted like this so that the frontend can inform the user that it
+
+              located them and can make sure to register them as well if they weren't
+
+              already
+          type: array
+      required:
+        - generateEntities
+        - existingEntityFiles
+      type: object
+    LocationInput:
+      properties:
+        type:
+          type: string
+        target:
+          type: string
+        presence:
+          type: string
+          enum:
+            - optional
+            - required
+      required:
+        - type
+        - target
+        - presence
+      type: object
+      additionalProperties: false
+    SerializedError:
+      allOf:
+        - properties: {}
+          type: object
+          description: A type representing all allowed JSON object values.
+        - properties:
+            code:
+              type: string
+              description: A custom code (not necessarily the same as an HTTP response code);
+                may not be present
+            stack:
+              type: string
+              description: A stringified stack trace; may not be present
+            message:
+              type: string
+              description: The message of the exception that was thrown
+            name:
+              type: string
+              description: The name of the exception that was thrown
+          required:
+            - message
+            - name
+          type: object
+      description: The serialized form of an Error.
+    BadgeSpec:
+      type: object
+    BadgeSpecs:
+      type: array
+      items:
+        type: object
+    RefreshOptions1:
+      type: object
+      required:
+        - entityRef
+      properties:
+        entityRef:
+          type: string
+          pattern: ^\w+:\w+/\w+$
+          example: component:default/backstage
+        authorizationToken:
+          type: string
+          pattern: ^\S+$
+    entityRef:
+      type: string
+      pattern: ^\w+:\w+/\w+$
+      example: component:default/backstage
+    RefreshOptions2:
+      type: object
+      required:
+        - entityRef
+      properties:
+        entityRef:
+          type: string
+          pattern: ^\w+:\w+/\w+$
+          example: component:default/backstage
+        authorizationToken:
+          type: string
+          pattern: ^\S+$
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
