@@ -45,7 +45,7 @@ async function getOpenApiSpec(module: {
   const openApiFile = paths.resolveOwn('openapi.yaml');
   console.log(openApiFile);
   try {
-    return (await SwaggerParser.validate(openApiFile)) as any;
+    return (await SwaggerParser.bundle(openApiFile)) as any;
   } catch (err) {
     if (!(err?.message as string)?.includes('Error opening file'))
       console.error(err);
