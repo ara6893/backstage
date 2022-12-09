@@ -1,0 +1,12 @@
+{
+    "name": "openapi-generator-plus-project",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "generate": "openapi-generator-plus -c config.yml"
+    },
+    "devDependencies": {
+        "@openapi-generator-plus/typescript-fetch-client-generator2": "^0.3.2",
+        "openapi-generator-plus": "^2.3.3"
+    }
+}

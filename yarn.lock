@@ -33,6 +33,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apidevtools/openapi-schemas@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@apidevtools/openapi-schemas@npm:2.1.0"
+  checksum: 4a8f64935b9049ef21e41fa4b188f39f6bc3f5291cebd451701db1115451ccb246a739e46cc5ce9ecdec781671431db40db7851acdac84a990a45756e0f32de3
+  languageName: node
+  linkType: hard
+
+"@apidevtools/swagger-methods@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@apidevtools/swagger-methods@npm:3.0.2"
+  checksum: d06b1ac5c1956613c4c6be695612ef860cd4e962b93a509ca551735a328a856cae1e33399cac1dcbf8333ba22b231746f3586074769ef0e172cf549ec9e7eaae
+  languageName: node
+  linkType: hard
+
 "@apollo/explorer@npm:^1.1.1":
   version: 1.2.0
   resolution: "@apollo/explorer@npm:1.2.0"
@@ -12190,6 +12204,138 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openapi-generator-plus/core@npm:2.3.3":
+  version: 2.3.3
+  resolution: "@openapi-generator-plus/core@npm:2.3.3"
+  dependencies:
+    "@openapi-generator-plus/indexed-type": 1.0.0
+    "@openapi-generator-plus/swagger-parser": ^10.1.0
+    "@openapi-generator-plus/types": 2.3.0
+    "@openapi-generator-plus/utils": 1.0.1
+    lodash: ^4.17.21
+  checksum: cda8a75ad38ad3e3f96e853eba41e1f0cf7b00ac8e5cbe63528c135154de284ba60ef4786bede1bd2ce87fbd8695cdc07a3059a6cbfd2e2a4bff19f21893a71c
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/generator-common@npm:1.3.2":
+  version: 1.3.2
+  resolution: "@openapi-generator-plus/generator-common@npm:1.3.2"
+  dependencies:
+    "@openapi-generator-plus/types": ^2.3.0
+    "@openapi-generator-plus/utils": ^1.0.1
+    pluralize: ^8.0.0
+    url-parse: ^1.5.10
+  checksum: dcb5031ebb0618200b66bdaaaad878011a05d95f007e086cf30f6e878ce895599f1534a252cfbcfbe7dce34ed95f92fbebf03afa85ebe23560fe279e6976853c
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/handlebars-templates@npm:1.2.3":
+  version: 1.2.3
+  resolution: "@openapi-generator-plus/handlebars-templates@npm:1.2.3"
+  dependencies:
+    "@openapi-generator-plus/generator-common": 1.3.2
+    "@openapi-generator-plus/indexed-type": ^1.0.0
+    "@openapi-generator-plus/types": ^2.3.0
+    change-case: ^4.1.2
+    handlebars: ^4.7.7
+    marked: ^4.0.15
+    pluralize: ^8.0.0
+  checksum: f98fb9aaea0b6bf3257a0eaf6a96099853f2413d6a3a648e029885c6fac18b034e6c3754975fa69933872161eb5b9521cd979d979bdeb0f3ac75392ac227a04c
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/indexed-type@npm:1.0.0, @openapi-generator-plus/indexed-type@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@openapi-generator-plus/indexed-type@npm:1.0.0"
+  checksum: 553412a1b24c158216470c0ceb360eae366f3b3c106d80d60c07e23ccb4d7306ef77671fc62ef8e4b3d4428370238bafb97d4dc29c5371c901f3baac21838ede
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/java-like-generator-helper@npm:2.1.3":
+  version: 2.1.3
+  resolution: "@openapi-generator-plus/java-like-generator-helper@npm:2.1.3"
+  dependencies:
+    "@openapi-generator-plus/generator-common": 1.3.2
+    "@openapi-generator-plus/types": ^2.3.0
+    change-case: ^4.1.2
+  checksum: 5a71cfbe225c868dac119ea0873e725a0c26b2471cd7d39320de8be0666b1d5c704c00cebe4e359ac4de232bbe09b2351e3035fd8188d423aae1d403fa727d96
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/json-schema-ref-parser@npm:^9.0.11":
+  version: 9.0.11
+  resolution: "@openapi-generator-plus/json-schema-ref-parser@npm:9.0.11"
+  dependencies:
+    "@jsdevtools/ono": ^7.1.3
+    "@types/json-schema": ^7.0.6
+    call-me-maybe: ^1.0.1
+    js-yaml: ^4.1.0
+  checksum: fc02826321de1aa2cdc98ee2581772ab0302f4411d81b4528943b4db7ba70179c42f1229a06709cf38d9c9e6da58e3b2921bbddc9d21a597c6c5a325673a1ec1
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/swagger-parser@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@openapi-generator-plus/swagger-parser@npm:10.1.0"
+  dependencies:
+    "@apidevtools/openapi-schemas": ^2.1.0
+    "@apidevtools/swagger-methods": ^3.0.2
+    "@jsdevtools/ono": ^7.1.3
+    "@openapi-generator-plus/json-schema-ref-parser": ^9.0.11
+    ajv: ^8.6.3
+    ajv-draft-04: ^1.0.0
+    call-me-maybe: ^1.0.1
+  peerDependencies:
+    openapi-types: ">=7"
+  checksum: 82c4f0594882f886942c954cf6f607bddff1e2dc024d002409b4981959494f323621e7bad4cf43af67381e42aab6d352ee9f50c161c6551253ca2a8d88c4f155
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/types@npm:2.3.0, @openapi-generator-plus/types@npm:^2.0.0, @openapi-generator-plus/types@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@openapi-generator-plus/types@npm:2.3.0"
+  checksum: 72b87d7620d134f11843533954357840ca1b10af6e2edbde2fab12f66773a8812bfebe12d18fd467ebfd7b082f32af3bbbfb9994fd6d5bcdcccd85eea9c85a9e
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/typescript-fetch-client-generator2@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "@openapi-generator-plus/typescript-fetch-client-generator2@npm:0.3.2"
+  dependencies:
+    "@openapi-generator-plus/generator-common": 1.3.2
+    "@openapi-generator-plus/handlebars-templates": 1.2.3
+    "@openapi-generator-plus/indexed-type": ^1.0.0
+    "@openapi-generator-plus/types": ^2.3.0
+    "@openapi-generator-plus/typescript-generator-common": 1.5.2
+    change-case: ^4.1.2
+  checksum: 918aa93b20d5396f6dbd52141445c9c7e9b10ac148948140a0c63c629d762898aa310e4356364101fe7f989dd16890ad007e53cf7d47bb3c6ad91758aea8b5be
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/typescript-generator-common@npm:1.5.2":
+  version: 1.5.2
+  resolution: "@openapi-generator-plus/typescript-generator-common@npm:1.5.2"
+  dependencies:
+    "@openapi-generator-plus/generator-common": 1.3.2
+    "@openapi-generator-plus/handlebars-templates": 1.2.3
+    "@openapi-generator-plus/java-like-generator-helper": 2.1.3
+    "@openapi-generator-plus/types": ^2.3.0
+    handlebars: ^4.7.7
+    pluralize: ^8.0.0
+  checksum: 077c8f530e71e14a1346c80660fdec3cc3e763b7b8c6a0a6b4bb6ae712aca87d87e205b5c48a7acf37e32212fe1ce2775d170a24e7770bff8f8a669058cb2cb9
+  languageName: node
+  linkType: hard
+
+"@openapi-generator-plus/utils@npm:1.0.1, @openapi-generator-plus/utils@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@openapi-generator-plus/utils@npm:1.0.1"
+  dependencies:
+    "@openapi-generator-plus/indexed-type": ^1.0.0
+    "@openapi-generator-plus/types": ^2.0.0
+  checksum: 628f37db436315ea1bb45fa669f8f5591c2f8ffab3bbb69882b72e2daf841227d9641bd838edd1c45f9d5dbd0a753f289d4f023b5332fbcd398538cefeb64899
+  languageName: node
+  linkType: hard
+
 "@openapitools/openapi-generator-cli@npm:^2.4.26":
   version: 2.5.2
   resolution: "@openapitools/openapi-generator-cli@npm:2.5.2"
@@ -14121,6 +14267,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/glob@npm:^7.1.3":
+  version: 7.2.0
+  resolution: "@types/glob@npm:7.2.0"
+  dependencies:
+    "@types/minimatch": "*"
+    "@types/node": "*"
+  checksum: 6ae717fedfdfdad25f3d5a568323926c64f52ef35897bcac8aca8e19bc50c0bd84630bbd063e5d52078b2137d8e7d3c26eabebd1a2f03ff350fff8a91e79fc19
+  languageName: node
+  linkType: hard
+
 "@types/google-protobuf@npm:^3.7.2":
   version: 3.15.6
   resolution: "@types/google-protobuf@npm:3.15.6"
@@ -16012,6 +16168,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ajv-draft-04@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "ajv-draft-04@npm:1.0.0"
+  peerDependencies:
+    ajv: ^8.5.0
+  peerDependenciesMeta:
+    ajv:
+      optional: true
+  checksum: 3f11fa0e7f7359bef6608657f02ab78e9cc62b1fb7bdd860db0d00351b3863a1189c1a23b72466d2d82726cab4eb20725c76f5e7c134a89865e2bfd0e6828137
+  languageName: node
+  linkType: hard
+
 "ajv-formats@npm:^2.1.1":
   version: 2.1.1
   resolution: "ajv-formats@npm:2.1.1"
@@ -16046,7 +16214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv8@npm:ajv@^8.11.0, ajv@npm:^8.0.0, ajv@npm:^8.10.0, ajv@npm:^8.8.0":
+"ajv8@npm:ajv@^8.11.0, ajv@npm:^8.0.0, ajv@npm:^8.10.0, ajv@npm:^8.6.3, ajv@npm:^8.8.0":
   version: 8.11.2
   resolution: "ajv@npm:8.11.2"
   dependencies:
@@ -23273,7 +23441,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"getopts@npm:2.3.0":
+"getopts@npm:2.3.0, getopts@npm:^2.3.0":
   version: 2.3.0
   resolution: "getopts@npm:2.3.0"
   checksum: bbb5fcef8d4a8582cf4499ea3fc492d95322df2184e65d550ddacede04871e7ba33194c7abd06a6c5d540de3b70112a16f988787e236e1c66b89521032b398ce
@@ -23339,6 +23507,17 @@ __metadata:
   dependencies:
     is-glob: ^4.0.3
   checksum: c13ee97978bef4f55106b71e66428eb1512e71a7466ba49025fc2aec59a5bfb0954d5abd58fc5ee6c9b076eef4e1f6d3375c2e964b88466ca390da4419a786a8
+  languageName: node
+  linkType: hard
+
+"glob-promise@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "glob-promise@npm:4.2.2"
+  dependencies:
+    "@types/glob": ^7.1.3
+  peerDependencies:
+    glob: ^7.1.6
+  checksum: c1a3d95f7c8393e4151d4899ec4e42bb2e8237160f840ad1eccbe9247407da8b6c13e28f463022e011708bc40862db87b9b77236d35afa3feb8aa86d518f2dfe
   languageName: node
   linkType: hard
 
@@ -23773,7 +23952,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.3":
+"handlebars@npm:^4.7.3, handlebars@npm:^4.7.7":
   version: 4.7.7
   resolution: "handlebars@npm:4.7.7"
   dependencies:
@@ -28012,7 +28191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^4.0.10, marked@npm:^4.0.14":
+"marked@npm:^4.0.10, marked@npm:^4.0.14, marked@npm:^4.0.15":
   version: 4.2.4
   resolution: "marked@npm:4.2.4"
   bin:
@@ -29577,6 +29756,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-watch@npm:^0.7.3":
+  version: 0.7.3
+  resolution: "node-watch@npm:0.7.3"
+  checksum: c745482f720613415153b9065383b77d21f2ef60ceabf64f779c1452b1dcbb8d08c71f650b93f3c1d84524371321f92a15fda468745872cacffec8289741d51a
+  languageName: node
+  linkType: hard
+
 "nodemon@npm:^2.0.2":
   version: 2.0.20
   resolution: "nodemon@npm:2.0.20"
@@ -30102,6 +30288,34 @@ __metadata:
     is-docker: ^2.1.1
     is-wsl: ^2.2.0
   checksum: e9545bec64cdbf30a0c35c1bdc310344adf8428a117f7d8df3c0af0a0a24c513b304916a6d9b11db0190ff7225c2d578885080b761ed46a3d5f6f1eebb98b63c
+  languageName: node
+  linkType: hard
+
+"openapi-generator-plus-project@workspace:plugins/client-generator":
+  version: 0.0.0-use.local
+  resolution: "openapi-generator-plus-project@workspace:plugins/client-generator"
+  dependencies:
+    "@openapi-generator-plus/typescript-fetch-client-generator2": ^0.3.2
+    openapi-generator-plus: ^2.3.3
+  languageName: unknown
+  linkType: soft
+
+"openapi-generator-plus@npm:^2.3.3":
+  version: 2.3.3
+  resolution: "openapi-generator-plus@npm:2.3.3"
+  dependencies:
+    "@openapi-generator-plus/core": 2.3.3
+    "@openapi-generator-plus/types": 2.3.0
+    ansi-colors: ^4.1.1
+    getopts: ^2.3.0
+    glob: ^7.2.0
+    glob-promise: ^4.2.2
+    node-watch: ^0.7.3
+    yaml: ^2.0.1
+  bin:
+    ogplus: bin/ogplus.js
+    openapi-generator-plus: bin/ogplus.js
+  checksum: b81e7aea298f59498a2704e1002278fc472f5b1e7814f29e9a5724b2ca2b5ec219757cfa4bc3a1d3189e1f9c2bcb222a727fc4cb8b23879e42b3e9877d00e3ab
   languageName: node
   linkType: hard
 
@@ -37280,7 +37494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"url-parse@npm:^1.5.8":
+"url-parse@npm:^1.5.10, url-parse@npm:^1.5.8":
   version: 1.5.10
   resolution: "url-parse@npm:1.5.10"
   dependencies:
@@ -38525,7 +38739,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.1.1, yaml@npm:^2.1.3":
+"yaml@npm:^2.0.0, yaml@npm:^2.0.1, yaml@npm:^2.1.1, yaml@npm:^2.1.3":
   version: 2.1.3
   resolution: "yaml@npm:2.1.3"
   checksum: 91316062324a93f9cb547469092392e7d004ff8f70c40fecb420f042a4870b2181557350da56c92f07bd44b8f7a252b0be26e6ade1f548e1f4351bdd01c9d3c7
