@@ -42,6 +42,9 @@ const useStyles = makeStyles<
       width: '100%',
       transition: 'padding-left 0.1s ease-out',
       isolation: 'isolate',
+      '@media print': {
+        paddingLeft: '0 !important',
+      },
       [theme.breakpoints.up('sm')]: {
         paddingLeft: props =>
           props.isPinned

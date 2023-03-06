@@ -222,4 +222,16 @@ export default ({ theme, sidebar }: RuleOptions) => `
     width: 12.1rem;
   }
 }
+
+@media print {
+  .md-sidebar--primary {
+    display: none;
+  }
+
+  .md-content { 
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+}
 `;

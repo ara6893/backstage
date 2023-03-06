@@ -39,6 +39,14 @@ const useStyles = makeStyles({
       width: 'calc(100% - 34.4rem)',
       margin: '0 auto',
     },
+    '@media print': {
+      display: 'none',
+    },
+  },
+  state: {
+    '@media print': {
+      display: 'none',
+    },
   },
 });
 
@@ -109,7 +117,7 @@ export const TechDocsReaderPageContent = withTechDocsReaderProvider(
     return (
       <Content>
         <Grid container>
-          <Grid xs={12} item>
+          <Grid xs={12} className={classes.state} item>
             <TechDocsStateIndicator />
           </Grid>
           {withSearch && (

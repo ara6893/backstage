@@ -63,6 +63,9 @@ const useStyles = makeStyles<BackstageTheme, { sidebarConfig: SidebarConfig }>(
       '&::-webkit-scrollbar': {
         display: 'none',
       },
+      '@media print': {
+        display: 'none',
+      },
     }),
     drawerOpen: props => ({
       width: props.sidebarConfig.drawerWidthOpen,
@@ -78,6 +81,9 @@ const useStyles = makeStyles<BackstageTheme, { sidebarConfig: SidebarConfig }>(
       transform: 'translateY(-200%)',
       '&:focus': {
         transform: 'translateY(5px)',
+      },
+      '@media print': {
+        display: 'none',
       },
     },
   }),

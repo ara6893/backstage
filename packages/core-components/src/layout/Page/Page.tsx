@@ -33,6 +33,9 @@ const useStyles = makeStyles<BackstageTheme>(
       [theme.breakpoints.down('xs')]: {
         height: '100%',
       },
+      '@media print': {
+        height: '100%',
+      }
     },
   }),
   { name: 'BackstagePage' },

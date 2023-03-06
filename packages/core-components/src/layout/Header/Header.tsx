@@ -56,6 +56,9 @@ const useStyles = makeStyles<BackstageTheme>(
       [theme.breakpoints.down('sm')]: {
         flexWrap: 'wrap',
       },
+      '@media print': {
+        display: 'none',
+      },
     },
     leftItemsBox: {
       maxWidth: '100%',
