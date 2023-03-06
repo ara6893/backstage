@@ -73,8 +73,8 @@ const useStyles = makeStyles<BackstageTheme, { sidebarConfig: SidebarConfig }>(
       // SidebarDivider color
       borderTop: '1px solid #383838',
       '@media print': {
-        display: 'none'
-      }
+        display: 'none',
+      },
     },
 
     overlay: props => ({

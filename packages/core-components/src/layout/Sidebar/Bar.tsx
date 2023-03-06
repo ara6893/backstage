@@ -63,9 +63,6 @@ const useStyles = makeStyles<BackstageTheme, { sidebarConfig: SidebarConfig }>(
       '&::-webkit-scrollbar': {
         display: 'none',
       },
-      '@media print': {
-        display: 'none',
-      },
     }),
     drawerOpen: props => ({
       width: props.sidebarConfig.drawerWidthOpen,
@@ -197,6 +194,7 @@ const DesktopSidebar = (props: DesktopSidebarProps) => {
       <A11ySkipSidebar />
       <SidebarOpenStateProvider value={{ isOpen, setOpen }}>
         <Box
+          displayPrint="none"
           className={classes.root}
           data-testid="sidebar-root"
           onMouseEnter={disableExpandOnHover ? () => {} : handleOpen}
@@ -205,6 +203,7 @@ const DesktopSidebar = (props: DesktopSidebarProps) => {
           onBlur={disableExpandOnHover ? () => {} : handleClose}
         >
           <Box
+            displayPrint="none"
             className={classnames(classes.drawer, {
               [classes.drawerOpen]: isOpen,
             })}

@@ -115,6 +115,9 @@ export function createThemeOverrides(theme: BackstageTheme): Overrides {
           height: '100%',
           fontFamily: theme.typography.fontFamily,
           'overscroll-behavior-y': 'none',
+          '@media print': {
+            'background-color': theme.palette.background.default,
+          },
         },
         a: {
           color: 'inherit',
