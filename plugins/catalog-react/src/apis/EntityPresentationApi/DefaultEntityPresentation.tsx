@@ -31,7 +31,9 @@ import MemoryIcon from '@material-ui/icons/Memory';
 import PeopleIcon from '@material-ui/icons/People';
 import PersonIcon from '@material-ui/icons/Person';
 import get from 'lodash/get';
-import { EntityRefPresentationSnapshot } from './EntityPresentationApi';
+import { Box, Theme, Tooltip, makeStyles } from '@material-ui/core';
+import React from 'react';
+import { EntityPeekAheadPopover } from '../../components';
 
 const UNKNOWN_KIND_ICON: IconComponent = HelpIcon;
 
@@ -47,6 +49,101 @@ const DEFAULT_ICONS: Record<string, IconComponent> = {
 };
 
 /**
+ * The available style class keys for {@link EntityDisplayName}, under the name
+ * "CatalogReactEntityDisplayName".
+ *
+ * @public
+ */
+export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
+
+const useStyles = makeStyles(
+  (theme: Theme) => ({
+    root: {
+      display: 'inline-flex',
+      alignItems: 'center',
+    },
+    icon: {
+      marginLeft: theme.spacing(0.5),
+      color: theme.palette.text.secondary,
+      lineHeight: 0,
+    },
+  }),
+  { name: 'CatalogReactDefaultEntityPresentation' },
+);
+
+export interface EntityPresentationContext {
+  variant?: string;
+  includeIcon?: boolean;
+}
+
+/**
+ * Props for {@link EntityDisplayName}.
+ *
+ * @public
+ */
+export type DefaultEntityPresentationProps = EntityPresentationContext & {
+  entityRef: string;
+  primaryTitle: string;
+  secondaryTitle?: string;
+};
+
+/**
+ * Shows a nice representation of a reference to an entity.
+ *
+ * @public
+ */
+export const DefaultEntityPresentation = ({
+  primaryTitle,
+  secondaryTitle,
+  entityRef,
+  variant,
+  includeIcon,
+}: DefaultEntityPresentationProps): JSX.Element => {
+  const { kind } = getParts(entityRef);
+
+  const Icon =
+    (kind && DEFAULT_ICONS[kind.toLocaleLowerCase('en-US')]) ||
+    UNKNOWN_KIND_ICON;
+
+  const classes = useStyles();
+
+  // The innermost "body" content
+  let content = <>{primaryTitle}</>;
+  if (variant === 'text') return content;
+
+  // Optionally an icon, and wrapper around them both
+  content = (
+    <Box component="span" className={classes.root}>
+      {content}
+      {Icon && includeIcon ? (
+        <>
+          <Box component="span" className={classes.icon}>
+            <Icon fontSize="inherit" />
+          </Box>
+        </>
+      ) : null}
+    </Box>
+  );
+
+  // Optionally, a tooltip as the outermost layer
+  if (variant === 'popover') {
+    content = (
+      <EntityPeekAheadPopover entityRef={entityRef}>
+        {content}
+      </EntityPeekAheadPopover>
+    );
+  } else if (secondaryTitle) {
+    content = (
+      <Tooltip enterDelay={1500} title={secondaryTitle}>
+        {content}
+      </Tooltip>
+    );
+  }
+
+  return content;
+};
+
+/**
  * This returns the default representation of an entity.
  *
  * @public
@@ -55,27 +152,16 @@ const DEFAULT_ICONS: Record<string, IconComponent> = {
  */
 export function defaultEntityPresentation(
   entityOrRef: Entity | CompoundEntityRef | string,
-  context?: {
+  context?: EntityPresentationContext & {
     defaultKind?: string;
     defaultNamespace?: string;
   },
-): EntityRefPresentationSnapshot {
+): JSX.Element {
   // NOTE(freben): This code may look convoluted, but it tries its very best to
   // be defensive and handling any type of malformed input and still producing
   // some form of result without crashing.
   const { kind, namespace, name, title, description, displayName, type } =
     getParts(entityOrRef);
-
-  const Icon =
-    (kind && DEFAULT_ICONS[kind.toLocaleLowerCase('en-US')]) ||
-    UNKNOWN_KIND_ICON;
-
-  const entity: Entity | undefined =
-    typeof entityOrRef === 'object' &&
-    entityOrRef !== null &&
-    'metadata' in entityOrRef
-      ? entityOrRef
-      : undefined;
 
   const entityRef: string = stringifyEntityRef({
     kind: kind || 'unknown',
@@ -97,13 +183,15 @@ export function defaultEntityPresentation(
     .filter(candidate => candidate && typeof candidate === 'string')
     .join(' | ');
 
-  return {
-    entity,
-    entityRef,
-    primaryTitle: primary,
-    secondaryTitle: secondary || undefined,
-    Icon,
-  };
+  return (
+    <DefaultEntityPresentation
+      entityRef={entityRef}
+      primaryTitle={primary}
+      secondaryTitle={secondary}
+      variant={context?.variant}
+      includeIcon={context?.includeIcon}
+    />
+  );
 }
 
 // Try to extract display-worthy parts of an entity or ref as best we can, without throwing

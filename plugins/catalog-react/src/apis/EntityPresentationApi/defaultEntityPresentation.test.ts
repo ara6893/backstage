@@ -15,7 +15,7 @@
  */
 
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
-import { defaultEntityPresentation } from './defaultEntityPresentation';
+import { defaultEntityPresentation } from './DefaultEntityPresentation';
 
 describe('defaultEntityPresentation', () => {
   describe('entity given', () => {

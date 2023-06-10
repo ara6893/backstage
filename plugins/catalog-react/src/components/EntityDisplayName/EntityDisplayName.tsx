@@ -15,8 +15,6 @@
  */
 
 import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
-import { Box, Theme, Tooltip, makeStyles } from '@material-ui/core';
-import React from 'react';
 import { useEntityPresentation } from '../../apis';
 
 /**
@@ -27,21 +25,6 @@ import { useEntityPresentation } from '../../apis';
  */
 export type CatalogReactEntityDisplayNameClassKey = 'root' | 'icon';
 
-const useStyles = makeStyles(
-  (theme: Theme) => ({
-    root: {
-      display: 'inline-flex',
-      alignItems: 'center',
-    },
-    icon: {
-      marginLeft: theme.spacing(0.5),
-      color: theme.palette.text.secondary,
-      lineHeight: 0,
-    },
-  }),
-  { name: 'CatalogReactEntityDisplayName' },
-);
-
 /**
  * Props for {@link EntityDisplayName}.
  *
@@ -49,9 +32,10 @@ const useStyles = makeStyles(
  */
 export type EntityDisplayNameProps = {
   entityRef: Entity | CompoundEntityRef | string;
-  variant?: 'simple' | string;
+  variant?: 'simple' | 'popover' | string;
   defaultKind?: string;
   defaultNamespace?: string;
+  includeIcon?: boolean;
 };
 
 /**
@@ -62,37 +46,15 @@ export type EntityDisplayNameProps = {
 export const EntityDisplayName = (
   props: EntityDisplayNameProps,
 ): JSX.Element => {
-  const { entityRef, variant, defaultKind, defaultNamespace } = props;
+  const { entityRef, variant, defaultKind, defaultNamespace, includeIcon } =
+    props;
 
-  const classes = useStyles();
-  const { primaryTitle, secondaryTitle, Icon } = useEntityPresentation(
-    entityRef,
-    { defaultKind, defaultNamespace },
-  );
+  const Name = useEntityPresentation(entityRef, {
+    defaultKind,
+    defaultNamespace,
+    variant,
+    includeIcon,
+  });
 
-  // The innermost "body" content
-  let content = <>{primaryTitle}</>;
-
-  // Optionally an icon, and wrapper around them both
-  content = (
-    <Box component="span" className={classes.root}>
-      {content}
-      {Icon && variant !== 'simple' ? (
-        <Box component="span" className={classes.icon}>
-          <Icon fontSize="inherit" />
-        </Box>
-      ) : null}
-    </Box>
-  );
-
-  // Optionally, a tooltip as the outermost layer
-  if (secondaryTitle) {
-    content = (
-      <Tooltip enterDelay={1500} title={secondaryTitle}>
-        {content}
-      </Tooltip>
-    );
-  }
-
-  return content;
+  return Name;
 };

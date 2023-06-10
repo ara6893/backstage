@@ -26,8 +26,10 @@ import {
   EntityRefPresentationSnapshot,
   entityPresentationApiRef,
 } from './EntityPresentationApi';
-import { defaultEntityPresentation } from './defaultEntityPresentation';
-import { useUpdatingObservable } from './useUpdatingObservable';
+import {
+  defaultEntityPresentation,
+  EntityPresentationContext,
+} from './DefaultEntityPresentation';
 
 /**
  * Returns information about how to represent an entity in the interface.
@@ -42,7 +44,7 @@ import { useUpdatingObservable } from './useUpdatingObservable';
  */
 export function useEntityPresentation(
   entityOrRef: Entity | CompoundEntityRef | string,
-  context?: {
+  context?: EntityPresentationContext & {
     defaultKind?: string;
     defaultNamespace?: string;
   },
@@ -80,7 +82,5 @@ export function useEntityPresentation(
   // and also it only subscribes once to the initially passed in observable and
   // won't properly react when either initial value or the actual observable
   // changes.
-  return useUpdatingObservable(presentation.snapshot, presentation.update$, [
-    presentation,
-  ]);
+  return presentation.snapshot;
 }

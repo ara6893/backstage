@@ -62,6 +62,8 @@ export const EntityRefLink = forwardRef<any, EntityRefLinkProps>(
         entityRef={entityRef}
         defaultKind={defaultKind}
         defaultNamespace={defaultNamespace}
+        variant="popover"
+        includeIcon
       />
     );
     return (

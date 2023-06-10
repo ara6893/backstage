@@ -22,6 +22,7 @@ import {
 } from '@backstage/catalog-model';
 import {
   catalogApiRef,
+  EntityDisplayName,
   entityRouteParams,
   useEntity,
 } from '@backstage/plugin-catalog-react';
@@ -109,7 +110,7 @@ const MemberComponent = (props: { member: UserEntity }) => {
                   entityRouteParams(props.member),
                 )}
               >
-                <OverflowTooltip text={displayName} />
+                <EntityDisplayName entityRef={props.member} />
               </Link>
             </Typography>
             {profile?.email && (

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 import { DependencyGraphTypes } from '@backstage/core-components';
-import { humanizeEntityRef } from '@backstage/plugin-catalog-react';
+import {
+  EntityDisplayName,
+  humanizeEntityRef,
+} from '@backstage/plugin-catalog-react';
 import { BackstageTheme } from '@backstage/theme';
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -95,12 +98,6 @@ export function CustomNode({
   const paddedWidth = paddedIconWidth + width + padding * 2;
   const paddedHeight = height + padding * 2;
 
-  const displayTitle =
-    title ??
-    (kind && name && namespace
-      ? humanizeEntityRef({ kind, name, namespace })
-      : id);
-
   return (
     <g onClick={onClick} className={classNames(onClick && classes.clickable)}>
       <rect
@@ -141,7 +138,7 @@ export function CustomNode({
         textAnchor="middle"
         alignmentBaseline="middle"
       >
-        {displayTitle}
+        <EntityDisplayName entityRef={id} variant="text" />
       </text>
     </g>
   );

@@ -15,11 +15,7 @@
  */
 
 import { Entity } from '@backstage/catalog-model';
-import {
-  ApiRef,
-  IconComponent,
-  createApiRef,
-} from '@backstage/core-plugin-api';
+import { ApiRef, createApiRef } from '@backstage/core-plugin-api';
 import { Observable } from '@backstage/types';
 
 /**
@@ -37,13 +33,7 @@ export const entityPresentationApiRef: ApiRef<EntityPresentationApi> =
  *
  * @public
  */
-export interface EntityRefPresentationSnapshot {
-  entityRef: string;
-  entity?: Entity | undefined;
-  primaryTitle: string;
-  secondaryTitle?: string;
-  Icon?: IconComponent | undefined;
-}
+export type EntityRefPresentationSnapshot = JSX.Element;
 
 /**
  * The visual presentation of an entity reference.
