@@ -24,8 +24,10 @@
     }
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "version": "1.20"
   },
+  "publisher": "backstage",
   "homepage": "https://backstage.io",
   "repository": {
     "type": "git",

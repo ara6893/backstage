@@ -4,7 +4,12 @@ metadata:
   name: backstage-plugin-catalog
   title: '@backstage/plugin-catalog'
   description: The Backstage plugin for browsing the Backstage catalog
+  annotations:
+    npm.com/download: https://www.npmjs.com/package/@backstage/plugin-catalog
 spec:
   lifecycle: production
   type: backstage-frontend-plugin
   owner: catalog-maintainers
+  subcomponentOf: plugin-catalog
+  # OR
+  system: plugin-catalog

@@ -1,0 +1,31 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: plugin-catalog
+  title: Catalog Plugin for Backstage
+  description: The Backstage plugin that adds, acts on and displays your entity catalog.
+  tags:
+    - discovery
+    - adoption
+    - visibility
+    - devex # etc
+  links:
+    - url: my-homepage.com
+      title: homepage
+      icon: home
+    - url: support.my-homepage.com
+      title: support
+      icon: person
+  resources:
+    icon: # additional support for multiple icons
+      url: ./icon.svg
+      altText: my icon.svg
+    README.md: # support alternative locations for a readme.
+      url: docs/README.md
+  marketplaces:
+    - https://marketplace.backstage.spotify.com
+    - https://oss-marketplace.backstage.io
+spec:
+  lifecycle: production
+  type: backstage-plugin
+  owner: catalog-maintainers
