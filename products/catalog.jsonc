@@ -1,0 +1,29 @@
+{
+  "id": "catalog",
+  "name": "Catalog plugin for Backstage",
+  "version": "1.0", // at launch, ideally we wouldn't have versioning. we should look at this from the backstage version perspective.
+  "productType": "plugin",
+  "registry": "backstage-marketplace.spotify.com",
+  "packages": [
+    "@backstage/backstage-plugin-catalog",
+    "@backstage/backstage-plugin-catalog-backend",
+    "@backstage/backstage-plugin-catalog-common"
+  ],
+  "description": "Manage your entities, view them, and act on them in Backstage.",
+  "resources": {
+    "icon": {
+      "url": "test.svg",
+      "altText": "test icon"
+    },
+    "README.md": {
+      "url": "docs/test.md"
+    }
+  },
+  "links": [
+    {
+      "url": "my-homepage.com",
+      "title": "Homepage"
+    }
+    // etc.
+  ]
+}

@@ -8,3 +8,4 @@ spec:
   lifecycle: production
   type: backstage-backend-plugin
   owner: catalog-maintainers
+  subcomponentOf: plugin-catalog

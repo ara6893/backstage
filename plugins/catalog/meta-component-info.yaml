@@ -1,15 +1,19 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  namespace: backstage # not 100% on this.
+  # to be used in URLs
   name: plugin-catalog
+  # title to be used on pages
   title: Catalog Plugin for Backstage
+  # description to be used on cards
   description: The Backstage plugin that adds, acts on and displays your entity catalog.
+  # tags matching the search/filter tags.
   tags:
     - discovery
     - adoption
     - visibility
     - devex # etc
+  # to be used in additional info
   links:
     - url: my-homepage.com
       title: homepage
@@ -17,16 +21,21 @@ metadata:
     - url: support.my-homepage.com
       title: support
       icon: person
+  # to be used populating content.
   resources:
     icon: # additional support for multiple icons
       url: ./icon.svg
       altText: my icon.svg
+    # we should probably support additional documentation types, but a README feels like a good start.
     README.md: # support alternative locations for a readme.
       url: docs/README.md
+  # an array of marketplaces that this "plugin" (product) is listed.
   marketplaces:
     - https://marketplace.backstage.spotify.com
     - https://oss-marketplace.backstage.io
 spec:
   lifecycle: production
+  # naming here could use some help, plugin doesn't necessarily encapsulate everything.
   type: backstage-plugin
+  # this is probably contentious, especially for 3rd party plugins. Might just remove.
   owner: catalog-maintainers
