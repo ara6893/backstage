@@ -32,6 +32,7 @@ const useStyles = makeStyles(
     root: {
       display: 'inline-flex',
       alignItems: 'center',
+      width: 'max-content',
     },
     icon: {
       marginLeft: theme.spacing(0.5),
