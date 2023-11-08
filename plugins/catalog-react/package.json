@@ -69,6 +69,7 @@
     "material-ui-popup-state": "^1.9.3",
     "qs": "^6.9.4",
     "react-use": "^17.2.4",
+    "react-wrap-balancer": "^1.1.0",
     "yaml": "^2.0.0",
     "zen-observable": "^0.10.0"
   },

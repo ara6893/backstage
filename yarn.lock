@@ -6120,6 +6120,7 @@ __metadata:
     qs: ^6.9.4
     react-test-renderer: ^16.13.1
     react-use: ^17.2.4
+    react-wrap-balancer: ^1.1.0
     yaml: ^2.0.0
     zen-observable: ^0.10.0
   peerDependencies:
@@ -40113,6 +40114,15 @@ __metadata:
     react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
   checksum: cefa232f4f37269d292529ef15780fb108123d6bb5beee19eeac657e75cf8d4664be66f2da04baf0cb1bc64c5ab3d83a88199c3358f023b78940acd37b0673b2
+  languageName: node
+  linkType: hard
+
+"react-wrap-balancer@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "react-wrap-balancer@npm:1.1.0"
+  peerDependencies:
+    react: ">=16.8.0 || ^17.0.0 || ^18"
+  checksum: 576671cc1d38d1715995639981b96024c26809821f52868d7dfc1c48bbf23c4434eec6154fe79b2ad0050003d349ec500773a54d43cb026ad31cd10abfae9762
   languageName: node
   linkType: hard
 

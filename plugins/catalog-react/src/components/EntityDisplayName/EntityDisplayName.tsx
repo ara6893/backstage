@@ -18,6 +18,7 @@ import { CompoundEntityRef, Entity } from '@backstage/catalog-model';
 import { Box, Theme, Tooltip, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { useEntityPresentation } from '../../apis';
+import { Balancer } from 'react-wrap-balancer';
 
 /**
  * The available style class keys for {@link EntityDisplayName}, under the name
@@ -32,7 +33,6 @@ const useStyles = makeStyles(
     root: {
       display: 'inline-flex',
       alignItems: 'center',
-      width: 'max-content',
     },
     icon: {
       marginLeft: theme.spacing(0.5),
@@ -73,7 +73,7 @@ export const EntityDisplayName = (
   );
 
   // The innermost "body" content
-  let content = <>{primaryTitle}</>;
+  let content = <Balancer>{primaryTitle}</Balancer>;
 
   // Optionally an icon, and wrapper around them both
   content = (
