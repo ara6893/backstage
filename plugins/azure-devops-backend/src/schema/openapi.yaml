@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Swagger Petstore - OpenAPI 3.0
+  title: '@backstage/plugins-azure-devops-backend'
   version: v1
 paths:
   /build-definitions/{projectName}/{definitionName}:
