@@ -24,9 +24,9 @@ import { AzureDevOpsApi } from '../api';
 import { Config } from '@backstage/config';
 import { Logger } from 'winston';
 import { PullRequestsDashboardProvider } from '../api/PullRequestsDashboardProvider';
-import Router from 'express-promise-router';
 import { errorHandler, UrlReader } from '@backstage/backend-common';
 import express from 'express';
+import { createOpenApiRouter } from '../schema/openapi.generated';
 
 const DEFAULT_TOP = 10;
 
@@ -51,8 +51,7 @@ export async function createRouter(
   const pullRequestsDashboardProvider =
     await PullRequestsDashboardProvider.create(logger, azureDevOpsApi);
 
-  const router = Router();
-  router.use(express.json());
+  const router = await createOpenApiRouter();
 
   router.get('/health', (_req, res) => {
     res.status(200).json({ status: 'ok' });
@@ -199,6 +198,5 @@ export async function createRouter(
     res.status(200).json(readme);
   });
 
-  router.use(errorHandler());
   return router;
 }

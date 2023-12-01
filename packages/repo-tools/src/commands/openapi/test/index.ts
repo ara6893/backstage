@@ -52,7 +52,7 @@ async function test(
         YAML_SCHEMA_PATH,
         '--server-override',
         `http://localhost:${port}`,
-        options?.update ? '--update' : '',
+        ...(options?.update ? ['--update', 'interactive'] : ['']),
       ],
       {
         cwd: directoryPath,
@@ -65,13 +65,14 @@ async function test(
   } catch (err) {
     // Optic outputs the actual results to stdout, but that will not be added to the message by default.
     err.message = err.stderr + err.stdout;
-    err.message = (err.message as string)
-      .split('\n')
-      .map(e => e.replace(/.{1} Sending requests to server/, ''))
-      // Remove any lines that are emitted during processing and only show output.
-      .filter(e => !e.includes('PASS'))
-      .filter(e => e.trim())
-      .join('\n');
+    console.log(err, err.message);
+    // err.message = (err.message as string)
+    //   .split('\n')
+    //   .map(e => e.replace(/.{1} Sending requests to server/, ''))
+    //   // Remove any lines that are emitted during processing and only show output.
+    //   .filter(e => !e.includes('PASS'))
+    //   .filter(e => e.trim())
+    //   .join('\n');
     throw err;
   }
   if (

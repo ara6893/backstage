@@ -35,10 +35,12 @@ import { createRouter } from './router';
 import express from 'express';
 import { getVoidLogger, UrlReaders } from '@backstage/backend-common';
 import request from 'supertest';
+import { wrapInOpenApiTestServer } from '@backstage/backend-openapi-utils';
+import { Server } from 'http';
 
 describe('createRouter', () => {
   let azureDevOpsApi: jest.Mocked<AzureDevOpsApi>;
-  let app: express.Express;
+  let app: express.Express | Server;
 
   beforeAll(async () => {
     azureDevOpsApi = {
@@ -77,7 +79,7 @@ describe('createRouter', () => {
       }),
     });
 
-    app = express().use(router);
+    app = wrapInOpenApiTestServer(express().use(router));
   });
 
   beforeEach(() => {
@@ -87,6 +89,7 @@ describe('createRouter', () => {
   describe('GET /health', () => {
     it('returns ok', async () => {
       const response = await request(app).get('/health');
+      console.log(response);
 
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({ status: 'ok' });

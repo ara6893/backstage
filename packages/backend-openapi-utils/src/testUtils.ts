@@ -25,6 +25,7 @@ import { Server } from 'http';
  * @public
  */
 export const wrapInOpenApiTestServer = (app: Express): Server | Express => {
+  console.log(process.env.OPTIC_PROXY, process.env.PORT);
   if (process.env.OPTIC_PROXY) {
     const server = app.listen(+process.env.PORT!);
     return {

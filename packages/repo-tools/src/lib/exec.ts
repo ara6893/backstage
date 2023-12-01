@@ -23,6 +23,12 @@ export const exec = (
   options: string[] = [],
   execOptions?: ExecOptions,
 ) => {
+  console.log(
+    [
+      command,
+      ...options.filter(e => e).map(e => (e.startsWith('-') ? e : `"${e}"`)),
+    ].join(' '),
+  );
   return execPromise(
     [
       command,

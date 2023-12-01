@@ -5080,6 +5080,7 @@ __metadata:
   resolution: "@backstage/plugin-azure-devops-backend@workspace:plugins/azure-devops-backend"
   dependencies:
     "@backstage/backend-common": "workspace:^"
+    "@backstage/backend-openapi-utils": "workspace:^"
     "@backstage/backend-plugin-api": "workspace:^"
     "@backstage/catalog-model": "workspace:^"
     "@backstage/cli": "workspace:^"
