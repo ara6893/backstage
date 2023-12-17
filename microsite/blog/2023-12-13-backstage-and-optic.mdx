@@ -2,6 +2,10 @@
 
 Hey all, today I'm going to be talking about Backstage's use of [Optic's](https://github.com/opticdev/optic) `capture` command, why I think you should use it too, and why it's really cool. Most of you reading this probably don't know me, so let me introduce myself. I'm Aramis, maintainer of Backstage's OpenAPI tooling project area, I've been working for the past year on improving the schema-first developer experience inside of Backstage.
 
+## What were we trying to solve?
+
+Backstage is a fullstack Typescript application. Plugins are written using React in the frontend and express.js in the backend. All clients in the frontend and all validation schemas in the backend are handwritten. While there a few cases where the schema is so complex that it can't be described by a simple schema, for most cases. this duplication of work adds more toil to the Backstage plugin developer's workflow. Enter schema-first development...
+
 ## What is schema-first development?
 
 Schema-first development is using a schema, ie GraphQL, OpenAPI, gRPC, etc, to drive server and front end client implementation. It requires developers to be comfortable with the schema and expects developers to start any changes at the schema instead of at the router or client layer.
