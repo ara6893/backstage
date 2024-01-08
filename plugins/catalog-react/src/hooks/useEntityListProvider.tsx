@@ -104,6 +104,8 @@ export type EntityListContextProps<
   loading: boolean;
   error?: Error;
 
+  totalItems: number;
+
   pageInfo?: {
     next?: () => void;
     prev?: () => void;
@@ -124,6 +126,7 @@ type OutputState<EntityFilters extends DefaultEntityFilters> = {
   entities: Entity[];
   backendEntities: Entity[];
   pageInfo?: QueryEntitiesResponse['pageInfo'];
+  totalItems: number;
 };
 
 /**
@@ -185,6 +188,7 @@ export const EntityListProvider = <EntityFilters extends DefaultEntityFilters>(
         entities: [],
         backendEntities: [],
         pageInfo: enablePagination ? {} : undefined,
+        totalItems: 0,
       };
     },
   );
@@ -223,6 +227,7 @@ export const EntityListProvider = <EntityFilters extends DefaultEntityFilters>(
               backendEntities: response.items,
               entities: response.items.filter(entityFilter),
               pageInfo: response.pageInfo,
+              totalItems: response.totalItems,
             });
           }
         } else {
@@ -243,6 +248,7 @@ export const EntityListProvider = <EntityFilters extends DefaultEntityFilters>(
               backendEntities: response.items,
               entities: response.items.filter(entityFilter),
               pageInfo: response.pageInfo,
+              totalItems: response.totalItems,
             });
           }
         }
@@ -262,16 +268,20 @@ export const EntityListProvider = <EntityFilters extends DefaultEntityFilters>(
           const response = await catalogApi.getEntities({
             filter: backendFilter,
           });
+          const entities = response.items.filter(entityFilter);
           setOutputState({
             appliedFilters: requestedFilters,
             backendEntities: response.items,
-            entities: response.items.filter(entityFilter),
+            entities,
+            totalItems: entities.length,
           });
         } else {
+          const entities = outputState.backendEntities.filter(entityFilter);
           setOutputState({
             appliedFilters: requestedFilters,
             backendEntities: outputState.backendEntities,
-            entities: outputState.backendEntities.filter(entityFilter),
+            entities,
+            totalItems: entities.length,
           });
         }
       }
@@ -352,6 +362,7 @@ export const EntityListProvider = <EntityFilters extends DefaultEntityFilters>(
       loading,
       error,
       pageInfo,
+      totalItems: outputState.totalItems,
     }),
     [outputState, updateFilters, queryParameters, loading, error, pageInfo],
   );

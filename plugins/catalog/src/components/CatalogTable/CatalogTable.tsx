@@ -129,7 +129,8 @@ export const CatalogTable = (props: CatalogTableProps) => {
   } = props;
   const { isStarredEntity, toggleStarredEntity } = useStarredEntities();
   const entityListContext = useEntityList();
-  const { loading, error, entities, filters, pageInfo } = entityListContext;
+  const { loading, error, entities, filters, pageInfo, totalItems } =
+    entityListContext;
   const enablePagination = !!pageInfo;
 
   const tableColumns = useMemo(
@@ -216,7 +217,7 @@ export const CatalogTable = (props: CatalogTableProps) => {
     .filter(s => s)
     .join(' ');
 
-  const title = `${titleDisplay} (${entities.length})`;
+  const title = `${titleDisplay} (${totalItems})`;
   const actions = props.actions || defaultActions;
   const options = {
     actionsColumnIndex: -1,

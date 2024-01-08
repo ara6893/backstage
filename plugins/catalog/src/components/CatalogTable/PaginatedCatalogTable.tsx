@@ -18,6 +18,9 @@ import React from 'react';
 
 import { Table, TableProps } from '@backstage/core-components';
 import { CatalogTableRow } from './types';
+import { useEntityList } from '@backstage/plugin-catalog-react';
+import pluralize from 'pluralize';
+import { capitalize } from 'lodash';
 
 type PaginatedCatalogTableProps = {
   prev?(): void;
@@ -29,11 +32,23 @@ type PaginatedCatalogTableProps = {
  */
 export function PaginatedCatalogTable(props: PaginatedCatalogTableProps) {
   const { columns, data, next, prev } = props;
+  const { filters, totalItems, loading } = useEntityList();
+
+  const currentKind = filters.kind?.value || '';
+  const currentType = filters.type?.value || '';
+
+  const titlePreamble = capitalize(filters.user?.value ?? 'all');
+  const titleDisplay = [titlePreamble, currentType, pluralize(currentKind)]
+    .filter(s => s)
+    .join(' ');
+
+  const title = loading ? `${titleDisplay}` : `${titleDisplay} (${totalItems})`;
 
   return (
     <Table
       columns={columns}
       data={data}
+      title={title}
       options={{
         paginationPosition: 'both',
         pageSizeOptions: [],
