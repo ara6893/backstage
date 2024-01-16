@@ -22,6 +22,7 @@ import {
   Validators,
 } from '../../validation';
 import { Entity } from '../Entity';
+import { FieldError } from '@backstage/errors';
 
 /**
  * Ensures that the format of individual fields of the entity envelope
@@ -107,7 +108,8 @@ export class FieldFormatEntityPolicy implements EntityPolicy {
           ? ` expected ${expectation} but found "${value}".`
           : '';
 
-        throw new Error(
+        throw FieldError.fromDotFormat(
+          field,
           `"${field}" is not valid;${message} To learn more about catalog file format, visit: https://github.com/backstage/backstage/blob/master/docs/architecture-decisions/adr002-default-catalog-file-format.md`,
         );
       }
@@ -133,33 +135,35 @@ export class FieldFormatEntityPolicy implements EntityPolicy {
     );
 
     for (const [k, v] of Object.entries(entity.metadata.labels ?? [])) {
-      require(`labels.${k}`, k, this.validators.isValidLabelKey);
-      require(`labels.${k}`, v, this.validators.isValidLabelValue);
+      require(`metadata.labels.${k}`, k, this.validators.isValidLabelKey);
+      require(`metadata.labels.${k}`, v, this.validators.isValidLabelValue);
     }
 
     for (const [k, v] of Object.entries(entity.metadata.annotations ?? [])) {
-      require(`annotations.${k}`, k, this.validators.isValidAnnotationKey);
-      require(`annotations.${k}`, v, this.validators.isValidAnnotationValue);
+      require(`metadata.annotations.${k}`, k, this.validators
+        .isValidAnnotationKey);
+      require(`metadata.annotations.${k}`, v, this.validators
+        .isValidAnnotationValue);
     }
 
     const tags = entity.metadata.tags ?? [];
 
     for (let i = 0; i < tags.length; ++i) {
-      require(`tags.${i}`, tags[i], this.validators.isValidTag);
+      require(`metadata.tags.${i}`, tags[i], this.validators.isValidTag);
     }
 
     const links = entity.metadata.links ?? [];
 
     for (let i = 0; i < links.length; ++i) {
-      require(`links.${i}.url`, links[i]
+      require(`metadata.links.${i}.url`, links[i]
         ?.url, CommonValidatorFunctions.isValidUrl);
       optional(
-        `links.${i}.title`,
+        `metadata.links.${i}.title`,
         links[i]?.title,
         CommonValidatorFunctions.isNonEmptyString,
       );
       optional(
-        `links.${i}.icon`,
+        `metadata.links.${i}.icon`,
         links[i]?.icon,
         KubernetesValidatorFunctions.isValidObjectName,
       );

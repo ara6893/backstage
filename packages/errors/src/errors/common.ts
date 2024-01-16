@@ -117,3 +117,29 @@ export class ForwardedError extends CustomErrorBase {
     this.name = isError(cause) ? cause.name : 'Error';
   }
 }
+
+function dotToJsonPointer(dotFormat: string) {
+  return `/${dotFormat
+    .replaceAll('~', '~0')
+    .replaceAll('/', '~1')
+    .replaceAll('.', '/')}`;
+}
+
+export class FieldError extends CustomErrorBase {
+  name = 'FieldError' as const;
+  constructor(
+    public location: string,
+    message: string,
+    cause?: Error | unknown,
+  ) {
+    super(message, cause);
+  }
+
+  static fromDotFormat(
+    dotFormattedString: string,
+    message: string,
+    cause?: Error | unknown,
+  ) {
+    return new FieldError(dotToJsonPointer(dotFormattedString), message, cause);
+  }
+}

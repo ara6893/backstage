@@ -19,6 +19,7 @@ import entitySchema from '../schema/Entity.schema.json';
 import entityEnvelopeSchema from '../schema/EntityEnvelope.schema.json';
 import entityMetaSchema from '../schema/EntityMeta.schema.json';
 import commonSchema from '../schema/shared/common.schema.json';
+import { FieldError } from '@backstage/errors';
 
 // A local cache of compiled schemas, to avoid duplicate work.
 // The keys are JSON stringified versions of the schema
@@ -40,14 +41,18 @@ export function throwAjvError(
   }
 
   const error = errors[0];
-  throw new TypeError(
-    `${error.instancePath || '<root>'} ${error.message}${
-      error.params
-        ? ` - ${Object.entries(error.params)
-            .map(([key, val]) => `${key}: ${val}`)
-            .join(', ')}`
-        : ''
-    }`,
+  throw new FieldError(
+    error.instancePath || '',
+    'Validation failed.',
+    new TypeError(
+      ` ${error.message}${
+        error.params
+          ? ` - ${Object.entries(error.params)
+              .map(([key, val]) => `${key}: ${val}`)
+              .join(', ')}`
+          : ''
+      }`,
+    ),
   );
 }
 
