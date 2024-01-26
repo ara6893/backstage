@@ -78,7 +78,7 @@ export function BaseCatalogPage(props: BaseCatalogPageProps) {
           )}
           <SupportButton>All your software catalog entities</SupportButton>
         </ContentHeader>
-        <EntityListProvider pagination={pagination}>
+        <EntityListProvider pagination={{ limit: 10 }}>
           <CatalogFilterLayout>
             <CatalogFilterLayout.Filters>{filters}</CatalogFilterLayout.Filters>
             <CatalogFilterLayout.Content>{content}</CatalogFilterLayout.Content>

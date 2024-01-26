@@ -96,4 +96,24 @@ describe('PaginatedCatalogTable', () => {
     fireEvent.click(prevButton);
     expect(fn).toHaveBeenCalled();
   });
+
+  it('should display both top and bottom nav on options change', async () => {
+    render(
+      <PaginatedCatalogTable
+        data={data}
+        columns={columns}
+        prev={undefined}
+        options={{ paginationPosition: 'both' }}
+      />,
+    );
+
+    expect(screen.queryAllByRole('button', { name: 'Next Page' }).length).toBe(
+      2,
+    );
+
+    const prevButton = screen.queryAllByRole('button', {
+      name: 'Previous Page',
+    });
+    expect(prevButton.length).toBe(2);
+  });
 });

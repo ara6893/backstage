@@ -28,14 +28,14 @@ type PaginatedCatalogTableProps = {
  * @internal
  */
 export function PaginatedCatalogTable(props: PaginatedCatalogTableProps) {
-  const { columns, data, next, prev } = props;
+  const { columns, data, next, prev, options } = props;
 
   return (
     <Table
       columns={columns}
       data={data}
       options={{
-        paginationPosition: 'both',
+        ...options,
         pageSizeOptions: [],
         showFirstLastPageButtons: false,
         pageSize: Number.MAX_SAFE_INTEGER,
