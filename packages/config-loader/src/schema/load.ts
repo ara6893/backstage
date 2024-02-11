@@ -83,7 +83,6 @@ export async function loadConfigSchema(
     }
     schemas = serialized.schemas as ConfigSchemaPackageEntry[];
   }
-  console.log('schema', schemas);
 
   const validate = compileConfigSchemas(schemas, {
     noUndeclaredProperties: options.noUndeclaredProperties,
