@@ -23,6 +23,7 @@ import {
 import { ConfigSchemaPackageEntry } from './types';
 import { JsonObject } from '@backstage/types';
 import { assertError } from '@backstage/errors';
+import type { Config } from 'ts-json-schema-generator';
 
 type Item = {
   name?: string;
@@ -166,9 +167,11 @@ async function compileTsSchemas(paths: string[]) {
     'ts-json-schema-generator'
   );
   const { createProgram } = await import('typescript');
-  const config = {
+  const config: Config = {
     extraTags: ['visibility', 'deepVisibility', 'deprecated'],
     type: 'Config',
+    additionalProperties: true,
+    skipTypeCheck: true,
   };
 
   const formatter = createFormatter(config);

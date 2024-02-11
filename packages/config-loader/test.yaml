@@ -111,11 +111,20 @@ $defs:
           not:
             $ref: "#/$defs/nestedCondition"
       - $ref: "#/$defs/conditionReference"
+required:
+  - apacheAirflow
+  - app
+  - azureDevOps
+  - backend
+  - costInsights
+  - gocd
+  - scorecards
+  - sentry
+  - techdocs
 definitions:
   HumanDuration:
     type: object
     description: Human friendly durations object.
-    additionalProperties: false
     properties:
       years:
         type: number
@@ -140,7 +149,6 @@ definitions:
       - timeout
     description: Config options for  {@link  TaskScheduleDefinition }  that control
       the scheduling of a task.
-    additionalProperties: false
     properties:
       frequency:
         anyOf:
@@ -151,7 +159,6 @@ definitions:
                 description: A crontab style string.
             required:
               - cron
-            additionalProperties: false
           - type: string
           - $ref: "#/definitions/HumanDuration"
         description: How often you want the task to run. The system does its best to
@@ -183,7 +190,6 @@ definitions:
       - frequency
       - timeout
     description: Options that control the scheduling of a task.
-    additionalProperties: false
     properties:
       frequency:
         anyOf:
@@ -194,7 +200,6 @@ definitions:
                 description: A crontab style string.
             required:
               - cron
-            additionalProperties: false
           - $ref: "#/definitions/Duration"
           - $ref: "#/definitions/HumanDuration"
         description: How often you want the task to run. The system does its best to
@@ -251,10 +256,8 @@ definitions:
 
 
       There's are more methods documented below. In addition, for more information on subtler topics like internationalization and validity, see the external documentation.
-    additionalProperties: false
   Options:
     type: object
-    additionalProperties: false
     properties:
       fileContent:
         anyOf:
@@ -305,26 +308,14 @@ definitions:
       - markup
       - programming
       - prose
-required:
-  - apacheAirflow
-  - app
-  - azureDevOps
-  - backend
-  - costInsights
-  - gocd
-  - scorecards
-  - sentry
-  - techdocs
 description: This is the schema describing the structure of the app-config.yaml
   configuration file.
-additionalProperties: false
 properties:
   app:
     type: object
     required:
       - baseUrl
     description: Generic frontend configuration.
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -398,7 +389,6 @@ properties:
           - items
         description: Information about support of this Backstage instance and how to
           contact the integrator team.
-        additionalProperties: false
         properties:
           url:
             type: string
@@ -412,7 +402,6 @@ properties:
               required:
                 - title
                 - links
-              additionalProperties: false
               properties:
                 title:
                   type: string
@@ -430,7 +419,6 @@ properties:
                     type: object
                     required:
                       - url
-                    additionalProperties: false
                     properties:
                       url:
                         type: string
@@ -440,7 +428,6 @@ properties:
                         visibility: frontend
       experimental:
         type: object
-        additionalProperties: false
         properties:
           packages:
             anyOf:
@@ -456,12 +443,10 @@ properties:
                     type: array
                     items:
                       type: string
-                additionalProperties: false
             visibility: frontend
             deepVisibility: frontend
       routes:
         type: object
-        additionalProperties: false
         properties:
           bindings:
             type: object
@@ -485,7 +470,6 @@ properties:
                         required:
                           - id
                           - input
-                        additionalProperties: false
                         properties:
                           id:
                             type: string
@@ -495,137 +479,17 @@ properties:
                         type: boolean
                       config:
                         $comment: ""
-                    additionalProperties: false
       analytics:
         type: object
         required:
           - ga
           - ga4
           - newRelic
-        additionalProperties: false
         properties:
-          ga:
-            type: object
-            required:
-              - trackingId
-            additionalProperties: false
-            properties:
-              trackingId:
-                type: string
-                description: Google Analytics tracking ID, e.g. UA-000000-0
-                visibility: frontend
-              scriptSrc:
-                type: string
-                description: URL to Google Analytics analytics.js script Defaults to fetching
-                  from GA source (eg.
-                  https://www.google-analytics.com/analytics.js)
-                visibility: frontend
-              identity:
-                type: string
-                enum:
-                  - disabled
-                  - optional
-                  - required
-                description: >-
-                  Controls how the identityApi is used when sending data to GA:
-
-
-                  - `disabled`: (Default) Explicitly prevents a user's identity from   being used when capturing events in GA.
-
-                  - `optional`: Pageviews and hits are forwarded to GA as they happen   and only include user identity metadata once known. Guarantees   that hits are captured for all sessions, even if no sign in   occurs, but may result in dropped hits in User ID views.
-
-                  - `required`: All pageviews and hits are deferred until an identity   is known. Guarantees that all data sent to GA correlates to a user   identity, but prevents GA from receiving events for sessions in   which a user does not sign in. An `identityApi` instance must be   passed during instantiation when set to this value.
-                visibility: frontend
-              virtualSearchPageView:
-                type: object
-                description: Controls whether to send virtual pageviews on `search` events. Can
-                  be used to enable Site Search in GA.
-                additionalProperties: false
-                properties:
-                  mode:
-                    type: string
-                    enum:
-                      - disabled
-                      - only
-                      - both
-                    description: >-
-                      - `disabled`: (Default) no virtual pageviews are sent
-
-                      - `only`: Sends virtual pageview _instead_ of the `search` event
-
-                      - `both`: Sends both the `search` event _and_ the virtual pageview
-                    visibility: frontend
-                  mountPath:
-                    type: string
-                    description: Specifies on which path the main Search page is mounted. Defaults
-                      to `/search`.
-                    visibility: frontend
-                  searchQuery:
-                    type: string
-                    description: Specifies which query param is used for the term query in the
-                      virtual pageview URL. Defaults to `query`.
-                    visibility: frontend
-                  categoryQuery:
-                    type: string
-                    description: Specifies which query param is used for the category query in the
-                      virtual pageview URL. Skipped by default.
-                    visibility: frontend
-              debug:
-                type: boolean
-                description: Whether or not to log analytics debug statements to the console.
-                  Defaults to false.
-                visibility: frontend
-              testMode:
-                type: boolean
-                description: Prevents events from actually being sent when set to true. Defaults
-                  to false.
-                visibility: frontend
-              customDimensionsMetrics:
-                type: array
-                description: Configuration informing how Analytics Context and Event Attributes
-                  metadata will be captured in Google Analytics.
-                items:
-                  type: object
-                  required:
-                    - type
-                    - index
-                    - source
-                    - key
-                  additionalProperties: false
-                  properties:
-                    type:
-                      type: string
-                      enum:
-                        - dimension
-                        - metric
-                      description: Specifies whether the corresponding metadata should be collected as
-                        a Google Analytics custom dimension or custom metric.
-                      visibility: frontend
-                    index:
-                      type: number
-                      description: The index of the Google Analytics custom dimension or metric that
-                        the metadata should be written to.
-                      visibility: frontend
-                    source:
-                      type: string
-                      enum:
-                        - context
-                        - attributes
-                      description: Specifies whether the desired value lives as an attribute on the
-                        Analytics Context or the Event's Attributes.
-                      visibility: frontend
-                    key:
-                      type: string
-                      description: The property of the context or attributes that should be captured.
-                        e.g. to capture the Plugin ID associated with an event,
-                        the source should be set to "context" and the key should
-                        be set to pluginId.
-                      visibility: frontend
           ga4:
             type: object
             required:
               - measurementId
-            additionalProperties: false
             properties:
               measurementId:
                 type: string
@@ -707,6 +571,120 @@ properties:
                   attribute-name will be prefixed by a_, for example ,
                   testAttribute will be c_testAttribute in the event.
                 visibility: frontend
+          ga:
+            type: object
+            required:
+              - trackingId
+            properties:
+              trackingId:
+                type: string
+                description: Google Analytics tracking ID, e.g. UA-000000-0
+                visibility: frontend
+              scriptSrc:
+                type: string
+                description: URL to Google Analytics analytics.js script Defaults to fetching
+                  from GA source (eg.
+                  https://www.google-analytics.com/analytics.js)
+                visibility: frontend
+              identity:
+                type: string
+                enum:
+                  - disabled
+                  - optional
+                  - required
+                description: >-
+                  Controls how the identityApi is used when sending data to GA:
+
+
+                  - `disabled`: (Default) Explicitly prevents a user's identity from   being used when capturing events in GA.
+
+                  - `optional`: Pageviews and hits are forwarded to GA as they happen   and only include user identity metadata once known. Guarantees   that hits are captured for all sessions, even if no sign in   occurs, but may result in dropped hits in User ID views.
+
+                  - `required`: All pageviews and hits are deferred until an identity   is known. Guarantees that all data sent to GA correlates to a user   identity, but prevents GA from receiving events for sessions in   which a user does not sign in. An `identityApi` instance must be   passed during instantiation when set to this value.
+                visibility: frontend
+              virtualSearchPageView:
+                type: object
+                description: Controls whether to send virtual pageviews on `search` events. Can
+                  be used to enable Site Search in GA.
+                properties:
+                  mode:
+                    type: string
+                    enum:
+                      - disabled
+                      - only
+                      - both
+                    description: >-
+                      - `disabled`: (Default) no virtual pageviews are sent
+
+                      - `only`: Sends virtual pageview _instead_ of the `search` event
+
+                      - `both`: Sends both the `search` event _and_ the virtual pageview
+                    visibility: frontend
+                  mountPath:
+                    type: string
+                    description: Specifies on which path the main Search page is mounted. Defaults
+                      to `/search`.
+                    visibility: frontend
+                  searchQuery:
+                    type: string
+                    description: Specifies which query param is used for the term query in the
+                      virtual pageview URL. Defaults to `query`.
+                    visibility: frontend
+                  categoryQuery:
+                    type: string
+                    description: Specifies which query param is used for the category query in the
+                      virtual pageview URL. Skipped by default.
+                    visibility: frontend
+              debug:
+                type: boolean
+                description: Whether or not to log analytics debug statements to the console.
+                  Defaults to false.
+                visibility: frontend
+              testMode:
+                type: boolean
+                description: Prevents events from actually being sent when set to true. Defaults
+                  to false.
+                visibility: frontend
+              customDimensionsMetrics:
+                type: array
+                description: Configuration informing how Analytics Context and Event Attributes
+                  metadata will be captured in Google Analytics.
+                items:
+                  type: object
+                  required:
+                    - type
+                    - index
+                    - source
+                    - key
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - dimension
+                        - metric
+                      description: Specifies whether the corresponding metadata should be collected as
+                        a Google Analytics custom dimension or custom metric.
+                      visibility: frontend
+                    index:
+                      type: number
+                      description: The index of the Google Analytics custom dimension or metric that
+                        the metadata should be written to.
+                      visibility: frontend
+                    source:
+                      type: string
+                      enum:
+                        - context
+                        - attributes
+                      description: Specifies whether the desired value lives as an attribute on the
+                        Analytics Context or the Event's Attributes.
+                      visibility: frontend
+                    key:
+                      type: string
+                      description: The property of the context or attributes that should be captured.
+                        e.g. to capture the Plugin ID associated with an event,
+                        the source should be set to "context" and the key should
+                        be set to pluginId.
+                      visibility: frontend
           newRelic:
             type: object
             required:
@@ -716,7 +694,6 @@ properties:
               - licenseKey
               - distributedTracingEnabled
               - cookiesEnabled
-            additionalProperties: false
             properties:
               endpoint:
                 type: string
@@ -788,7 +765,6 @@ properties:
   lighthouse:
     type: object
     description: Configuration options for the Lighthouse backend plugin.
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -817,12 +793,14 @@ properties:
     type: object
     description: Configuration that provides information on available configured
       authentication providers.
-    additionalProperties: false
     properties:
       providers:
         type: object
         description: The available auth-provider options and attributes
-        additionalProperties: false
+        additionalProperties:
+          type: object
+          visibility: frontend
+          additionalProperties: true
         properties:
           google:
             type: object
@@ -832,7 +810,6 @@ properties:
               required:
                 - clientId
                 - clientSecret
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -849,7 +826,6 @@ properties:
               required:
                 - clientId
                 - clientSecret
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -867,7 +843,6 @@ properties:
               - issuer
               - cert
             visibility: frontend
-            additionalProperties: false
             properties:
               entryPoint:
                 type: string
@@ -911,7 +886,6 @@ properties:
                 - clientSecret
                 - authorizationUrl
                 - tokenUrl
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -937,7 +911,6 @@ properties:
                 - clientId
                 - clientSecret
                 - domain
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -963,7 +936,6 @@ properties:
                 - clientId
                 - clientSecret
                 - issuer
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -979,7 +951,6 @@ properties:
             required:
               - region
             visibility: frontend
-            additionalProperties: false
             properties:
               iss:
                 type: string
@@ -990,7 +961,6 @@ properties:
             required:
               - teamName
             visibility: frontend
-            additionalProperties: false
             properties:
               teamName:
                 type: string
@@ -1005,7 +975,6 @@ properties:
               required:
                 - clientId
                 - clientSecret
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -1016,25 +985,23 @@ properties:
                   type: string
                 callbackUrl:
                   type: string
-          gitlab:
+          gcpIap:
             type: object
-            visibility: frontend
+            description: Configuration for the Google Cloud Platform Identity-Aware Proxy
+              (IAP) auth provider.
             additionalProperties:
               type: object
               required:
-                - clientId
-                - clientSecret
-              additionalProperties: false
+                - audience
               properties:
-                clientId:
-                  type: string
-                clientSecret:
-                  type: string
-                  visibility: secret
                 audience:
                   type: string
-                callbackUrl:
+                  description: The audience to use when validating incoming JWT tokens. See
+                    https://backstage.io/docs/auth/google/gcp-iap-auth
+                jwtHeader:
                   type: string
+                  description: The name of the header to read the JWT token from, defaults to
+                    `'x-goog-iap-jwt-assertion'`.
           microsoft:
             type: object
             visibility: frontend
@@ -1044,7 +1011,6 @@ properties:
                 - clientId
                 - tenantId
                 - clientSecret
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -1061,6 +1027,48 @@ properties:
                   type: array
                   items:
                     type: string
+          gitlab:
+            type: object
+            visibility: frontend
+            additionalProperties:
+              type: object
+              required:
+                - clientId
+                - clientSecret
+              properties:
+                clientId:
+                  type: string
+                clientSecret:
+                  type: string
+                  visibility: secret
+                audience:
+                  type: string
+                callbackUrl:
+                  type: string
+          okta:
+            type: object
+            visibility: frontend
+            additionalProperties:
+              type: object
+              required:
+                - clientId
+                - clientSecret
+              properties:
+                clientId:
+                  type: string
+                clientSecret:
+                  type: string
+                  visibility: secret
+                audience:
+                  type: string
+                authServerId:
+                  type: string
+                idp:
+                  type: string
+                callbackUrl:
+                  type: string
+                additionalScopes:
+                  type: string
           oidc:
             type: object
             visibility: frontend
@@ -1070,7 +1078,6 @@ properties:
                 - clientId
                 - clientSecret
                 - metadataUrl
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -1089,49 +1096,6 @@ properties:
                   type: string
                 prompt:
                   type: string
-          gcpIap:
-            type: object
-            description: Configuration for the Google Cloud Platform Identity-Aware Proxy
-              (IAP) auth provider.
-            additionalProperties:
-              type: object
-              required:
-                - audience
-              additionalProperties: false
-              properties:
-                audience:
-                  type: string
-                  description: The audience to use when validating incoming JWT tokens. See
-                    https://backstage.io/docs/auth/google/gcp-iap-auth
-                jwtHeader:
-                  type: string
-                  description: The name of the header to read the JWT token from, defaults to
-                    `'x-goog-iap-jwt-assertion'`.
-          okta:
-            type: object
-            visibility: frontend
-            additionalProperties:
-              type: object
-              required:
-                - clientId
-                - clientSecret
-              additionalProperties: false
-              properties:
-                clientId:
-                  type: string
-                clientSecret:
-                  type: string
-                  visibility: secret
-                audience:
-                  type: string
-                authServerId:
-                  type: string
-                idp:
-                  type: string
-                callbackUrl:
-                  type: string
-                additionalScopes:
-                  type: string
       environment:
         type: string
         description: "The 'environment' attribute added as an optional parameter to have
@@ -1141,7 +1105,6 @@ properties:
       autologout:
         type: object
         description: Autologout feature configuration
-        additionalProperties: false
         properties:
           enabled:
             type: boolean
@@ -1171,7 +1134,6 @@ properties:
             visibility: frontend
       session:
         type: object
-        additionalProperties: false
         properties:
           secret:
             type: string
@@ -1188,7 +1150,6 @@ properties:
       keyStore:
         type: object
         description: To control how to store JWK data in auth-backend
-        additionalProperties: false
         properties:
           provider:
             type: string
@@ -1199,7 +1160,6 @@ properties:
               - static
           firestore:
             type: object
-            additionalProperties: false
             properties:
               host:
                 type: string
@@ -1229,7 +1189,6 @@ properties:
             type: object
             required:
               - keys
-            additionalProperties: false
             properties:
               keys:
                 type: array
@@ -1241,7 +1200,6 @@ properties:
                     - publicKeyFile
                     - privateKeyFile
                     - keyId
-                  additionalProperties: false
                   properties:
                     publicKeyFile:
                       type: string
@@ -1260,7 +1218,6 @@ properties:
   techInsights:
     type: object
     description: Configuration options for the tech-insights plugin
-    additionalProperties: false
     properties:
       factChecker:
         type: object
@@ -1278,7 +1235,6 @@ properties:
             - cadence
           description: Configuration for a fact retriever and its registration identified
             by its name.
-          additionalProperties: false
           properties:
             cadence:
               type: string
@@ -1295,68 +1251,18 @@ properties:
                       $ref: "#/definitions/HumanDuration"
                   required:
                     - timeToLive
-                  additionalProperties: false
                 - type: object
                   properties:
                     maxItems:
                       type: number
                   required:
                     - maxItems
-                  additionalProperties: false
               description: Optional lifecycle definition indicating the cleanup logic of facts
                 when this retriever is run.
             timeout:
               $ref: "#/definitions/HumanDuration"
               description: Optional duration to determine how long the fact retriever should
                 be allowed to run, defaults to 5 minutes.
-  discovery:
-    type: object
-    required:
-      - endpoints
-    description: Discovery options.
-    visibility: frontend
-    additionalProperties: false
-    properties:
-      endpoints:
-        type: array
-        description: |-
-          Endpoints
-
-          A list of target baseUrls and the associated plugins.
-        visibility: frontend
-        items:
-          type: object
-          required:
-            - target
-            - plugins
-          additionalProperties: false
-          properties:
-            target:
-              anyOf:
-                - type: string
-                - type: object
-                  required:
-                    - external
-                    - internal
-                  additionalProperties: false
-                  properties:
-                    external:
-                      type: string
-                      visibility: frontend
-                    internal:
-                      type: string
-              description: >-
-                The target baseUrl to use for the plugin
-
-
-                Can be either a string or an object with internal and external keys. Targets with `{{pluginId}}` or `{{ pluginId }} in the url will be replaced with the pluginId.
-              visibility: frontend
-            plugins:
-              type: array
-              description: Array of plugins which use the target baseUrl.
-              visibility: frontend
-              items:
-                type: string
   backend:
     type: object
     required:
@@ -1364,12 +1270,10 @@ properties:
       - database
       - listen
     description: Generic backend configuration.
-    additionalProperties: false
     properties:
       auth:
         type: object
         description: Backend configuration for when request authentication is enabled
-        additionalProperties: false
         properties:
           keys:
             type: array
@@ -1379,7 +1283,6 @@ properties:
               type: object
               required:
                 - secret
-              additionalProperties: false
               properties:
                 secret:
                   type: string
@@ -1404,7 +1307,6 @@ properties:
                   - string
                   - number
                 description: Port that the backend should listen to.
-            additionalProperties: false
         description: Address that the backend should listen to.
       https:
         anyOf:
@@ -1418,7 +1320,6 @@ properties:
                   - cert
                   - key
                 description: Certificate configuration
-                additionalProperties: false
                 properties:
                   cert:
                     type: string
@@ -1427,7 +1328,6 @@ properties:
                     type: string
                     description: PEM encoded certificate key. Use $file to load in a file.
                     visibility: secret
-            additionalProperties: false
         description: >-
           HTTPS configuration for the backend. If omitted the backend will serve
           HTTP.
@@ -1445,7 +1345,6 @@ properties:
           - connection
         description: Database connection configuration, select base database type using
           the `client` field
-        additionalProperties: false
         properties:
           client:
             type: string
@@ -1507,7 +1406,6 @@ properties:
             description: Plugin specific database configuration and client override
             additionalProperties:
               type: object
-              additionalProperties: false
               properties:
                 client:
                   type: string
@@ -1550,7 +1448,6 @@ properties:
                 description: An optional default TTL (in milliseconds).
             required:
               - store
-            additionalProperties: false
           - type: object
             properties:
               store:
@@ -1567,7 +1464,6 @@ properties:
             required:
               - store
               - connection
-            additionalProperties: false
           - type: object
             properties:
               store:
@@ -1583,12 +1479,10 @@ properties:
             required:
               - store
               - connection
-            additionalProperties: false
         description: Cache connection configuration, select cache type using the `store`
           field
       cors:
         type: object
-        additionalProperties: false
         properties:
           origin:
             anyOf:
@@ -1626,7 +1520,6 @@ properties:
         type: object
         description: Configuration related to URL reading, used for example for reading
           catalog info files, scaffolder templates, and techdocs content.
-        additionalProperties: false
         properties:
           allow:
             type: array
@@ -1637,7 +1530,6 @@ properties:
               type: object
               required:
                 - host
-              additionalProperties: false
               properties:
                 host:
                   type: string
@@ -1669,11 +1561,55 @@ properties:
                 type: string
             - type: boolean
               const: false
+  discovery:
+    type: object
+    required:
+      - endpoints
+    description: Discovery options.
+    visibility: frontend
+    properties:
+      endpoints:
+        type: array
+        description: |-
+          Endpoints
+
+          A list of target baseUrls and the associated plugins.
+        visibility: frontend
+        items:
+          type: object
+          required:
+            - target
+            - plugins
+          properties:
+            target:
+              anyOf:
+                - type: string
+                - type: object
+                  required:
+                    - external
+                    - internal
+                  properties:
+                    external:
+                      type: string
+                      visibility: frontend
+                    internal:
+                      type: string
+              description: >-
+                The target baseUrl to use for the plugin
+
+
+                Can be either a string or an object with internal and external keys. Targets with `{{pluginId}}` or `{{ pluginId }} in the url will be replaced with the pluginId.
+              visibility: frontend
+            plugins:
+              type: array
+              description: Array of plugins which use the target baseUrl.
+              visibility: frontend
+              items:
+                type: string
   organization:
     type: object
     description: Configuration that provides information about the organization that
       the app is for.
-    additionalProperties: false
     properties:
       name:
         type: string
@@ -1684,7 +1620,6 @@ properties:
     description: This config was used by the HomepageTimer but has been replaced  by
       the HeaderWorldClock in the home plugin
     deprecated: in favor of the HeaderWorldClock which is found in the home plugin
-    additionalProperties: false
     properties:
       clocks:
         type: array
@@ -1693,7 +1628,6 @@ properties:
           required:
             - label
             - timezone
-          additionalProperties: false
           properties:
             label:
               type: string
@@ -1711,7 +1645,6 @@ properties:
     description: Configuration for integrations towards various external repository
       provider systems
     visibility: frontend
-    additionalProperties: false
     properties:
       azure:
         type: array
@@ -1720,7 +1653,6 @@ properties:
           type: object
           required:
             - host
-          additionalProperties: false
           properties:
             host:
               type: string
@@ -1739,7 +1671,6 @@ properties:
                 If no credential is specified anonymous access is used.
               deepVisibility: secret
               deprecated: Use `credentials` instead.
-              additionalProperties: false
               properties:
                 clientId:
                   type: string
@@ -1762,7 +1693,6 @@ properties:
               deepVisibility: secret
               items:
                 type: object
-                additionalProperties: false
                 properties:
                   clientId:
                     type: string
@@ -1780,7 +1710,6 @@ properties:
           type: object
           required:
             - host
-          additionalProperties: false
           properties:
             host:
               type: string
@@ -1811,7 +1740,6 @@ properties:
           required:
             - username
             - appPassword
-          additionalProperties: false
           properties:
             username:
               type: string
@@ -1828,7 +1756,6 @@ properties:
           type: object
           required:
             - host
-          additionalProperties: false
           properties:
             host:
               type: string
@@ -1859,7 +1786,6 @@ properties:
           type: object
           required:
             - host
-          additionalProperties: false
           properties:
             host:
               type: string
@@ -1889,7 +1815,6 @@ properties:
           type: object
           required:
             - host
-          additionalProperties: false
           properties:
             host:
               type: string
@@ -1919,7 +1844,6 @@ properties:
                   - webhookSecret
                   - clientId
                   - clientSecret
-                additionalProperties: false
                 properties:
                   appId:
                     type:
@@ -1960,7 +1884,6 @@ properties:
           type: object
           required:
             - host
-          additionalProperties: false
           properties:
             host:
               type: string
@@ -1994,7 +1917,6 @@ properties:
       googleGcs:
         type: object
         description: Integration configuration for Google Cloud Storage
-        additionalProperties: false
         properties:
           clientEmail:
             type: string
@@ -2008,7 +1930,6 @@ properties:
         description: Integration configuration for AWS S3 Service
         items:
           type: object
-          additionalProperties: false
           properties:
             endpoint:
               type: string
@@ -2041,7 +1962,6 @@ properties:
           type: object
           required:
             - host
-          additionalProperties: false
           properties:
             host:
               type: string
@@ -2063,12 +1983,10 @@ properties:
   aws:
     type: object
     description: Configuration for access to AWS accounts
-    additionalProperties: false
     properties:
       accountDefaults:
         type: object
         description: Defaults for retrieving AWS account credentials
-        additionalProperties: false
         properties:
           roleName:
             type: string
@@ -2088,7 +2006,6 @@ properties:
       mainAccount:
         type: object
         description: Main account to use for retrieving AWS account credentials
-        additionalProperties: false
         properties:
           accessKeyId:
             type: string
@@ -2113,7 +2030,6 @@ properties:
           type: object
           required:
             - accountId
-          additionalProperties: false
           properties:
             accountId:
               type: string
@@ -2151,7 +2067,6 @@ properties:
     required:
       - apiKey
     description: Configuration options for the Airbrake plugin
-    additionalProperties: false
     properties:
       apiKey:
         type: string
@@ -2163,7 +2078,6 @@ properties:
     required:
       - baseUrl
     description: Configurations for the Apache Airflow plugin
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -2176,7 +2090,6 @@ properties:
       - token
       - organization
     description: Configuration options for the azure-devops-backend plugin
-    additionalProperties: false
     properties:
       host:
         type: string
@@ -2191,17 +2104,7 @@ properties:
   catalog:
     type: object
     description: Configuration options for the catalog plugin.
-    additionalProperties: false
     properties:
-      experimentalPagination:
-        anyOf:
-          - type: boolean
-          - type: object
-            properties:
-              limit:
-                type: number
-            additionalProperties: false
-        deepVisibility: frontend
       rules:
         type: array
         description: >-
@@ -2216,7 +2119,6 @@ properties:
           type: object
           required:
             - allow
-          additionalProperties: false
           properties:
             allow:
               type: array
@@ -2243,7 +2145,6 @@ properties:
                 type: object
                 required:
                   - type
-                additionalProperties: false
                 properties:
                   type:
                     type: string
@@ -2292,7 +2193,6 @@ properties:
           required:
             - type
             - target
-          additionalProperties: false
           properties:
             type:
               type: string
@@ -2311,7 +2211,6 @@ properties:
                 type: object
                 required:
                   - allow
-                additionalProperties: false
                 properties:
                   allow:
                     type: array
@@ -2339,7 +2238,6 @@ properties:
                 description: Perform stitching in-band immediately when needed
             required:
               - mode
-            additionalProperties: false
           - type: object
             properties:
               mode:
@@ -2348,470 +2246,22 @@ properties:
                 description: Defer stitching to be performed asynchronously
             required:
               - mode
-            additionalProperties: false
         description: The strategy to use when stitching together the final entities.
       processingInterval:
         $ref: "#/definitions/HumanDuration"
         description: The interval at which the catalog should process its entities.
-      processors:
-        type: object
-        description: List of processor-specific options and attributes
-        additionalProperties: false
-        properties:
-          awsOrganization:
-            type: object
-            required:
-              - provider
-            description: AwsOrganizationCloudAccountProcessor configuration
-            additionalProperties: false
+      experimentalPagination:
+        anyOf:
+          - type: boolean
+          - type: object
             properties:
-              provider:
-                type: object
-                additionalProperties: false
-                properties:
-                  roleArn:
-                    type: string
-                    description: The role to be assumed by this processor
-          ldapOrg:
-            type: object
-            required:
-              - providers
-            description: LdapOrgReaderProcessor configuration
-            additionalProperties: false
-            properties:
-              providers:
-                type: array
-                description: The configuration parameters for each single LDAP provider.
-                items:
-                  type: object
-                  required:
-                    - target
-                    - users
-                    - groups
-                  additionalProperties: false
-                  properties:
-                    target:
-                      type: string
-                      description: The prefix of the target that this matches on, e.g.
-                        "ldaps://ds.example.net", with no trailing slash.
-                    bind:
-                      type: object
-                      required:
-                        - dn
-                        - secret
-                      description: The settings to use for the bind command. If none are specified,
-                        the bind command is not issued.
-                      additionalProperties: false
-                      properties:
-                        dn:
-                          type: string
-                          description: >-
-                            The DN of the user to auth as.
-
-
-                            E.g. "uid=ldap-robot,ou=robots,ou=example,dc=example,dc=net"
-                        secret:
-                          type: string
-                          description: The secret of the user to auth as (its password).
-                          visibility: secret
-                    tls:
-                      type: object
-                      description: TLS settings
-                      additionalProperties: false
-                      properties:
-                        rejectUnauthorized:
-                          type: boolean
-                    users:
-                      type: object
-                      required:
-                        - dn
-                        - options
-                      description: The settings that govern the reading and interpretation of users.
-                      additionalProperties: false
-                      properties:
-                        dn:
-                          type: string
-                          description: |-
-                            The DN under which users are stored.
-
-                            E.g. "ou=people,ou=example,dc=example,dc=net"
-                        options:
-                          type: object
-                          description: >-
-                            The search options to use. The default is scope
-                            "one" and attributes "*" and "+".
-
-
-                            It is common to want to specify a filter, to narrow down the set of matching items.
-                          additionalProperties: false
-                          properties:
-                            scope:
-                              type: string
-                              enum:
-                                - base
-                                - one
-                                - sub
-                            filter:
-                              type: string
-                            attributes:
-                              anyOf:
-                                - type: string
-                                - type: array
-                                  items:
-                                    type: string
-                            sizeLimit:
-                              type: number
-                            timeLimit:
-                              type: number
-                            derefAliases:
-                              type: number
-                            typesOnly:
-                              type: boolean
-                            paged:
-                              anyOf:
-                                - type: boolean
-                                - type: object
-                                  properties:
-                                    pageSize:
-                                      type: number
-                                    pagePause:
-                                      type: boolean
-                                  additionalProperties: false
-                        set:
-                          type: object
-                          description: >-
-                            JSON paths (on a.b.c form) and hard coded values to
-                            set on those paths.
-
-
-                            This can be useful for example if you want to hard code a namespace or similar on the generated entities.
-                        map:
-                          type: object
-                          description: Mappings from well known entity fields, to LDAP attribute names
-                          additionalProperties: false
-                          properties:
-                            rdn:
-                              type: string
-                              description: The name of the attribute that holds the relative distinguished
-                                name of each entry. Defaults to "uid".
-                            name:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                metadata.name field of the entity. Defaults to
-                                "uid".
-                            description:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                metadata.description field of the entity.
-                            displayName:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                spec.profile.displayName field of the entity.
-                                Defaults to "cn".
-                            email:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                spec.profile.email field of the entity. Defaults
-                                to "mail".
-                            picture:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                spec.profile.picture field of the entity.
-                            memberOf:
-                              type: string
-                              description: The name of the attribute that shall be used for the values of the
-                                spec.memberOf field of the entity. Defaults to
-                                "memberOf".
-                    groups:
-                      type: object
-                      required:
-                        - dn
-                        - options
-                      description: The settings that govern the reading and interpretation of groups.
-                      additionalProperties: false
-                      properties:
-                        dn:
-                          type: string
-                          description: |-
-                            The DN under which groups are stored.
-
-                            E.g. "ou=people,ou=example,dc=example,dc=net"
-                        options:
-                          type: object
-                          description: >-
-                            The search options to use. The default is scope
-                            "one" and attributes "*" and "+".
-
-
-                            It is common to want to specify a filter, to narrow down the set of matching items.
-                          additionalProperties: false
-                          properties:
-                            scope:
-                              type: string
-                              enum:
-                                - base
-                                - one
-                                - sub
-                            filter:
-                              type: string
-                            attributes:
-                              anyOf:
-                                - type: string
-                                - type: array
-                                  items:
-                                    type: string
-                            sizeLimit:
-                              type: number
-                            timeLimit:
-                              type: number
-                            derefAliases:
-                              type: number
-                            typesOnly:
-                              type: boolean
-                            paged:
-                              anyOf:
-                                - type: boolean
-                                - type: object
-                                  properties:
-                                    pageSize:
-                                      type: number
-                                    pagePause:
-                                      type: boolean
-                                  additionalProperties: false
-                        set:
-                          type: object
-                          description: >-
-                            JSON paths (on a.b.c form) and hard coded values to
-                            set on those paths.
-
-
-                            This can be useful for example if you want to hard code a namespace or similar on the generated entities.
-                        map:
-                          type: object
-                          description: Mappings from well known entity fields, to LDAP attribute names
-                          additionalProperties: false
-                          properties:
-                            rdn:
-                              type: string
-                              description: The name of the attribute that holds the relative distinguished
-                                name of each entry. Defaults to "cn".
-                            name:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                metadata.name field of the entity. Defaults to
-                                "cn".
-                            description:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                metadata.description field of the entity.
-                                Defaults to "description".
-                            type:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                spec.type field of the entity. Defaults to
-                                "groupType".
-                            displayName:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                spec.profile.displayName field of the entity.
-                                Defaults to "cn".
-                            email:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                spec.profile.email field of the entity.
-                            picture:
-                              type: string
-                              description: The name of the attribute that shall be used for the value of the
-                                spec.profile.picture field of the entity.
-                            memberOf:
-                              type: string
-                              description: The name of the attribute that shall be used for the values of the
-                                spec.parent field of the entity. Defaults to
-                                "memberOf".
-                            members:
-                              type: string
-                              description: The name of the attribute that shall be used for the values of the
-                                spec.children field of the entity. Defaults to
-                                "member".
-          microsoftGraphOrg:
-            type: object
-            required:
-              - providers
-            description: MicrosoftGraphOrgReaderProcessor configuration
-            deprecated: Use `catalog.providers.microsoftGraphOrg` instead.
-            additionalProperties: false
-            properties:
-              providers:
-                type: array
-                description: The configuration parameters for each single Microsoft Graph
-                  provider.
-                items:
-                  type: object
-                  required:
-                    - target
-                    - tenantId
-                  additionalProperties: false
-                  properties:
-                    target:
-                      type: string
-                      description: The prefix of the target that this matches on, e.g.
-                        "https://graph.microsoft.com/v1.0", with no trailing
-                        slash.
-                    authority:
-                      type: string
-                      description: |-
-                        The auth authority used.
-
-                        Default value "https://login.microsoftonline.com"
-                    tenantId:
-                      type: string
-                      description: The tenant whose org data we are interested in.
-                    clientId:
-                      type: string
-                      description: The OAuth client ID to use for authenticating requests.
-                    clientSecret:
-                      type: string
-                      description: The OAuth client secret to use for authenticating requests.
-                      visibility: secret
-                    userFilter:
-                      type: string
-                      description: |-
-                        The filter to apply to extract users.
-
-                        E.g. "accountEnabled eq true and userType eq 'member'"
-                    groupFilter:
-                      type: string
-                      description: |-
-                        The filter to apply to extract groups.
-
-                        E.g. "securityEnabled eq false and mailEnabled eq true"
-                    userSelect:
-                      type: array
-                      description: |-
-                        The fields to be fetched on query.
-
-                        E.g. ["id", "displayName", "description"]
-                      items:
-                        type: string
-                    groupSearch:
-                      type: string
-                      description: >-
-                        The search criteria to apply to extract users by groups
-                        memberships.
-
-
-                        E.g. "\"displayName:-team\"" would only match groups which contain '-team'
-                    groupSelect:
-                      type: array
-                      description: |-
-                        The fields to be fetched on query.
-
-                        E.g. ["id", "displayName", "description"]
-                      items:
-                        type: string
-                    userGroupMemberFilter:
-                      type: string
-                      description: >-
-                        The filter to apply to extract users by groups
-                        memberships.
-
-
-                        E.g. "displayName eq 'Backstage Users'"
-                    userGroupMemberSearch:
-                      type: string
-                      description: >-
-                        The search criteria to apply to extract groups.
-
-
-                        E.g. "\"displayName:-team\"" would only match groups which contain '-team'
-          githubMultiOrg:
-            type: object
-            required:
-              - orgs
-            description: GithubMultiOrgReaderProcessor configuration
-            additionalProperties: false
-            properties:
-              orgs:
-                type: array
-                description: The configuration parameters for each GitHub org to process.
-                items:
-                  type: object
-                  required:
-                    - name
-                  additionalProperties: false
-                  properties:
-                    name:
-                      type: string
-                      description: The name of the GitHub org to process.
-                    groupNamespace:
-                      type: string
-                      description: |-
-                        The namespace of the group created for this org.
-
-                        Defaults to org name if omitted.
-                    userNamespace:
-                      type: string
-                      description: |-
-                        The namespace of the users created from this org.
-
-                        Defaults to empty string if omitted.
+              limit:
+                type: number
+        deepVisibility: frontend
       providers:
         type: object
         description: List of provider-specific options and attributes
-        additionalProperties: false
         properties:
-          awsS3:
-            anyOf:
-              - type: object
-                properties:
-                  bucketName:
-                    type: string
-                    description: (Required) AWS S3 Bucket Name
-                  prefix:
-                    type: string
-                    description: (Optional) AWS S3 Object key prefix If not set, all keys will be
-                      accepted, no filtering will be applied.
-                  region:
-                    type: string
-                    description: (Optional) AWS Region. If not set, AWS_REGION environment variable
-                      or aws config file will be used.
-                  accountId:
-                    type: string
-                    description: (Optional) AWS Account id. If not set, main account is used.
-                  schedule:
-                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                    description: (Optional) TaskScheduleDefinition for the refresh.
-                required:
-                  - bucketName
-                additionalProperties: false
-              - type: object
-                additionalProperties:
-                  type: object
-                  required:
-                    - bucketName
-                  additionalProperties: false
-                  properties:
-                    bucketName:
-                      type: string
-                      description: (Required) AWS S3 Bucket Name
-                    prefix:
-                      type: string
-                      description: (Optional) AWS S3 Object key prefix If not set, all keys will be
-                        accepted, no filtering will be applied.
-                    region:
-                      type: string
-                      description: (Optional) AWS Region. If not set, AWS_REGION environment variable
-                        or aws config file will be used.
-                    accountId:
-                      type: string
-                      description: (Optional) AWS Account id. If not set, main account is used.
-                    schedule:
-                      $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                      description: (Optional) TaskScheduleDefinition for the refresh.
-            description: |-
-              AwsS3EntityProvider configuration
-
-              Uses "default" as default id for the single config variant.
           azureDevOps:
             type: object
             description: AzureDevopsEntityProvider configuration
@@ -2821,7 +2271,6 @@ properties:
                 - host
                 - organization
                 - project
-              additionalProperties: false
               properties:
                 host:
                   type: string
@@ -2845,12 +2294,61 @@ properties:
                 schedule:
                   $ref: "#/definitions/TaskScheduleDefinitionConfig"
                   description: (Optional) TaskScheduleDefinition for the refresh.
+          awsS3:
+            anyOf:
+              - type: object
+                properties:
+                  bucketName:
+                    type: string
+                    description: (Required) AWS S3 Bucket Name
+                  prefix:
+                    type: string
+                    description: (Optional) AWS S3 Object key prefix If not set, all keys will be
+                      accepted, no filtering will be applied.
+                  region:
+                    type: string
+                    description: (Optional) AWS Region. If not set, AWS_REGION environment variable
+                      or aws config file will be used.
+                  accountId:
+                    type: string
+                    description: (Optional) AWS Account id. If not set, main account is used.
+                  schedule:
+                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                    description: (Optional) TaskScheduleDefinition for the refresh.
+                required:
+                  - bucketName
+              - type: object
+                additionalProperties:
+                  type: object
+                  required:
+                    - bucketName
+                  properties:
+                    bucketName:
+                      type: string
+                      description: (Required) AWS S3 Bucket Name
+                    prefix:
+                      type: string
+                      description: (Optional) AWS S3 Object key prefix If not set, all keys will be
+                        accepted, no filtering will be applied.
+                    region:
+                      type: string
+                      description: (Optional) AWS Region. If not set, AWS_REGION environment variable
+                        or aws config file will be used.
+                    accountId:
+                      type: string
+                      description: (Optional) AWS Account id. If not set, main account is used.
+                    schedule:
+                      $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                      description: (Optional) TaskScheduleDefinition for the refresh.
+            description: |-
+              AwsS3EntityProvider configuration
+
+              Uses "default" as default id for the single config variant.
           backstageOpenapi:
             type: object
             required:
               - plugins
             description: BackstageOpenApiEntityProvider configuration
-            additionalProperties: false
             properties:
               plugins:
                 type: array
@@ -2858,78 +2356,6 @@ properties:
                   `InternalOpenApiDocumentationProvider`.
                 items:
                   type: string
-          bitbucketCloud:
-            anyOf:
-              - type: object
-                properties:
-                  catalogPath:
-                    type: string
-                    description: (Optional) Path to the catalog file. Default to
-                      "/catalog-info.yaml".
-                    visibility: frontend
-                  workspace:
-                    type: string
-                    description: (Required) Your workspace.
-                    visibility: frontend
-                  filters:
-                    type: object
-                    description: (Optional) Filters applied to discovered catalog files in
-                      repositories.
-                    visibility: frontend
-                    additionalProperties: false
-                    properties:
-                      repoSlug:
-                        type: string
-                        description: (Optional) Regular expression filter for the repository slug.
-                        visibility: frontend
-                      projectKey:
-                        type: string
-                        description: (Optional) Regular expression filter for the project key.
-                        visibility: frontend
-                  schedule:
-                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                    description: (Optional) TaskScheduleDefinition for the discovery.
-                required:
-                  - workspace
-                additionalProperties: false
-              - type: object
-                additionalProperties:
-                  type: object
-                  required:
-                    - workspace
-                  additionalProperties: false
-                  properties:
-                    catalogPath:
-                      type: string
-                      description: (Optional) Path to the catalog file. Default to
-                        "/catalog-info.yaml".
-                      visibility: frontend
-                    workspace:
-                      type: string
-                      description: (Required) Your workspace.
-                      visibility: frontend
-                    filters:
-                      type: object
-                      description: (Optional) Filters applied to discovered catalog files in
-                        repositories.
-                      visibility: frontend
-                      additionalProperties: false
-                      properties:
-                        repoSlug:
-                          type: string
-                          description: (Optional) Regular expression filter for the repository slug.
-                          visibility: frontend
-                        projectKey:
-                          type: string
-                          description: (Optional) Regular expression filter for the project key.
-                          visibility: frontend
-                    schedule:
-                      $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                      description: (Optional) TaskScheduleDefinition for the discovery.
-            description: |-
-              BitbucketCloudEntityProvider configuration
-
-              Uses "default" as default id for the single config variant.
           bitbucketServer:
             anyOf:
               - type: object
@@ -2944,7 +2370,6 @@ properties:
                     description: (Optional) Filters applied to discovered catalog files in
                       repositories.
                     visibility: frontend
-                    additionalProperties: false
                     properties:
                       repoSlug:
                         type: string
@@ -2957,11 +2382,9 @@ properties:
                   schedule:
                     $ref: "#/definitions/TaskScheduleDefinitionConfig"
                     description: (Optional) TaskScheduleDefinition for the refresh.
-                additionalProperties: false
               - type: object
                 additionalProperties:
                   type: object
-                  additionalProperties: false
                   properties:
                     catalogPath:
                       type: string
@@ -2973,7 +2396,6 @@ properties:
                       description: (Optional) Filters applied to discovered catalog files in
                         repositories.
                       visibility: frontend
-                      additionalProperties: false
                       properties:
                         repoSlug:
                           type: string
@@ -2990,27 +2412,6 @@ properties:
               BitbucketServerEntityProvider configuration
 
               Uses "default" as default id for the single config variant.
-          gcp:
-            type: object
-            description: GCPCatalogModuleConfig configuration
-            additionalProperties: false
-            properties:
-              gke:
-                type: object
-                required:
-                  - parents
-                  - schedule
-                description: Config for GKE clusters
-                additionalProperties: false
-                properties:
-                  parents:
-                    type: array
-                    description: Locations to list clusters from
-                    items:
-                      type: string
-                  schedule:
-                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                    description: (Optional) TaskScheduleDefinition for the refresh.
           gerrit:
             type: object
             description: |-
@@ -3022,7 +2423,6 @@ properties:
               required:
                 - host
                 - query
-              additionalProperties: false
               properties:
                 host:
                   type: string
@@ -3036,259 +2436,6 @@ properties:
                   type: string
                   description: (Optional) Branch. The branch where the provider will try to find
                     entities. Defaults to "master".
-          gitlab:
-            type: object
-            description: GitlabDiscoveryEntityProvider configuration
-            additionalProperties:
-              type: object
-              required:
-                - host
-              additionalProperties: false
-              properties:
-                host:
-                  type: string
-                  description: (Required) Gitlab's host name.
-                group:
-                  type: string
-                  description: (Optional) Gitlab's group[/subgroup] where the discovery is done.
-                    If not defined the whole instance will be scanned.
-                branch:
-                  type: string
-                  description: (Optional) Default branch to read the catalog-info.yaml file. If
-                    not set, 'master' will be used.
-                entityFilename:
-                  type: string
-                  description: (Optional) The name used for the catalog file. If not set,
-                    'catalog-info.yaml' will be used.
-                schedule:
-                  $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                  description: (Optional) TaskScheduleDefinition for the refresh.
-                projectPattern:
-                  type: string
-                  description: (Optional) RegExp for the Project Name Pattern
-                userPattern:
-                  type: string
-                  description: (Optional) RegExp for the User Name Pattern
-                groupPattern:
-                  type: string
-                  description: (Optional) RegExp for the Group Name Pattern
-                skipForkedRepos:
-                  type: boolean
-                  description: (Optional) Skip forked repository
-          microsoftGraphOrg:
-            anyOf:
-              - type: object
-                properties:
-                  target:
-                    type: string
-                    description: The prefix of the target that this matches on, e.g.
-                      "https://graph.microsoft.com/v1.0", with no trailing
-                      slash.
-                  authority:
-                    type: string
-                    description: |-
-                      The auth authority used.
-
-                      Default value "https://login.microsoftonline.com"
-                  tenantId:
-                    type: string
-                    description: The tenant whose org data we are interested in.
-                  clientId:
-                    type: string
-                    description: The OAuth client ID to use for authenticating requests.
-                  clientSecret:
-                    type: string
-                    description: The OAuth client secret to use for authenticating requests.
-                    visibility: secret
-                  queryMode:
-                    type: string
-                    description: >-
-                      By default, the Microsoft Graph API only provides the
-                      basic feature set for querying. Certain features are
-                      limited to advanced query capabilities (see
-                      https://docs.microsoft.com/en-us/graph/aad-advanced-queries)
-                      and need to be enabled.
-
-
-                      Some features like `$expand` are not available for advanced queries, though.
-                  user:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      expand:
-                        type: string
-                        description: |-
-                          The "expand" argument to apply to users.
-
-                          E.g. "manager".
-                      filter:
-                        type: string
-                        description: |-
-                          The filter to apply to extract users.
-
-                          E.g. "accountEnabled eq true and userType eq 'member'"
-                  group:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      expand:
-                        type: string
-                        description: |-
-                          The "expand" argument to apply to groups.
-
-                          E.g. "member".
-                      filter:
-                        type: string
-                        description: >-
-                          The filter to apply to extract groups.
-
-
-                          E.g. "securityEnabled eq false and mailEnabled eq true"
-                      search:
-                        type: string
-                        description: >-
-                          The search criteria to apply to extract users by
-                          groups memberships.
-
-
-                          E.g. "\"displayName:-team\"" would only match groups which contain '-team'
-                      select:
-                        type: array
-                        description: |-
-                          The fields to be fetched on query.
-
-                          E.g. ["id", "displayName", "description"]
-                        items:
-                          type: string
-                  userGroupMember:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      filter:
-                        type: string
-                        description: >-
-                          The filter to apply to extract users by groups
-                          memberships.
-
-
-                          E.g. "displayName eq 'Backstage Users'"
-                      search:
-                        type: string
-                        description: >-
-                          The search criteria to apply to extract groups.
-
-
-                          E.g. "\"displayName:-team\"" would only match groups which contain '-team'
-                  schedule:
-                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                    description: (Optional) TaskScheduleDefinition for the refresh.
-                required:
-                  - target
-                  - tenantId
-                additionalProperties: false
-              - type: object
-                additionalProperties:
-                  type: object
-                  required:
-                    - target
-                    - tenantId
-                    - clientId
-                    - clientSecret
-                  additionalProperties: false
-                  properties:
-                    target:
-                      type: string
-                      description: The prefix of the target that this matches on, e.g.
-                        "https://graph.microsoft.com/v1.0", with no trailing
-                        slash.
-                    authority:
-                      type: string
-                      description: |-
-                        The auth authority used.
-
-                        Default value "https://login.microsoftonline.com"
-                    tenantId:
-                      type: string
-                      description: The tenant whose org data we are interested in.
-                    clientId:
-                      type: string
-                      description: The OAuth client ID to use for authenticating requests.
-                    clientSecret:
-                      type: string
-                      description: The OAuth client secret to use for authenticating requests.
-                      visibility: secret
-                    queryMode:
-                      type: string
-                      description: >-
-                        By default, the Microsoft Graph API only provides the
-                        basic feature set for querying. Certain features are
-                        limited to advanced query capabilities (see
-                        https://docs.microsoft.com/en-us/graph/aad-advanced-queries)
-                        and need to be enabled.
-
-
-                        Some features like `$expand` are not available for advanced queries, though.
-                    user:
-                      type: object
-                      additionalProperties: false
-                      properties:
-                        filter:
-                          type: string
-                          description: >-
-                            The filter to apply to extract users.
-
-
-                            E.g. "accountEnabled eq true and userType eq 'member'"
-                    group:
-                      type: object
-                      additionalProperties: false
-                      properties:
-                        filter:
-                          type: string
-                          description: >-
-                            The filter to apply to extract groups.
-
-
-                            E.g. "securityEnabled eq false and mailEnabled eq true"
-                        search:
-                          type: string
-                          description: >-
-                            The search criteria to apply to extract users by
-                            groups memberships.
-
-
-                            E.g. "\"displayName:-team\"" would only match groups which contain '-team'
-                        select:
-                          type: array
-                          description: |-
-                            The fields to be fetched on query.
-
-                            E.g. ["id", "displayName", "description"]
-                          items:
-                            type: string
-                    userGroupMember:
-                      type: object
-                      additionalProperties: false
-                      properties:
-                        filter:
-                          type: string
-                          description: >-
-                            The filter to apply to extract users by groups
-                            memberships.
-
-
-                            E.g. "displayName eq 'Backstage Users'"
-                        search:
-                          type: string
-                          description: >-
-                            The search criteria to apply to extract groups.
-
-
-                            E.g. "\"displayName:-team\"" would only match groups which contain '-team'
-                    schedule:
-                      $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                      description: (Optional) TaskScheduleDefinition for the refresh.
-            description: MicrosoftGraphOrgEntityProvider configuration.
           github:
             anyOf:
               - type: object
@@ -3308,7 +2455,6 @@ properties:
                   filters:
                     type: object
                     description: (Optional) Filter configuration.
-                    additionalProperties: false
                     properties:
                       branch:
                         type: string
@@ -3323,7 +2469,6 @@ properties:
                       topic:
                         type: object
                         description: (Optional) GitHub topic-based filters.
-                        additionalProperties: false
                         properties:
                           include:
                             type: array
@@ -3365,13 +2510,11 @@ properties:
                     description: (Optional) TaskScheduleDefinition for the refresh.
                 required:
                   - organization
-                additionalProperties: false
               - type: object
                 additionalProperties:
                   type: object
                   required:
                     - organization
-                  additionalProperties: false
                   properties:
                     host:
                       type: string
@@ -3388,7 +2531,6 @@ properties:
                     filters:
                       type: object
                       description: (Optional) Filter configuration.
-                      additionalProperties: false
                       properties:
                         branch:
                           type: string
@@ -3403,7 +2545,6 @@ properties:
                         topic:
                           type: object
                           description: (Optional) Allow Forks to be evaluated.
-                          additionalProperties: false
                           properties:
                             include:
                               type: array
@@ -3478,7 +2619,6 @@ properties:
                   - id
                   - githubUrl
                   - schedule
-                additionalProperties: false
               - type: array
                 items:
                   type: object
@@ -3486,7 +2626,6 @@ properties:
                     - id
                     - githubUrl
                     - schedule
-                  additionalProperties: false
                   properties:
                     id:
                       type: string
@@ -3512,6 +2651,337 @@ properties:
                       $ref: "#/definitions/TaskScheduleDefinitionConfig"
                       description: The refresh schedule to use.
             description: Configuration for catalogModuleGithubOrgEntityProvider
+          gcp:
+            type: object
+            description: GCPCatalogModuleConfig configuration
+            properties:
+              gke:
+                type: object
+                required:
+                  - parents
+                  - schedule
+                description: Config for GKE clusters
+                properties:
+                  parents:
+                    type: array
+                    description: Locations to list clusters from
+                    items:
+                      type: string
+                  schedule:
+                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                    description: (Optional) TaskScheduleDefinition for the refresh.
+          bitbucketCloud:
+            anyOf:
+              - type: object
+                properties:
+                  catalogPath:
+                    type: string
+                    description: (Optional) Path to the catalog file. Default to
+                      "/catalog-info.yaml".
+                    visibility: frontend
+                  workspace:
+                    type: string
+                    description: (Required) Your workspace.
+                    visibility: frontend
+                  filters:
+                    type: object
+                    description: (Optional) Filters applied to discovered catalog files in
+                      repositories.
+                    visibility: frontend
+                    properties:
+                      repoSlug:
+                        type: string
+                        description: (Optional) Regular expression filter for the repository slug.
+                        visibility: frontend
+                      projectKey:
+                        type: string
+                        description: (Optional) Regular expression filter for the project key.
+                        visibility: frontend
+                  schedule:
+                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                    description: (Optional) TaskScheduleDefinition for the discovery.
+                required:
+                  - workspace
+              - type: object
+                additionalProperties:
+                  type: object
+                  required:
+                    - workspace
+                  properties:
+                    catalogPath:
+                      type: string
+                      description: (Optional) Path to the catalog file. Default to
+                        "/catalog-info.yaml".
+                      visibility: frontend
+                    workspace:
+                      type: string
+                      description: (Required) Your workspace.
+                      visibility: frontend
+                    filters:
+                      type: object
+                      description: (Optional) Filters applied to discovered catalog files in
+                        repositories.
+                      visibility: frontend
+                      properties:
+                        repoSlug:
+                          type: string
+                          description: (Optional) Regular expression filter for the repository slug.
+                          visibility: frontend
+                        projectKey:
+                          type: string
+                          description: (Optional) Regular expression filter for the project key.
+                          visibility: frontend
+                    schedule:
+                      $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                      description: (Optional) TaskScheduleDefinition for the discovery.
+            description: |-
+              BitbucketCloudEntityProvider configuration
+
+              Uses "default" as default id for the single config variant.
+          microsoftGraphOrg:
+            anyOf:
+              - type: object
+                properties:
+                  target:
+                    type: string
+                    description: The prefix of the target that this matches on, e.g.
+                      "https://graph.microsoft.com/v1.0", with no trailing
+                      slash.
+                  authority:
+                    type: string
+                    description: |-
+                      The auth authority used.
+
+                      Default value "https://login.microsoftonline.com"
+                  tenantId:
+                    type: string
+                    description: The tenant whose org data we are interested in.
+                  clientId:
+                    type: string
+                    description: The OAuth client ID to use for authenticating requests.
+                  clientSecret:
+                    type: string
+                    description: The OAuth client secret to use for authenticating requests.
+                    visibility: secret
+                  queryMode:
+                    type: string
+                    description: >-
+                      By default, the Microsoft Graph API only provides the
+                      basic feature set for querying. Certain features are
+                      limited to advanced query capabilities (see
+                      https://docs.microsoft.com/en-us/graph/aad-advanced-queries)
+                      and need to be enabled.
+
+
+                      Some features like `$expand` are not available for advanced queries, though.
+                  user:
+                    type: object
+                    properties:
+                      expand:
+                        type: string
+                        description: |-
+                          The "expand" argument to apply to users.
+
+                          E.g. "manager".
+                      filter:
+                        type: string
+                        description: |-
+                          The filter to apply to extract users.
+
+                          E.g. "accountEnabled eq true and userType eq 'member'"
+                  group:
+                    type: object
+                    properties:
+                      expand:
+                        type: string
+                        description: |-
+                          The "expand" argument to apply to groups.
+
+                          E.g. "member".
+                      filter:
+                        type: string
+                        description: >-
+                          The filter to apply to extract groups.
+
+
+                          E.g. "securityEnabled eq false and mailEnabled eq true"
+                      search:
+                        type: string
+                        description: >-
+                          The search criteria to apply to extract users by
+                          groups memberships.
+
+
+                          E.g. "\"displayName:-team\"" would only match groups which contain '-team'
+                      select:
+                        type: array
+                        description: |-
+                          The fields to be fetched on query.
+
+                          E.g. ["id", "displayName", "description"]
+                        items:
+                          type: string
+                  userGroupMember:
+                    type: object
+                    properties:
+                      filter:
+                        type: string
+                        description: >-
+                          The filter to apply to extract users by groups
+                          memberships.
+
+
+                          E.g. "displayName eq 'Backstage Users'"
+                      search:
+                        type: string
+                        description: >-
+                          The search criteria to apply to extract groups.
+
+
+                          E.g. "\"displayName:-team\"" would only match groups which contain '-team'
+                  schedule:
+                    $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                    description: (Optional) TaskScheduleDefinition for the refresh.
+                required:
+                  - target
+                  - tenantId
+              - type: object
+                additionalProperties:
+                  type: object
+                  required:
+                    - target
+                    - tenantId
+                    - clientId
+                    - clientSecret
+                  properties:
+                    target:
+                      type: string
+                      description: The prefix of the target that this matches on, e.g.
+                        "https://graph.microsoft.com/v1.0", with no trailing
+                        slash.
+                    authority:
+                      type: string
+                      description: |-
+                        The auth authority used.
+
+                        Default value "https://login.microsoftonline.com"
+                    tenantId:
+                      type: string
+                      description: The tenant whose org data we are interested in.
+                    clientId:
+                      type: string
+                      description: The OAuth client ID to use for authenticating requests.
+                    clientSecret:
+                      type: string
+                      description: The OAuth client secret to use for authenticating requests.
+                      visibility: secret
+                    queryMode:
+                      type: string
+                      description: >-
+                        By default, the Microsoft Graph API only provides the
+                        basic feature set for querying. Certain features are
+                        limited to advanced query capabilities (see
+                        https://docs.microsoft.com/en-us/graph/aad-advanced-queries)
+                        and need to be enabled.
+
+
+                        Some features like `$expand` are not available for advanced queries, though.
+                    user:
+                      type: object
+                      properties:
+                        filter:
+                          type: string
+                          description: >-
+                            The filter to apply to extract users.
+
+
+                            E.g. "accountEnabled eq true and userType eq 'member'"
+                    group:
+                      type: object
+                      properties:
+                        filter:
+                          type: string
+                          description: >-
+                            The filter to apply to extract groups.
+
+
+                            E.g. "securityEnabled eq false and mailEnabled eq true"
+                        search:
+                          type: string
+                          description: >-
+                            The search criteria to apply to extract users by
+                            groups memberships.
+
+
+                            E.g. "\"displayName:-team\"" would only match groups which contain '-team'
+                        select:
+                          type: array
+                          description: |-
+                            The fields to be fetched on query.
+
+                            E.g. ["id", "displayName", "description"]
+                          items:
+                            type: string
+                    userGroupMember:
+                      type: object
+                      properties:
+                        filter:
+                          type: string
+                          description: >-
+                            The filter to apply to extract users by groups
+                            memberships.
+
+
+                            E.g. "displayName eq 'Backstage Users'"
+                        search:
+                          type: string
+                          description: >-
+                            The search criteria to apply to extract groups.
+
+
+                            E.g. "\"displayName:-team\"" would only match groups which contain '-team'
+                    schedule:
+                      $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                      description: (Optional) TaskScheduleDefinition for the refresh.
+            description: MicrosoftGraphOrgEntityProvider configuration.
+          gitlab:
+            type: object
+            description: GitlabDiscoveryEntityProvider configuration
+            additionalProperties:
+              type: object
+              required:
+                - host
+              properties:
+                host:
+                  type: string
+                  description: (Required) Gitlab's host name.
+                group:
+                  type: string
+                  description: (Optional) Gitlab's group[/subgroup] where the discovery is done.
+                    If not defined the whole instance will be scanned.
+                branch:
+                  type: string
+                  description: (Optional) Default branch to read the catalog-info.yaml file. If
+                    not set, 'master' will be used.
+                entityFilename:
+                  type: string
+                  description: (Optional) The name used for the catalog file. If not set,
+                    'catalog-info.yaml' will be used.
+                schedule:
+                  $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                  description: (Optional) TaskScheduleDefinition for the refresh.
+                projectPattern:
+                  type: string
+                  description: (Optional) RegExp for the Project Name Pattern
+                userPattern:
+                  type: string
+                  description: (Optional) RegExp for the User Name Pattern
+                groupPattern:
+                  type: string
+                  description: (Optional) RegExp for the Group Name Pattern
+                skipForkedRepos:
+                  type: boolean
+                  description: (Optional) Skip forked repository
           puppetdb:
             anyOf:
               - type: object
@@ -3527,13 +2997,11 @@ properties:
                     description: (Optional) Task schedule definition for the refresh.
                 required:
                   - baseUrl
-                additionalProperties: false
               - type: object
                 additionalProperties:
                   type: object
                   required:
                     - baseUrl
-                  additionalProperties: false
                   properties:
                     baseUrl:
                       type: string
@@ -3546,10 +3014,392 @@ properties:
                       description: (Optional) Task schedule definition for the refresh.
             description: PuppetDB Entity Provider configuration. Uses "default" as default
               ID for the single config variant.
+      processors:
+        type: object
+        description: List of processor-specific options and attributes
+        properties:
+          awsOrganization:
+            type: object
+            required:
+              - provider
+            description: AwsOrganizationCloudAccountProcessor configuration
+            properties:
+              provider:
+                type: object
+                properties:
+                  roleArn:
+                    type: string
+                    description: The role to be assumed by this processor
+          githubMultiOrg:
+            type: object
+            required:
+              - orgs
+            description: GithubMultiOrgReaderProcessor configuration
+            properties:
+              orgs:
+                type: array
+                description: The configuration parameters for each GitHub org to process.
+                items:
+                  type: object
+                  required:
+                    - name
+                  properties:
+                    name:
+                      type: string
+                      description: The name of the GitHub org to process.
+                    groupNamespace:
+                      type: string
+                      description: |-
+                        The namespace of the group created for this org.
+
+                        Defaults to org name if omitted.
+                    userNamespace:
+                      type: string
+                      description: |-
+                        The namespace of the users created from this org.
+
+                        Defaults to empty string if omitted.
+          ldapOrg:
+            type: object
+            required:
+              - providers
+            description: LdapOrgReaderProcessor configuration
+            properties:
+              providers:
+                type: array
+                description: The configuration parameters for each single LDAP provider.
+                items:
+                  type: object
+                  required:
+                    - target
+                    - users
+                    - groups
+                  properties:
+                    target:
+                      type: string
+                      description: The prefix of the target that this matches on, e.g.
+                        "ldaps://ds.example.net", with no trailing slash.
+                    bind:
+                      type: object
+                      required:
+                        - dn
+                        - secret
+                      description: The settings to use for the bind command. If none are specified,
+                        the bind command is not issued.
+                      properties:
+                        dn:
+                          type: string
+                          description: >-
+                            The DN of the user to auth as.
+
+
+                            E.g. "uid=ldap-robot,ou=robots,ou=example,dc=example,dc=net"
+                        secret:
+                          type: string
+                          description: The secret of the user to auth as (its password).
+                          visibility: secret
+                    tls:
+                      type: object
+                      description: TLS settings
+                      properties:
+                        rejectUnauthorized:
+                          type: boolean
+                    users:
+                      type: object
+                      required:
+                        - dn
+                        - options
+                      description: The settings that govern the reading and interpretation of users.
+                      properties:
+                        dn:
+                          type: string
+                          description: |-
+                            The DN under which users are stored.
+
+                            E.g. "ou=people,ou=example,dc=example,dc=net"
+                        options:
+                          type: object
+                          description: >-
+                            The search options to use. The default is scope
+                            "one" and attributes "*" and "+".
+
+
+                            It is common to want to specify a filter, to narrow down the set of matching items.
+                          properties:
+                            scope:
+                              type: string
+                              enum:
+                                - base
+                                - one
+                                - sub
+                            filter:
+                              type: string
+                            attributes:
+                              anyOf:
+                                - type: string
+                                - type: array
+                                  items:
+                                    type: string
+                            sizeLimit:
+                              type: number
+                            timeLimit:
+                              type: number
+                            derefAliases:
+                              type: number
+                            typesOnly:
+                              type: boolean
+                            paged:
+                              anyOf:
+                                - type: boolean
+                                - type: object
+                                  properties:
+                                    pageSize:
+                                      type: number
+                                    pagePause:
+                                      type: boolean
+                        set:
+                          type: object
+                          description: >-
+                            JSON paths (on a.b.c form) and hard coded values to
+                            set on those paths.
+
+
+                            This can be useful for example if you want to hard code a namespace or similar on the generated entities.
+                        map:
+                          type: object
+                          description: Mappings from well known entity fields, to LDAP attribute names
+                          properties:
+                            rdn:
+                              type: string
+                              description: The name of the attribute that holds the relative distinguished
+                                name of each entry. Defaults to "uid".
+                            name:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                metadata.name field of the entity. Defaults to
+                                "uid".
+                            description:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                metadata.description field of the entity.
+                            displayName:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                spec.profile.displayName field of the entity.
+                                Defaults to "cn".
+                            email:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                spec.profile.email field of the entity. Defaults
+                                to "mail".
+                            picture:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                spec.profile.picture field of the entity.
+                            memberOf:
+                              type: string
+                              description: The name of the attribute that shall be used for the values of the
+                                spec.memberOf field of the entity. Defaults to
+                                "memberOf".
+                    groups:
+                      type: object
+                      required:
+                        - dn
+                        - options
+                      description: The settings that govern the reading and interpretation of groups.
+                      properties:
+                        dn:
+                          type: string
+                          description: |-
+                            The DN under which groups are stored.
+
+                            E.g. "ou=people,ou=example,dc=example,dc=net"
+                        options:
+                          type: object
+                          description: >-
+                            The search options to use. The default is scope
+                            "one" and attributes "*" and "+".
+
+
+                            It is common to want to specify a filter, to narrow down the set of matching items.
+                          properties:
+                            scope:
+                              type: string
+                              enum:
+                                - base
+                                - one
+                                - sub
+                            filter:
+                              type: string
+                            attributes:
+                              anyOf:
+                                - type: string
+                                - type: array
+                                  items:
+                                    type: string
+                            sizeLimit:
+                              type: number
+                            timeLimit:
+                              type: number
+                            derefAliases:
+                              type: number
+                            typesOnly:
+                              type: boolean
+                            paged:
+                              anyOf:
+                                - type: boolean
+                                - type: object
+                                  properties:
+                                    pageSize:
+                                      type: number
+                                    pagePause:
+                                      type: boolean
+                        set:
+                          type: object
+                          description: >-
+                            JSON paths (on a.b.c form) and hard coded values to
+                            set on those paths.
+
+
+                            This can be useful for example if you want to hard code a namespace or similar on the generated entities.
+                        map:
+                          type: object
+                          description: Mappings from well known entity fields, to LDAP attribute names
+                          properties:
+                            rdn:
+                              type: string
+                              description: The name of the attribute that holds the relative distinguished
+                                name of each entry. Defaults to "cn".
+                            name:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                metadata.name field of the entity. Defaults to
+                                "cn".
+                            description:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                metadata.description field of the entity.
+                                Defaults to "description".
+                            type:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                spec.type field of the entity. Defaults to
+                                "groupType".
+                            displayName:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                spec.profile.displayName field of the entity.
+                                Defaults to "cn".
+                            email:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                spec.profile.email field of the entity.
+                            picture:
+                              type: string
+                              description: The name of the attribute that shall be used for the value of the
+                                spec.profile.picture field of the entity.
+                            memberOf:
+                              type: string
+                              description: The name of the attribute that shall be used for the values of the
+                                spec.parent field of the entity. Defaults to
+                                "memberOf".
+                            members:
+                              type: string
+                              description: The name of the attribute that shall be used for the values of the
+                                spec.children field of the entity. Defaults to
+                                "member".
+          microsoftGraphOrg:
+            type: object
+            required:
+              - providers
+            description: MicrosoftGraphOrgReaderProcessor configuration
+            deprecated: Use `catalog.providers.microsoftGraphOrg` instead.
+            properties:
+              providers:
+                type: array
+                description: The configuration parameters for each single Microsoft Graph
+                  provider.
+                items:
+                  type: object
+                  required:
+                    - target
+                    - tenantId
+                  properties:
+                    target:
+                      type: string
+                      description: The prefix of the target that this matches on, e.g.
+                        "https://graph.microsoft.com/v1.0", with no trailing
+                        slash.
+                    authority:
+                      type: string
+                      description: |-
+                        The auth authority used.
+
+                        Default value "https://login.microsoftonline.com"
+                    tenantId:
+                      type: string
+                      description: The tenant whose org data we are interested in.
+                    clientId:
+                      type: string
+                      description: The OAuth client ID to use for authenticating requests.
+                    clientSecret:
+                      type: string
+                      description: The OAuth client secret to use for authenticating requests.
+                      visibility: secret
+                    userFilter:
+                      type: string
+                      description: |-
+                        The filter to apply to extract users.
+
+                        E.g. "accountEnabled eq true and userType eq 'member'"
+                    groupFilter:
+                      type: string
+                      description: |-
+                        The filter to apply to extract groups.
+
+                        E.g. "securityEnabled eq false and mailEnabled eq true"
+                    userSelect:
+                      type: array
+                      description: |-
+                        The fields to be fetched on query.
+
+                        E.g. ["id", "displayName", "description"]
+                      items:
+                        type: string
+                    groupSearch:
+                      type: string
+                      description: >-
+                        The search criteria to apply to extract users by groups
+                        memberships.
+
+
+                        E.g. "\"displayName:-team\"" would only match groups which contain '-team'
+                    groupSelect:
+                      type: array
+                      description: |-
+                        The fields to be fetched on query.
+
+                        E.g. ["id", "displayName", "description"]
+                      items:
+                        type: string
+                    userGroupMemberFilter:
+                      type: string
+                      description: >-
+                        The filter to apply to extract users by groups
+                        memberships.
+
+
+                        E.g. "displayName eq 'Backstage Users'"
+                    userGroupMemberSearch:
+                      type: string
+                      description: >-
+                        The search criteria to apply to extract groups.
+
+
+                        E.g. "\"displayName:-team\"" would only match groups which contain '-team'
       import:
         type: object
         description: List of import flow specific options and attributes
-        additionalProperties: false
         properties:
           entityFilename:
             type: string
@@ -3567,7 +3417,6 @@ properties:
     required:
       - providers
     description: LdapOrgEntityProvider / LdapOrgReaderProcessor configuration
-    additionalProperties: false
     properties:
       providers:
         type: array
@@ -3578,7 +3427,6 @@ properties:
             - target
             - users
             - groups
-          additionalProperties: false
           properties:
             target:
               type: string
@@ -3591,7 +3439,6 @@ properties:
                 - secret
               description: The settings to use for the bind command. If none are specified,
                 the bind command is not issued.
-              additionalProperties: false
               properties:
                 dn:
                   type: string
@@ -3606,7 +3453,6 @@ properties:
             tls:
               type: object
               description: TLS settings
-              additionalProperties: false
               properties:
                 rejectUnauthorized:
                   type: boolean
@@ -3616,7 +3462,6 @@ properties:
                 - dn
                 - options
               description: The settings that govern the reading and interpretation of users.
-              additionalProperties: false
               properties:
                 dn:
                   type: string
@@ -3632,7 +3477,6 @@ properties:
 
 
                     It is common to want to specify a filter, to narrow down the set of matching items.
-                  additionalProperties: false
                   properties:
                     scope:
                       type: string
@@ -3665,7 +3509,6 @@ properties:
                               type: number
                             pagePause:
                               type: boolean
-                          additionalProperties: false
                 set:
                   type: object
                   description: >-
@@ -3677,7 +3520,6 @@ properties:
                 map:
                   type: object
                   description: Mappings from well known entity fields, to LDAP attribute names
-                  additionalProperties: false
                   properties:
                     rdn:
                       type: string
@@ -3716,7 +3558,6 @@ properties:
                 - dn
                 - options
               description: The settings that govern the reading and interpretation of groups.
-              additionalProperties: false
               properties:
                 dn:
                   type: string
@@ -3732,7 +3573,6 @@ properties:
 
 
                     It is common to want to specify a filter, to narrow down the set of matching items.
-                  additionalProperties: false
                   properties:
                     scope:
                       type: string
@@ -3765,7 +3605,6 @@ properties:
                               type: number
                             pagePause:
                               type: boolean
-                          additionalProperties: false
                 set:
                   type: object
                   description: >-
@@ -3777,7 +3616,6 @@ properties:
                 map:
                   type: object
                   description: Mappings from well known entity fields, to LDAP attribute names
-                  additionalProperties: false
                   properties:
                     rdn:
                       type: string
@@ -3817,22 +3655,10 @@ properties:
                       type: string
                       description: The name of the attribute that shall be used for the values of the
                         spec.children field of the entity. Defaults to "member".
-  codescene:
-    type: object
-    required:
-      - baseUrl
-    description: Configuration options for the CodeScene plugin
-    additionalProperties: false
-    properties:
-      baseUrl:
-        type: string
-        description: The base url of the CodeScene installation.
-        visibility: frontend
   costInsights:
     type: object
     required:
       - engineerCost
-    additionalProperties: false
     properties:
       engineerCost:
         type: number
@@ -3846,14 +3672,12 @@ properties:
       baseCurrency:
         type: object
         visibility: frontend
-        additionalProperties: false
         properties:
           locale:
             type: string
             visibility: frontend
           options:
             type: object
-            additionalProperties: false
             properties:
               localeMatcher:
                 type: string
@@ -3891,7 +3715,6 @@ properties:
           type: object
           required:
             - name
-          additionalProperties: false
           properties:
             name:
               type: string
@@ -3912,7 +3735,6 @@ properties:
           type: object
           required:
             - name
-          additionalProperties: false
           properties:
             name:
               type: string
@@ -3927,7 +3749,6 @@ properties:
           required:
             - label
             - unit
-          additionalProperties: false
           properties:
             label:
               type: string
@@ -3947,15 +3768,34 @@ properties:
             default:
               type: boolean
               visibility: frontend
+  dynatrace:
+    type: object
+    required:
+      - baseUrl
+    description: dynatrace config
+    visibility: frontend
+    properties:
+      baseUrl:
+        type: string
+        description: base url for links
+        visibility: frontend
+  codescene:
+    type: object
+    required:
+      - baseUrl
+    description: Configuration options for the CodeScene plugin
+    properties:
+      baseUrl:
+        type: string
+        description: The base url of the CodeScene installation.
+        visibility: frontend
   devTools:
     type: object
     description: DevTools configuration.
-    additionalProperties: false
     properties:
       externalDependencies:
         type: object
         description: External dependency configuration.
-        additionalProperties: false
         properties:
           endpoints:
             type: array
@@ -3966,7 +3806,6 @@ properties:
                 - name
                 - type
                 - target
-              additionalProperties: false
               properties:
                 name:
                   type: string
@@ -3981,7 +3820,6 @@ properties:
       info:
         type: object
         description: Info configuration
-        additionalProperties: false
         properties:
           packagePrefixes:
             type: array
@@ -3989,48 +3827,21 @@ properties:
               available dependencies (default is ["@backstage"])
             items:
               type: string
-  dynatrace:
-    type: object
-    required:
-      - baseUrl
-    description: dynatrace config
-    visibility: frontend
-    additionalProperties: false
-    properties:
-      baseUrl:
-        type: string
-        description: base url for links
-        visibility: frontend
   events:
     type: object
-    additionalProperties: false
     properties:
-      http:
-        type: object
-        additionalProperties: false
-        properties:
-          topics:
-            type: array
-            description: Topics for which a route has to be registered at which we can
-              receive events via HTTP POST requests (i.e. received from
-              webhooks).
-            items:
-              type: string
       modules:
         type: object
-        additionalProperties: false
         properties:
           awsSqs:
             type: object
             description: events-backend-module-aws-sqs plugin configuration.
-            additionalProperties: false
             properties:
               awsSqsConsumingEventPublisher:
                 type: object
                 required:
                   - topics
                 description: Configuration for AwsSqsConsumingEventPublisher.
-                additionalProperties: false
                 properties:
                   topics:
                     type: object
@@ -4042,7 +3853,6 @@ properties:
                         - queue
                         - timeout
                         - waitTimeAfterEmptyReceive
-                      additionalProperties: false
                       properties:
                         queue:
                           type: object
@@ -4052,7 +3862,6 @@ properties:
                             - visibilityTimeout
                             - waitTime
                           description: (Required) Queue-related configuration.
-                          additionalProperties: false
                           properties:
                             region:
                               type: string
@@ -4081,23 +3890,9 @@ properties:
                           $ref: "#/definitions/HumanDuration"
                           description: "(Optional) Wait time before polling again if no message was
                             received. Default: 1 minute."
-          gitlab:
-            type: object
-            description: events-backend-module-gitlab plugin configuration.
-            additionalProperties: false
-            properties:
-              webhookSecret:
-                type: string
-                description: >-
-                  Secret token for webhook requests used to verify tokens.
-
-
-                  See https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#validate-payloads-by-using-a-secret-token for more details.
-                visibility: secret
           github:
             type: object
             description: events-backend-module-github plugin configuration.
-            additionalProperties: false
             properties:
               webhookSecret:
                 type: string
@@ -4107,9 +3902,30 @@ properties:
 
                   See https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks for more details.
                 visibility: secret
+          gitlab:
+            type: object
+            description: events-backend-module-gitlab plugin configuration.
+            properties:
+              webhookSecret:
+                type: string
+                description: >-
+                  Secret token for webhook requests used to verify tokens.
+
+
+                  See https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#validate-payloads-by-using-a-secret-token for more details.
+                visibility: secret
+      http:
+        type: object
+        properties:
+          topics:
+            type: array
+            description: Topics for which a route has to be registered at which we can
+              receive events via HTTP POST requests (i.e. received from
+              webhooks).
+            items:
+              type: string
   explore:
     type: object
-    additionalProperties: false
     properties:
       tools:
         type: array
@@ -4120,7 +3936,6 @@ properties:
             - title
             - url
             - image
-          additionalProperties: false
           properties:
             title:
               type: string
@@ -4136,85 +3951,10 @@ properties:
                 type: string
             lifecycle:
               type: string
-  fossa:
-    type: object
-    additionalProperties: false
-    properties:
-      organizationId:
-        type: string
-        description: The organization id in fossa.
-        visibility: frontend
-      externalLinkBaseUrl:
-        type: string
-        description: The base url to use for external links (from Backstage to Fossa).
-        visibility: frontend
-  home:
-    type: object
-    additionalProperties: false
-    properties:
-      topVisits:
-        type: object
-        description: Top visited plugin
-        visibility: frontend
-        additionalProperties: false
-        properties:
-          filterBy:
-            type: array
-            description: Filter By config
-            visibility: frontend
-            items:
-              type: object
-              required:
-                - field
-                - operator
-                - value
-              additionalProperties: false
-              properties:
-                field:
-                  type: string
-                  visibility: frontend
-                operator:
-                  type: string
-                  visibility: frontend
-                value:
-                  type:
-                    - string
-                    - number
-                  visibility: frontend
-      recentVisits:
-        type: object
-        description: Recent visited plugin
-        visibility: frontend
-        additionalProperties: false
-        properties:
-          filterBy:
-            type: array
-            description: Filter By config
-            visibility: frontend
-            items:
-              type: object
-              required:
-                - field
-                - operator
-                - value
-              additionalProperties: false
-              properties:
-                field:
-                  type: string
-                  visibility: frontend
-                operator:
-                  type: string
-                  visibility: frontend
-                value:
-                  type:
-                    - string
-                    - number
-                  visibility: frontend
   ilert:
     type: object
     required:
       - baseUrl
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -4225,20 +3965,8 @@ properties:
         type: string
         description: Path to use for requests via the proxy, defaults to /ilert/api
         visibility: frontend
-  gocd:
-    type: object
-    required:
-      - baseUrl
-    description: Configurations for the GoCD plugin
-    additionalProperties: false
-    properties:
-      baseUrl:
-        type: string
-        description: The base url of the GoCD installation.
-        visibility: frontend
   jenkins:
     type: object
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -4262,7 +3990,6 @@ properties:
             - baseUrl
             - username
             - apiKey
-          additionalProperties: false
           properties:
             name:
               type: string
@@ -4294,13 +4021,84 @@ properties:
                 authorization:
                   type: string
                   visibility: secret
+  home:
+    type: object
+    properties:
+      topVisits:
+        type: object
+        description: Top visited plugin
+        visibility: frontend
+        properties:
+          filterBy:
+            type: array
+            description: Filter By config
+            visibility: frontend
+            items:
+              type: object
+              required:
+                - field
+                - operator
+                - value
+              properties:
+                field:
+                  type: string
+                  visibility: frontend
+                operator:
+                  type: string
+                  visibility: frontend
+                value:
+                  type:
+                    - string
+                    - number
+                  visibility: frontend
+      recentVisits:
+        type: object
+        description: Recent visited plugin
+        visibility: frontend
+        properties:
+          filterBy:
+            type: array
+            description: Filter By config
+            visibility: frontend
+            items:
+              type: object
+              required:
+                - field
+                - operator
+                - value
+              properties:
+                field:
+                  type: string
+                  visibility: frontend
+                operator:
+                  type: string
+                  visibility: frontend
+                value:
+                  type:
+                    - string
+                    - number
+                  visibility: frontend
+  fossa:
+    type: object
+    properties:
+      organizationId:
+        type: string
+        description: The organization id in fossa.
+        visibility: frontend
+      externalLinkBaseUrl:
+        type: string
+        description: The base url to use for external links (from Backstage to Fossa).
+        visibility: frontend
   kafka:
     type: object
     required:
       - clientId
       - clusters
-    additionalProperties: false
     properties:
+      clientId:
+        type: string
+        description: Client ID used to Backstage uses to identify when connecting to the
+          Kafka cluster.
       clusters:
         type: array
         items:
@@ -4308,15 +4106,10 @@ properties:
           required:
             - brokers
             - name
-          additionalProperties: false
           properties:
             name:
               type: string
               description: Cluster name
-              visibility: frontend
-            dashboardUrl:
-              type: string
-              description: Cluster dashboard url
               visibility: frontend
             brokers:
               type: array
@@ -4338,7 +4131,6 @@ properties:
                       type: string
                     rejectUnauthorized:
                       type: boolean
-                  additionalProperties: false
                 - type: boolean
               description: Optional SSL connection parameters to connect to the cluster.
                 Passed directly to Node tls.connect. See
@@ -4350,7 +4142,6 @@ properties:
                 - username
                 - password
               description: Optional SASL connection parameters.
-              additionalProperties: false
               properties:
                 mechanism:
                   type: string
@@ -4363,16 +4154,15 @@ properties:
                 password:
                   type: string
                   visibility: secret
-      clientId:
-        type: string
-        description: Client ID used to Backstage uses to identify when connecting to the
-          Kafka cluster.
+            dashboardUrl:
+              type: string
+              description: Cluster dashboard url
+              visibility: frontend
   kubernetes:
     type: object
     required:
       - serviceLocatorMethod
       - clusterLocatorMethods
-    additionalProperties: false
     properties:
       objectTypes:
         type: array
@@ -4396,7 +4186,6 @@ properties:
         type: object
         required:
           - type
-        additionalProperties: false
         properties:
           type:
             type: string
@@ -4418,7 +4207,6 @@ properties:
                     required:
                       - url
                       - name
-                    additionalProperties: false
                     properties:
                       url:
                         type: string
@@ -4461,7 +4249,6 @@ properties:
               required:
                 - type
                 - clusters
-              additionalProperties: false
             - type: object
               properties:
                 type:
@@ -4470,7 +4257,6 @@ properties:
                   visibility: frontend
               required:
                 - type
-              additionalProperties: false
             - type: object
               properties:
                 type:
@@ -4479,7 +4265,6 @@ properties:
                   visibility: frontend
               required:
                 - type
-              additionalProperties: false
             - type: object
               properties:
                 type:
@@ -4504,7 +4289,6 @@ properties:
               required:
                 - type
                 - projectId
-              additionalProperties: false
       customResources:
         type: array
         items:
@@ -4513,7 +4297,6 @@ properties:
             - group
             - apiVersion
             - plural
-          additionalProperties: false
           properties:
             group:
               type: string
@@ -4527,8 +4310,6 @@ properties:
           will be used to make requests for the corresponding object. If running
           a legacy Kubernetes version, you may use this to override the default
           api versions that are not supported in your cluster.
-        additionalProperties:
-          type: string
         properties:
           pods:
             type: string
@@ -4559,15 +4340,23 @@ properties:
       podExecTerminal:
         type: object
         description: Pod Exec Terminal config
-        additionalProperties: false
         properties:
           enabled:
             type: boolean
             description: Enable `PodExecTerminal` UI feature
             visibility: frontend
+  gocd:
+    type: object
+    required:
+      - baseUrl
+    description: Configurations for the GoCD plugin
+    properties:
+      baseUrl:
+        type: string
+        description: The base url of the GoCD installation.
+        visibility: frontend
   octopusdeploy:
     type: object
-    additionalProperties: false
     properties:
       webBaseUrl:
         type: string
@@ -4579,7 +4368,6 @@ properties:
       - baseUrl
     description: Configurations for the OpenCost plugin
     visibility: frontend
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -4589,76 +4377,16 @@ properties:
     type: object
     description: Configuration for the PagerDuty plugin
     visibility: frontend
-    additionalProperties: false
     properties:
       eventsBaseUrl:
         type: string
         description: Optional Events Base URL to override the default.
         visibility: frontend
-  linguist:
-    type: object
-    description: Configuration options for the linguist plugin
-    additionalProperties: false
-    properties:
-      schedule:
-        $ref: "#/definitions/TaskScheduleDefinition"
-      batchSize:
-        type: number
-        default: 20
-      useSourceLocation:
-        type: boolean
-        default: false
-      age:
-        $ref: "#/definitions/HumanDuration"
-        description: Refresh generated language breakdown
-      kind:
-        type: array
-        default:
-          - API
-          - Component
-          - Template
-        items:
-          type: string
-      linguistJsOptions:
-        $ref: "#/definitions/Options"
-        description: "[linguist-js](https://www.npmjs.com/package/linguist-js) options"
-      tagsProcessor:
-        type: object
-        description: Options for the tags processor
-        additionalProperties: false
-        properties:
-          bytesThreshold:
-            type: number
-            description: Determines how many bytes of a language should be in a repo for it
-              to be added as an entity tag. Defaults to 0.
-          languageTypes:
-            type: array
-            description: The types of linguist languages that should be processed. Can be
-              any of "programming", "data", "markup", "prose". Defaults to
-              ["programming"].
-            items:
-              type: string
-          languageMap:
-            type: object
-            description: A custom mapping of linguist languages to how they should be
-              rendered as entity tags. If a language is mapped to '' it will not
-              be included as a tag.
-            additionalProperties:
-              anyOf:
-                - type: string
-                - not:
-                    anyOf:
-                      - {}
-          cacheTTL:
-            $ref: "#/definitions/HumanDuration"
-            description: How long to cache entity languages for in memory. Used to avoid
-              constant db hits during processing. Defaults to 30 minutes.
   periskop:
     type: object
     required:
       - instances
     description: Configuration options for the periskop plugin
-    additionalProperties: false
     properties:
       instances:
         type: array
@@ -4669,7 +4397,6 @@ properties:
           required:
             - name
             - url
-          additionalProperties: false
           properties:
             name:
               type: string
@@ -4679,20 +4406,8 @@ properties:
               type: string
               description: The hostname of the given Periskop instance
               visibility: frontend
-  permission:
-    type: object
-    description: Configuration options for Backstage permissions and authorization
-    additionalProperties: false
-    properties:
-      enabled:
-        type: boolean
-        description: Whether authorization is enabled in Backstage. Defaults to false,
-          which means authorization requests will be automatically allowed
-          without invoking the authorization policy.
-        visibility: frontend
   playlist:
     type: object
-    additionalProperties: false
     properties:
       title:
         type: string
@@ -4701,10 +4416,6 @@ properties:
         visibility: frontend
   proxy:
     type: object
-    additionalProperties:
-      type:
-        - string
-        - object
     properties:
       skipInvalidProxies:
         type: boolean
@@ -4775,13 +4486,67 @@ properties:
                     type: string
               required:
                 - target
-              additionalProperties: false
+  linguist:
+    type: object
+    description: Configuration options for the linguist plugin
+    properties:
+      schedule:
+        $ref: "#/definitions/TaskScheduleDefinition"
+      batchSize:
+        type: number
+        default: 20
+      useSourceLocation:
+        type: boolean
+        default: false
+      age:
+        $ref: "#/definitions/HumanDuration"
+        description: Refresh generated language breakdown
+      kind:
+        type: array
+        default:
+          - API
+          - Component
+          - Template
+        items:
+          type: string
+      linguistJsOptions:
+        $ref: "#/definitions/Options"
+        description: "[linguist-js](https://www.npmjs.com/package/linguist-js) options"
+      tagsProcessor:
+        type: object
+        description: Options for the tags processor
+        properties:
+          bytesThreshold:
+            type: number
+            description: Determines how many bytes of a language should be in a repo for it
+              to be added as an entity tag. Defaults to 0.
+          languageTypes:
+            type: array
+            description: The types of linguist languages that should be processed. Can be
+              any of "programming", "data", "markup", "prose". Defaults to
+              ["programming"].
+            items:
+              type: string
+          languageMap:
+            type: object
+            description: A custom mapping of linguist languages to how they should be
+              rendered as entity tags. If a language is mapped to '' it will not
+              be included as a tag.
+            additionalProperties:
+              anyOf:
+                - type: string
+                - not:
+                    anyOf:
+                      - {}
+          cacheTTL:
+            $ref: "#/definitions/HumanDuration"
+            description: How long to cache entity languages for in memory. Used to avoid
+              constant db hits during processing. Defaults to 30 minutes.
   rollbar:
     type: object
     description: Configuration options for the rollbar plugin
     required:
       - accountToken
-    additionalProperties: false
     properties:
       organization:
         type: string
@@ -4792,15 +4557,443 @@ properties:
         type: string
         description: The authentication token for accessing the Rollbar API
         visibility: secret
+  permission:
+    type: object
+    description: Configuration options for Backstage permissions and authorization
+    properties:
+      enabled:
+        type: boolean
+        description: Whether authorization is enabled in Backstage. Defaults to false,
+          which means authorization requests will be automatically allowed
+          without invoking the authorization policy.
+        visibility: frontend
+  confluence:
+    type: object
+    required:
+      - baseUrl
+      - auth
+    description: Configuration options for the Confluence to Markdown action
+    properties:
+      baseUrl:
+        type: string
+        description: The base URL for accessing the Confluence API
+      auth:
+        type: object
+        required:
+          - type
+        properties:
+          type:
+            type: string
+            enum:
+              - basic
+              - bearer
+              - userpass
+            description: Authentication method - basic, bearer, username/password
+          token:
+            type: string
+            description: Token used for the basic and bearer auth methods
+            visibility: secret
+          email:
+            type: string
+            description: Email used with the token for the basic auth method
+            visibility: secret
+          username:
+            type: string
+            description: Username used with the Username/Password auth method
+            visibility: secret
+          password:
+            type: string
+            description: Password used with the Username/Password auth method
+            visibility: secret
+  search:
+    type: object
+    description: Configuration options for the search plugin
+    properties:
+      query:
+        type: object
+        description: An object representing the default search query configuration. By
+          configuring and modifying the values of this object, you can customize
+          the default values of the search queries and define how it behaves by
+          default.
+        properties:
+          pageLimit:
+            type: number
+            enum:
+              - 10
+              - 25
+              - 50
+              - 100
+            description: A number indicating the maximum number of results to be returned
+              per page during pagination.
+            visibility: frontend
+      collators:
+        type: object
+        properties:
+          catalog:
+            type: object
+            description: Configuration options for
+              `@backstage/plugin-search-backend-module-catalog`
+            properties:
+              locationTemplate:
+                type: string
+                description: >-
+                  A templating string with placeholders, to form the final
+                  location of the entity.
+
+
+                  Defaults to '/catalog/:namespace/:kind/:name'
+              filter:
+                type: object
+                description: >-
+                  A filter expression passed to the catalog client, to select
+                  what entities to collate.
+
+
+                  Defaults to no filter, ie indexing all entities.
+              batchSize:
+                type: number
+                description: >-
+                  The number of entities to process at a time. Keep this at a
+                  reasonable number to avoid overloading either the catalog or
+                  the search backend.
+
+
+                  Defaults to 500
+              schedule:
+                $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                description: The schedule for how often to run the collation job.
+          techdocs:
+            type: object
+            description: Configuration options for
+              `@backstage/plugin-search-backend-module-techdocs`
+            properties:
+              schedule:
+                $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                description: The schedule for how often to run the collation job.
+              locationTemplate:
+                type: string
+                description: >-
+                  A templating string with placeholders, to form the final
+                  location of the entity.
+
+
+                  Defaults to `'/docs/:namespace/:kind/:name/:path'`.
+              parallelismLimit:
+                type: number
+                description: >-
+                  An abstract value that controls the concurrency level of the
+                  collation process. Increasing this value will both increase
+                  the number of entities fetched at a time from the catalog, as
+                  well as how many things are being processed concurrently.
+
+
+                  Defaults to `10`.
+              legacyPathCasing:
+                type: boolean
+                description: Defaults to `false`.
+          explore:
+            type: object
+            description: Configuration options for
+              `@backstage/plugin-search-backend-module-explore`
+            properties:
+              schedule:
+                $ref: "#/definitions/TaskScheduleDefinitionConfig"
+                description: The schedule for how often to run the collation job.
+      maxPageLimit:
+        type: number
+        description: Sets the maximum max page limit size. Defaults to 100.
+      maxTermLength:
+        type: number
+        description: Sets the maximum term length for the search string. Defaults to 100.
+      permissions:
+        type: object
+        description: Options related to the search integration with the Backstage
+          permissions system
+        properties:
+          queryLatencyBudgetMs:
+            type: number
+            description: >-
+              Limits the amount of time the search backend will spend retrieving
+              and authorizing results from the search engine when permissions
+              are enabled. When the latency of the query endpoint reaches this
+              threshold, the results obtained up until that point will be
+              returned, even if the page is incomplete.
+
+
+              This limit is only expected to be hit for broad queries from users with extremely restrictive visibility, or for very high page offsets.
+            default: 1000
+      pg:
+        type: object
+        description: Options for PG
+        properties:
+          highlightOptions:
+            type: object
+            description: Options for configuring highlight settings See
+              https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-HEADLINE
+            properties:
+              useHighlight:
+                type: boolean
+                description: Used to enable to disable the highlight feature. The default value
+                  is true
+              maxWords:
+                type: number
+                description: Used to set the longest headlines to output. The default value is
+                  35.
+              minWords:
+                type: number
+                description: Used to set the shortest headlines to output. The default value is
+                  15.
+              shortWord:
+                type: number
+                description: Words of this length or less will be dropped at the start and end
+                  of a headline, unless they are query terms. The default value
+                  of three (3) eliminates common English articles.
+              highlightAll:
+                type: boolean
+                description: If true the whole document will be used as the headline, ignoring
+                  the preceding three parameters. The default is false.
+              maxFragments:
+                type: number
+                description: Maximum number of text fragments to display. The default value of
+                  zero selects a non-fragment-based headline generation method.
+                  A value greater than zero selects fragment-based headline
+                  generation (see the linked documentation above for more
+                  details).
+              fragmentDelimiter:
+                type: string
+                description: Delimiter string used to concatenate fragments. Defaults to " ...
+                  ".
+          indexerBatchSize:
+            type: number
+            description: Batch size to use when indexing
+      elasticsearch:
+        type: object
+        description: Options for ElasticSearch
+        properties:
+          batchSize:
+            type: number
+            description: Batch size for elastic search indexing tasks. Defaults to 1000.
+          highlightOptions:
+            type: object
+            description: Options for configuring highlight settings See
+              https://www.elastic.co/guide/en/elasticsearch/reference/7.17/highlighting.html
+            properties:
+              fragmentSize:
+                type: number
+                description: The size of the highlighted fragment in characters. Defaults to
+                  1000.
+              numFragments:
+                type: number
+                description: Number of result fragments to extract. Fragments will be
+                  concatenated with `fragmentDelimiter`. Defaults to 1.
+              fragmentDelimiter:
+                type: string
+                description: Delimiter string used to concatenate fragments. Defaults to " ...
+                  ".
+          indexTemplates:
+            type: array
+            description: Elasticsearch specific index template bodies
+            items:
+              type: object
+              required:
+                - name
+                - body
+              properties:
+                name:
+                  type: string
+                body:
+                  type: object
+                  required:
+                    - index_patterns
+                  properties:
+                    index_patterns:
+                      type: array
+                      description: Array of wildcard (*) expressions used to match the names of data
+                        streams and indices during creation.
+                      items:
+                        type: string
+                    composed_of:
+                      type: array
+                      description: An ordered list of component template names. Component templates
+                        are merged in the order specified, meaning that the last
+                        component template specified has the highest precedence.
+                      items:
+                        type: string
+                    template:
+                      type: object
+                      description: See available properties of template
+                        https://www.elastic.co/guide/en/elasticsearch/reference/7.15/indices-put-template.html#put-index-template-api-request-body
+                      additionalProperties:
+                        $comment: ""
+          clientOptions:
+            anyOf:
+              - type: object
+                properties:
+                  provider:
+                    type: string
+                    const: elastic
+                  cloudId:
+                    type: string
+                    description: "Elastic.co CloudID See:
+                      https://www.elastic.co/guide/en/elasticsearch/client/java\
+                      script-api/current/client-connecting.html#authentication"
+                  auth:
+                    type: object
+                    required:
+                      - username
+                      - password
+                    properties:
+                      username:
+                        type: string
+                      password:
+                        type: string
+                        visibility: secret
+                  ssl:
+                    type: object
+                    properties:
+                      rejectUnauthorized:
+                        type: boolean
+                        description: If true the server will reject any connection which is not
+                          authorized with the list of supplied CAs.
+                        default: true
+                required:
+                  - auth
+                  - cloudId
+                  - provider
+              - type: object
+                properties:
+                  provider:
+                    type: string
+                    const: aws
+                  node:
+                    type: string
+                    description: Node configuration. URL AWS ES endpoint to connect to. Eg.
+                      https://my-es-cluster.eu-west-1.es.amazonaws.com
+                  region:
+                    type: string
+                    description: The AWS region. Only needed if using a custom DNS record.
+                  service:
+                    type: string
+                    enum:
+                      - es
+                      - aoss
+                    description: The AWS service used for request signature. Either 'es' for
+                      "Managed Clusters" or 'aoss' for "Serverless". Only needed
+                      if using a custom DNS record.
+                  ssl:
+                    type: object
+                    properties:
+                      rejectUnauthorized:
+                        type: boolean
+                        description: If true the server will reject any connection which is not
+                          authorized with the list of supplied CAs.
+                        default: true
+                required:
+                  - node
+                  - provider
+              - type: object
+                properties:
+                  node:
+                    anyOf:
+                      - type: string
+                      - type: array
+                        items:
+                          type: string
+                    description: Node configuration. URL/URLS to ElasticSearch node to connect to.
+                      Either direct URL like 'https://localhost:9200' or with
+                      credentials like
+                      'https://username:password@localhost:9200'
+                  auth:
+                    anyOf:
+                      - type: object
+                        properties:
+                          username:
+                            type: string
+                          password:
+                            type: string
+                            visibility: secret
+                        required:
+                          - username
+                          - password
+                      - type: object
+                        properties:
+                          apiKey:
+                            type: string
+                            description: "Base64 Encoded API key to be used to connect to the cluster. See:
+                              https://www.elastic.co/guide/en/elasticsearch/ref\
+                              erence/current/security-api-create-api-key.html"
+                            visibility: secret
+                        required:
+                          - apiKey
+                    description: Authentication credentials for ElasticSearch If both ApiKey/Bearer
+                      token and username+password is provided, tokens take
+                      precedence
+                  ssl:
+                    type: object
+                    properties:
+                      rejectUnauthorized:
+                        type: boolean
+                        description: If true the server will reject any connection which is not
+                          authorized with the list of supplied CAs.
+                        default: true
+                required:
+                  - node
+              - type: object
+                properties:
+                  provider:
+                    type: string
+                    const: opensearch
+                  node:
+                    anyOf:
+                      - type: string
+                      - type: array
+                        items:
+                          type: string
+                    description: Node configuration. URL/URLS to OpenSearch node to connect to.
+                      Either direct URL like 'https://localhost:9200' or with
+                      credentials like
+                      'https://username:password@localhost:9200'
+                  auth:
+                    anyOf:
+                      - type: object
+                        properties:
+                          username:
+                            type: string
+                          password:
+                            type: string
+                            visibility: secret
+                        required:
+                          - username
+                          - password
+                      - type: object
+                        properties:
+                          apiKey:
+                            type: string
+                            visibility: secret
+                        required:
+                          - apiKey
+                    description: Authentication credentials for OpenSearch If both ApiKey/Bearer
+                      token and username+password is provided, tokens take
+                      precedence
+                  ssl:
+                    type: object
+                    properties:
+                      rejectUnauthorized:
+                        type: boolean
+                        description: If true the server will reject any connection which is not
+                          authorized with the list of supplied CAs.
+                        default: true
+                required:
+                  - node
+                  - provider
+            description: Miscellaneous options for the client
   scaffolder:
     type: object
     description: Configuration options for the scaffolder plugin
-    additionalProperties: false
     properties:
       defaultAuthor:
         type: object
         description: The commit author info used when new components are created.
-        additionalProperties: false
         properties:
           name:
             type: string
@@ -4853,458 +5046,9 @@ properties:
 
 
           Default value is 24 hours.
-  confluence:
-    type: object
-    required:
-      - baseUrl
-      - auth
-    description: Configuration options for the Confluence to Markdown action
-    additionalProperties: false
-    properties:
-      baseUrl:
-        type: string
-        description: The base URL for accessing the Confluence API
-      auth:
-        type: object
-        required:
-          - type
-        additionalProperties: false
-        properties:
-          type:
-            type: string
-            enum:
-              - basic
-              - bearer
-              - userpass
-            description: Authentication method - basic, bearer, username/password
-          token:
-            type: string
-            description: Token used for the basic and bearer auth methods
-            visibility: secret
-          email:
-            type: string
-            description: Email used with the token for the basic auth method
-            visibility: secret
-          username:
-            type: string
-            description: Username used with the Username/Password auth method
-            visibility: secret
-          password:
-            type: string
-            description: Password used with the Username/Password auth method
-            visibility: secret
-  search:
-    type: object
-    description: Configuration options for the search plugin
-    additionalProperties: false
-    properties:
-      query:
-        type: object
-        description: An object representing the default search query configuration. By
-          configuring and modifying the values of this object, you can customize
-          the default values of the search queries and define how it behaves by
-          default.
-        additionalProperties: false
-        properties:
-          pageLimit:
-            type: number
-            enum:
-              - 10
-              - 25
-              - 50
-              - 100
-            description: A number indicating the maximum number of results to be returned
-              per page during pagination.
-            visibility: frontend
-      maxPageLimit:
-        type: number
-        description: Sets the maximum max page limit size. Defaults to 100.
-      maxTermLength:
-        type: number
-        description: Sets the maximum term length for the search string. Defaults to 100.
-      permissions:
-        type: object
-        description: Options related to the search integration with the Backstage
-          permissions system
-        additionalProperties: false
-        properties:
-          queryLatencyBudgetMs:
-            type: number
-            description: >-
-              Limits the amount of time the search backend will spend retrieving
-              and authorizing results from the search engine when permissions
-              are enabled. When the latency of the query endpoint reaches this
-              threshold, the results obtained up until that point will be
-              returned, even if the page is incomplete.
-
-
-              This limit is only expected to be hit for broad queries from users with extremely restrictive visibility, or for very high page offsets.
-            default: 1000
-      collators:
-        type: object
-        additionalProperties: false
-        properties:
-          catalog:
-            type: object
-            description: Configuration options for
-              `@backstage/plugin-search-backend-module-catalog`
-            additionalProperties: false
-            properties:
-              locationTemplate:
-                type: string
-                description: >-
-                  A templating string with placeholders, to form the final
-                  location of the entity.
-
-
-                  Defaults to '/catalog/:namespace/:kind/:name'
-              filter:
-                type: object
-                description: >-
-                  A filter expression passed to the catalog client, to select
-                  what entities to collate.
-
-
-                  Defaults to no filter, ie indexing all entities.
-              batchSize:
-                type: number
-                description: >-
-                  The number of entities to process at a time. Keep this at a
-                  reasonable number to avoid overloading either the catalog or
-                  the search backend.
-
-
-                  Defaults to 500
-              schedule:
-                $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                description: The schedule for how often to run the collation job.
-          explore:
-            type: object
-            description: Configuration options for
-              `@backstage/plugin-search-backend-module-explore`
-            additionalProperties: false
-            properties:
-              schedule:
-                $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                description: The schedule for how often to run the collation job.
-          techdocs:
-            type: object
-            description: Configuration options for
-              `@backstage/plugin-search-backend-module-techdocs`
-            additionalProperties: false
-            properties:
-              schedule:
-                $ref: "#/definitions/TaskScheduleDefinitionConfig"
-                description: The schedule for how often to run the collation job.
-              locationTemplate:
-                type: string
-                description: >-
-                  A templating string with placeholders, to form the final
-                  location of the entity.
-
-
-                  Defaults to `'/docs/:namespace/:kind/:name/:path'`.
-              parallelismLimit:
-                type: number
-                description: >-
-                  An abstract value that controls the concurrency level of the
-                  collation process. Increasing this value will both increase
-                  the number of entities fetched at a time from the catalog, as
-                  well as how many things are being processed concurrently.
-
-
-                  Defaults to `10`.
-              legacyPathCasing:
-                type: boolean
-                description: Defaults to `false`.
-      elasticsearch:
-        type: object
-        description: Options for ElasticSearch
-        additionalProperties: false
-        properties:
-          batchSize:
-            type: number
-            description: Batch size for elastic search indexing tasks. Defaults to 1000.
-          highlightOptions:
-            type: object
-            description: Options for configuring highlight settings See
-              https://www.elastic.co/guide/en/elasticsearch/reference/7.17/highlighting.html
-            additionalProperties: false
-            properties:
-              fragmentSize:
-                type: number
-                description: The size of the highlighted fragment in characters. Defaults to
-                  1000.
-              numFragments:
-                type: number
-                description: Number of result fragments to extract. Fragments will be
-                  concatenated with `fragmentDelimiter`. Defaults to 1.
-              fragmentDelimiter:
-                type: string
-                description: Delimiter string used to concatenate fragments. Defaults to " ...
-                  ".
-          indexTemplates:
-            type: array
-            description: Elasticsearch specific index template bodies
-            items:
-              type: object
-              required:
-                - name
-                - body
-              additionalProperties: false
-              properties:
-                name:
-                  type: string
-                body:
-                  type: object
-                  required:
-                    - index_patterns
-                  additionalProperties: false
-                  properties:
-                    index_patterns:
-                      type: array
-                      description: Array of wildcard (*) expressions used to match the names of data
-                        streams and indices during creation.
-                      items:
-                        type: string
-                    composed_of:
-                      type: array
-                      description: An ordered list of component template names. Component templates
-                        are merged in the order specified, meaning that the last
-                        component template specified has the highest precedence.
-                      items:
-                        type: string
-                    template:
-                      type: object
-                      description: See available properties of template
-                        https://www.elastic.co/guide/en/elasticsearch/reference/7.15/indices-put-template.html#put-index-template-api-request-body
-                      additionalProperties:
-                        $comment: ""
-          clientOptions:
-            anyOf:
-              - type: object
-                additionalProperties: false
-                properties:
-                  provider:
-                    type: string
-                    const: elastic
-                  cloudId:
-                    type: string
-                    description: "Elastic.co CloudID See:
-                      https://www.elastic.co/guide/en/elasticsearch/client/java\
-                      script-api/current/client-connecting.html#authentication"
-                  auth:
-                    type: object
-                    required:
-                      - username
-                      - password
-                    additionalProperties: false
-                    properties:
-                      username:
-                        type: string
-                      password:
-                        type: string
-                        visibility: secret
-                  ssl:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      rejectUnauthorized:
-                        type: boolean
-                        description: If true the server will reject any connection which is not
-                          authorized with the list of supplied CAs.
-                        default: true
-                required:
-                  - auth
-                  - cloudId
-                  - provider
-              - type: object
-                additionalProperties: false
-                properties:
-                  provider:
-                    type: string
-                    const: aws
-                  node:
-                    type: string
-                    description: Node configuration. URL AWS ES endpoint to connect to. Eg.
-                      https://my-es-cluster.eu-west-1.es.amazonaws.com
-                  region:
-                    type: string
-                    description: The AWS region. Only needed if using a custom DNS record.
-                  service:
-                    type: string
-                    enum:
-                      - es
-                      - aoss
-                    description: The AWS service used for request signature. Either 'es' for
-                      "Managed Clusters" or 'aoss' for "Serverless". Only needed
-                      if using a custom DNS record.
-                  ssl:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      rejectUnauthorized:
-                        type: boolean
-                        description: If true the server will reject any connection which is not
-                          authorized with the list of supplied CAs.
-                        default: true
-                required:
-                  - node
-                  - provider
-              - type: object
-                additionalProperties: false
-                properties:
-                  node:
-                    anyOf:
-                      - type: string
-                      - type: array
-                        items:
-                          type: string
-                    description: Node configuration. URL/URLS to ElasticSearch node to connect to.
-                      Either direct URL like 'https://localhost:9200' or with
-                      credentials like
-                      'https://username:password@localhost:9200'
-                  auth:
-                    anyOf:
-                      - type: object
-                        properties:
-                          username:
-                            type: string
-                          password:
-                            type: string
-                            visibility: secret
-                        required:
-                          - username
-                          - password
-                        additionalProperties: false
-                      - type: object
-                        properties:
-                          apiKey:
-                            type: string
-                            description: "Base64 Encoded API key to be used to connect to the cluster. See:
-                              https://www.elastic.co/guide/en/elasticsearch/ref\
-                              erence/current/security-api-create-api-key.html"
-                            visibility: secret
-                        required:
-                          - apiKey
-                        additionalProperties: false
-                    description: Authentication credentials for ElasticSearch If both ApiKey/Bearer
-                      token and username+password is provided, tokens take
-                      precedence
-                  ssl:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      rejectUnauthorized:
-                        type: boolean
-                        description: If true the server will reject any connection which is not
-                          authorized with the list of supplied CAs.
-                        default: true
-                required:
-                  - node
-              - type: object
-                additionalProperties: false
-                properties:
-                  provider:
-                    type: string
-                    const: opensearch
-                  node:
-                    anyOf:
-                      - type: string
-                      - type: array
-                        items:
-                          type: string
-                    description: Node configuration. URL/URLS to OpenSearch node to connect to.
-                      Either direct URL like 'https://localhost:9200' or with
-                      credentials like
-                      'https://username:password@localhost:9200'
-                  auth:
-                    anyOf:
-                      - type: object
-                        properties:
-                          username:
-                            type: string
-                          password:
-                            type: string
-                            visibility: secret
-                        required:
-                          - username
-                          - password
-                        additionalProperties: false
-                      - type: object
-                        properties:
-                          apiKey:
-                            type: string
-                            visibility: secret
-                        required:
-                          - apiKey
-                        additionalProperties: false
-                    description: Authentication credentials for OpenSearch If both ApiKey/Bearer
-                      token and username+password is provided, tokens take
-                      precedence
-                  ssl:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      rejectUnauthorized:
-                        type: boolean
-                        description: If true the server will reject any connection which is not
-                          authorized with the list of supplied CAs.
-                        default: true
-                required:
-                  - node
-                  - provider
-            description: Miscellaneous options for the client
-      pg:
-        type: object
-        description: Options for PG
-        additionalProperties: false
-        properties:
-          highlightOptions:
-            type: object
-            description: Options for configuring highlight settings See
-              https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-HEADLINE
-            additionalProperties: false
-            properties:
-              useHighlight:
-                type: boolean
-                description: Used to enable to disable the highlight feature. The default value
-                  is true
-              maxWords:
-                type: number
-                description: Used to set the longest headlines to output. The default value is
-                  35.
-              minWords:
-                type: number
-                description: Used to set the shortest headlines to output. The default value is
-                  15.
-              shortWord:
-                type: number
-                description: Words of this length or less will be dropped at the start and end
-                  of a headline, unless they are query terms. The default value
-                  of three (3) eliminates common English articles.
-              highlightAll:
-                type: boolean
-                description: If true the whole document will be used as the headline, ignoring
-                  the preceding three parameters. The default is false.
-              maxFragments:
-                type: number
-                description: Maximum number of text fragments to display. The default value of
-                  zero selects a non-fragment-based headline generation method.
-                  A value greater than zero selects fragment-based headline
-                  generation (see the linked documentation above for more
-                  details).
-              fragmentDelimiter:
-                type: string
-                description: Delimiter string used to concatenate fragments. Defaults to " ...
-                  ".
-          indexerBatchSize:
-            type: number
-            description: Batch size to use when indexing
   stackoverflow:
     type: object
     description: Configuration options for the stack overflow plugin
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -5336,7 +5080,6 @@ properties:
     required:
       - organization
     description: Configuration options for the sentry plugin
-    additionalProperties: false
     properties:
       organization:
         type: string
@@ -5345,7 +5088,6 @@ properties:
   sonarqube:
     type: object
     description: Optional configurations for the SonarQube plugin
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -5371,7 +5113,6 @@ properties:
             - name
             - baseUrl
             - apiKey
-          additionalProperties: false
           properties:
             name:
               type: string
@@ -5393,7 +5134,6 @@ properties:
   splunkOnCall:
     type: object
     description: Splunk On Call Plugin specific configs
-    additionalProperties: false
     properties:
       eventsRestEndpoint:
         type: string
@@ -5402,7 +5142,6 @@ properties:
     type: object
     required:
       - webUrl
-    additionalProperties: false
     properties:
       webUrl:
         type: string
@@ -5413,7 +5152,6 @@ properties:
     required:
       - builder
     description: Configuration options for the techdocs plugin
-    additionalProperties: false
     properties:
       builder:
         type: string
@@ -5428,7 +5166,6 @@ properties:
         visibility: frontend
       sanitizer:
         type: object
-        additionalProperties: false
         properties:
           allowedIframeHosts:
             type: array
@@ -5443,7 +5180,6 @@ properties:
         required:
           - runIn
         description: Techdocs generator information
-        additionalProperties: false
         properties:
           runIn:
             type: string
@@ -5460,7 +5196,6 @@ properties:
           mkdocs:
             type: object
             description: Override behavior specific to mkdocs.
-            additionalProperties: false
             properties:
               legacyCopyReadmeMdToIndexMd:
                 type: boolean
@@ -5490,14 +5225,12 @@ properties:
                   - openStackSwift
               local:
                 type: object
-                additionalProperties: false
                 properties:
                   publishDirectory:
                     type: string
                     description: Directory to store generated static files.
             required:
               - type
-            additionalProperties: false
           - type: object
             properties:
               type:
@@ -5508,7 +5241,6 @@ properties:
                 required:
                   - bucketName
                 description: Required when 'type' is set to awsS3
-                additionalProperties: false
                 properties:
                   accountId:
                     type: string
@@ -5529,7 +5261,6 @@ properties:
                       section. If not set and no account ID is set, environment
                       variables or aws config file will be used to authenticate.
                     visibility: secret
-                    additionalProperties: false
                     properties:
                       accessKeyId:
                         type: string
@@ -5571,7 +5302,6 @@ properties:
                       https://docs.aws.amazon.com/AmazonS3/latest/userguide/specifying-s3-encryption.html
             required:
               - type
-            additionalProperties: false
           - type: object
             properties:
               type:
@@ -5585,7 +5315,6 @@ properties:
                   - authUrl
                   - swiftUrl
                 description: Required when 'type' is set to openStackSwift
-                additionalProperties: false
                 properties:
                   credentials:
                     type: object
@@ -5594,7 +5323,6 @@ properties:
                       - secret
                     description: (Required) Credentials used to access a storage bucket.
                     visibility: secret
-                    additionalProperties: false
                     properties:
                       id:
                         type: string
@@ -5616,7 +5344,6 @@ properties:
                     description: (Required) Swift URL
             required:
               - type
-            additionalProperties: false
           - type: object
             properties:
               type:
@@ -5627,7 +5354,6 @@ properties:
                 required:
                   - containerName
                 description: Required when 'type' is set to azureBlobStorage
-                additionalProperties: false
                 properties:
                   connectionString:
                     type: string
@@ -5639,7 +5365,6 @@ properties:
                       - accountName
                     description: (Optional) Credentials used to access a storage container.
                     visibility: secret
-                    additionalProperties: false
                     properties:
                       accountName:
                         type: string
@@ -5655,7 +5380,6 @@ properties:
                     description: (Required) Cloud Storage Container Name
             required:
               - type
-            additionalProperties: false
           - type: object
             properties:
               type:
@@ -5666,7 +5390,6 @@ properties:
                 required:
                   - bucketName
                 description: Required when 'type' is set to googleGcs
-                additionalProperties: false
                 properties:
                   bucketName:
                     type: string
@@ -5684,13 +5407,11 @@ properties:
                       bucket.
             required:
               - type
-            additionalProperties: false
         description: Techdocs publisher information
       cache:
         type: object
         required:
           - ttl
-        additionalProperties: false
         properties:
           ttl:
             type: number
@@ -5716,7 +5437,6 @@ properties:
     required:
       - baseUrl
       - token
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
@@ -5748,7 +5468,6 @@ properties:
   scorecards:
     type: object
     description: Extra configuration for score card plugin
-    additionalProperties: false
     properties:
       jsonDataUrl:
         type: string
@@ -5763,7 +5482,6 @@ properties:
   travisci:
     type: object
     description: Configuration options for the travisci plugin
-    additionalProperties: false
     properties:
       baseUrl:
         type: string
