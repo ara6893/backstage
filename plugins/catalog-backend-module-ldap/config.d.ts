@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { JsonValue } from '@backstage/types';
-
 export interface Config {
   /**
    * LdapOrgEntityProvider / LdapOrgReaderProcessor configuration
@@ -97,7 +95,7 @@ export interface Config {
          * This can be useful for example if you want to hard code a
          * namespace or similar on the generated entities.
          */
-        set?: { [key: string]: JsonValue };
+        set?: { [key: string]: any };
         /**
          * Mappings from well known entity fields, to LDAP attribute names
          */
@@ -181,7 +179,7 @@ export interface Config {
          * This can be useful for example if you want to hard code a
          * namespace or similar on the generated entities.
          */
-        set?: { [key: string]: JsonValue };
+        set?: { [key: string]: any };
         /**
          * Mappings from well known entity fields, to LDAP attribute names
          */
@@ -328,7 +326,7 @@ export interface Config {
              * This can be useful for example if you want to hard code a
              * namespace or similar on the generated entities.
              */
-            set?: { [key: string]: JsonValue };
+            set?: { [key: string]: any };
             /**
              * Mappings from well known entity fields, to LDAP attribute names
              */
@@ -412,7 +410,7 @@ export interface Config {
              * This can be useful for example if you want to hard code a
              * namespace or similar on the generated entities.
              */
-            set?: { [key: string]: JsonValue };
+            set?: { [key: string]: any };
             /**
              * Mappings from well known entity fields, to LDAP attribute names
              */

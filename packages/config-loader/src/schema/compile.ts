@@ -250,6 +250,9 @@ export function mergeConfigSchemas(schemas: JSONSchema[]): JSONSchema {
 
           return 'backend';
         },
+        $comment() {
+          return '';
+        },
       } as Partial<Resolvers<JSONSchema>>,
     },
   );

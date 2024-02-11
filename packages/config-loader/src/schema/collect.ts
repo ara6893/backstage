@@ -15,13 +15,10 @@
  */
 
 import fs from 'fs-extra';
-import os from 'os';
 import {
   resolve as resolvePath,
   relative as relativePath,
   dirname,
-  join as joinPath,
-  sep,
 } from 'path';
 import { ConfigSchemaPackageEntry } from './types';
 import { JsonObject } from '@backstage/types';
@@ -184,7 +181,7 @@ async function compileTsSchemas(paths: string[]) {
         isolatedModules: true,
         lib: ['ES5'], // Skipping most libs speeds processing up a lot, we just need the primitive types anyway
         noEmit: true,
-        noResolve: true,
+        // noResolve: true,
         skipLibCheck: true, // Skipping lib checks speeds things up
         skipDefaultLibCheck: true,
         strict: true,
@@ -196,7 +193,6 @@ async function compileTsSchemas(paths: string[]) {
 
       // All schemas should export a `Config` symbol
       value = generator.createSchema() as JsonObject | null;
-      console.dir(value, { depth: 4 });
       if (
         typeof value?.definitions === 'object' &&
         !Array.isArray(value?.definitions) &&
@@ -204,6 +200,12 @@ async function compileTsSchemas(paths: string[]) {
       ) {
         throw new Error('error');
       }
+      value = {
+        ...(value?.definitions as Record<string, any> | undefined)?.Config,
+        ...value,
+      };
+      delete value.definitions.Config;
+      delete value.$ref;
 
       // This makes sure that no additional symbols are defined in the schema. We don't allow
       // this because they share a global namespace and will be merged together, leading to
@@ -227,6 +229,7 @@ async function compileTsSchemas(paths: string[]) {
       //   );
       // }
     } catch (error) {
+      console.error(path, error);
       assertError(error);
       if (error.message !== 'type Config not found') {
         throw error;
@@ -236,7 +239,7 @@ async function compileTsSchemas(paths: string[]) {
     if (!value) {
       throw new Error(`Invalid schema in ${path}, missing Config export`);
     }
-    return { path, value: (value?.definitions as JsonObject)?.Config };
+    return { path, value };
   });
 
   return tsSchemas;

@@ -27,6 +27,7 @@ export default async (opts: OptionValues) => {
     fromPackage: opts.package,
     mockEnv: true,
   });
+  console.log(schema);
 
   let configSchema: JsonObject | JSONSchema;
   if (opts.merge) {
