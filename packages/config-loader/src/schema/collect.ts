@@ -172,27 +172,32 @@ async function compileTsSchemas(paths: string[]) {
   };
 
   const formatter = createFormatter(config);
+  const program = createProgram(paths, {
+    incremental: false,
+    isolatedModules: true,
+    lib: ['ES5'], // Skipping most libs speeds processing up a lot, we just need the primitive types anyway
+    noEmit: true,
+    // noResolve: true,
+    skipLibCheck: true, // Skipping lib checks speeds things up
+    skipDefaultLibCheck: true,
+    strict: true,
+    typeRoots: [], // Do not include any additional types
+    types: [],
+  });
+  const parser = createParser(program, config);
+  const generator = new SchemaGenerator(program, parser, formatter);
 
   const tsSchemas = paths.map(path => {
     let value;
     try {
-      const program = createProgram([path], {
-        incremental: false,
-        isolatedModules: true,
-        lib: ['ES5'], // Skipping most libs speeds processing up a lot, we just need the primitive types anyway
-        noEmit: true,
-        // noResolve: true,
-        skipLibCheck: true, // Skipping lib checks speeds things up
-        skipDefaultLibCheck: true,
-        strict: true,
-        typeRoots: [], // Do not include any additional types
-        types: [],
-      });
-      const parser = createParser(program, config);
-      const generator = new SchemaGenerator(program, parser, formatter);
+      const file = program.getSourceFile(path);
+      if (!file) throw new Error('No nodes found at path.');
+      const nodes = file.getChildren().flatMap(e => e.getChildren());
 
       // All schemas should export a `Config` symbol
-      value = generator.createSchema() as JsonObject | null;
+      value = generator.createSchemaFromNodes(
+        nodes.filter(e => e.kind === 264),
+      ) as JsonObject | null;
       if (
         typeof value?.definitions === 'object' &&
         !Array.isArray(value?.definitions) &&
@@ -229,7 +234,6 @@ async function compileTsSchemas(paths: string[]) {
       //   );
       // }
     } catch (error) {
-      console.error(path, error);
       assertError(error);
       if (error.message !== 'type Config not found') {
         throw error;
