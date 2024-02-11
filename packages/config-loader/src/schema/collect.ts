@@ -174,30 +174,36 @@ async function compileTsSchemas(paths: string[]) {
     type: 'Config',
   };
 
-  const program = createProgram(paths, {
-    incremental: false,
-    isolatedModules: true,
-    lib: ['ES5'], // Skipping most libs speeds processing up a lot, we just need the primitive types anyway
-    noEmit: true,
-    noResolve: true,
-    skipLibCheck: true, // Skipping lib checks speeds things up
-    skipDefaultLibCheck: true,
-    strict: true,
-    typeRoots: [], // Do not include any additional types
-    types: [],
-  });
-  const parser = createParser(program, config);
   const formatter = createFormatter(config);
 
   const tsSchemas = paths.map(path => {
     let value;
     try {
-      const generator = new SchemaGenerator(program, parser, formatter, {
-        path,
+      const program = createProgram([path], {
+        incremental: false,
+        isolatedModules: true,
+        lib: ['ES5'], // Skipping most libs speeds processing up a lot, we just need the primitive types anyway
+        noEmit: true,
+        noResolve: true,
+        skipLibCheck: true, // Skipping lib checks speeds things up
+        skipDefaultLibCheck: true,
+        strict: true,
+        typeRoots: [], // Do not include any additional types
+        types: [],
       });
+      const parser = createParser(program, config);
+      const generator = new SchemaGenerator(program, parser, formatter);
 
       // All schemas should export a `Config` symbol
-      value = generator.createSchema('Config') as JsonObject | null;
+      value = generator.createSchema() as JsonObject | null;
+      console.dir(value, { depth: 4 });
+      if (
+        typeof value?.definitions === 'object' &&
+        !Array.isArray(value?.definitions) &&
+        !value?.definitions?.Config
+      ) {
+        throw new Error('error');
+      }
 
       // This makes sure that no additional symbols are defined in the schema. We don't allow
       // this because they share a global namespace and will be merged together, leading to
@@ -230,7 +236,7 @@ async function compileTsSchemas(paths: string[]) {
     if (!value) {
       throw new Error(`Invalid schema in ${path}, missing Config export`);
     }
-    return { path, value };
+    return { path, value: (value?.definitions as JsonObject)?.Config };
   });
 
   return tsSchemas;
