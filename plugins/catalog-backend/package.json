@@ -43,7 +43,7 @@
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
     "clean": "backstage-cli package clean",
-    "generate": "backstage-repo-tools package schema openapi generate --server --client-package packages/catalog-client"
+    "generate": "backstage-repo-tools package schema openapi generate --server --client-package packages/catalog-client --enable-react-query"
   },
   "dependencies": {
     "@backstage/backend-common": "workspace:^",
